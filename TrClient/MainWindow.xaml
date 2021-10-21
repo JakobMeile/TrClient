@@ -33,14 +33,14 @@
         <Menu Grid.Row="0" Grid.ColumnSpan="5">
             <MenuItem Header="_File &amp; Server">
                 <!--<MenuItem Header="_Logon" />-->
-                <MenuItem Header="Load _All Docs in Current Collection" Name="MenuItem_LoadAllDocsInCurrentCollection" Click="MenuItem_LoadAllDocsInCurrentCollection_Click" />
+                <!--<MenuItem Header="Load _All Docs in Current Collection" Name="MenuItem_LoadAllDocsInCurrentCollection" Click="MenuItem_LoadAllDocsInCurrentCollection_Click" />
                 <Separator/>
-                <MenuItem Header="Upload _Collection" Name="MenuItem_UploadCollection" Click="MenuItem_UploadCollection_Click" />
+                <MenuItem Header="Upload _Collection" Name="MenuItem_UploadCollection" Click="MenuItem_UploadCollection_Click" />-->
                 <MenuItem Header="Upload _Document" Name="MenuItem_UploadDocument" Click="MenuItem_UploadDocument_Click" />
-                <Separator/>
-                <!--<MenuItem Header="_Open XML-document" />-->
+                <!--<Separator/>
+                --><!--<MenuItem Header="_Open XML-document" />--><!--
                 <MenuItem Header="_Save Current XML-document" Name="MenuItem_SaveCurrentDocument" Click="MenuItem_SaveCurrentDocument_Click"/>
-                <MenuItem Header="Save All Docs _in Current Collection" Name="MenuItem_SaveCurrentCollection" Click="MenuItem_SaveCurrentCollection_Click" />
+                <MenuItem Header="Save All Docs _in Current Collection" Name="MenuItem_SaveCurrentCollection" Click="MenuItem_SaveCurrentCollection_Click" />-->
 
                 <Separator/>
                 <MenuItem Header="_Exit" Name="MenuItem_Exit" Click="MenuItem_Exit_Click" />
@@ -48,10 +48,10 @@
 
             <MenuItem Header="_Regions" >
                 <MenuItem Header="Create _Top Level Region" Name="MenuItem_CreateTopLevelRegion" Click="MenuItem_CreateTopLevelRegion_Click" />
-                <MenuItem Header="Create _Horizontal Regions" Name="CreateHorizontalRegions" Click="CreateHorizontalRegions_Click" />
+                <!--<MenuItem Header="Create _Horizontal Regions" Name="CreateHorizontalRegions" Click="CreateHorizontalRegions_Click" />-->
                 <!--<MenuItem Header="Create _Vertical Regions" Name="CreateVerticalRegions" Click="CreateVerticalRegions_Click"  />-->
                 <!--<MenuItem Header="_Add Regional Tags..." Name="MenuItem_AddRegionalTags"  />-->
-                <Separator/>
+                <!--<Separator/>-->
                 <MenuItem Header="_Merge All to Top Level" Name="MenuItem_MergeAllToTopLevel" Click="MenuItem_MergeAllToTopLevel_Click"/>
                 <Separator/>
                 <MenuItem Header="_Delete Regions" Name="MenuItem_DeleteRegions" Click="MenuItem_DeleteRegions_Click"  />
@@ -94,16 +94,16 @@
                 <Separator/>
                 <MenuItem Header="Show _Textual Tags" Name="MenuItem_ShowTextualTags" Click="MenuItem_ShowTextualTags_Click" />
                 <Separator/>
-                <MenuItem Header="_Filter Lines" Name="MenuItem_FilterLines" Click="MenuItem_FilterLines_Click" />
-                <MenuItem Header="Tag Lines By _Position" Name="MenuItem_TagLinesByPosition" Click="MenuItem_TagLinesByPosition_Click" />
-                <MenuItem Header="Tag Lines By Rege_x" Name="MenuItem_TagLinesByRegex" Click="MenuItem_TagLinesByRegex_Click"/>
+                <MenuItem Header="_Filter &amp; Tag Lines" Name="MenuItem_FilterLines" Click="MenuItem_FilterLines_Click" />
+                <!--<MenuItem Header="Tag Lines By _Position" Name="MenuItem_TagLinesByPosition" Click="MenuItem_TagLinesByPosition_Click" />
+                <MenuItem Header="Tag Lines By Rege_x" Name="MenuItem_TagLinesByRegex" Click="MenuItem_TagLinesByRegex_Click"/>-->
                 <Separator/>
                 <MenuItem Header="Auto Roman Numeral Tags" Name="MenuItem_AutoTagRomanNumerals" Click="MenuItem_AutoTagRomanNumerals_Click"/>
-                <MenuItem Header="Auto Floor Number Superscript Tags" Name="MenuItem_AutoTagFloorNumbers" Click="MenuItem_AutoTagFloorNumbers_Click"/>
+                <!--<MenuItem Header="Auto Floor Number Superscript Tags" Name="MenuItem_AutoTagFloorNumbers" Click="MenuItem_AutoTagFloorNumbers_Click"/>-->
                 <MenuItem Header="Auto Abbrev Tags to Numeric Intervals" Name="MenuItem_AutoAddAbbrevTags_NumericIntervals" Click="MenuItem_AutoAddAbbrevTags_NumericIntervals_Click"/>
                 <MenuItem Header="Auto Abbrev Tags to Repetitions" Name="MenuItem_AutoAddAbbrevTags_Repetitions" Click="MenuItem_AutoAddAbbrevTags_Repetitions_Click"/>
-                <MenuItem Header="Auto Abbrev Tags to Place Names" Name="MenuItem_AutoAddAbbrevTags_PlaceNames" Click="MenuItem_AutoAddAbbrevTags_PlaceNames_Click" />
-                <MenuItem Header="Auto Date Tags" Name="MenuItem_AutoAddDateTags" Click="MenuItem_AutoAddDateTags_Click"/>
+                <!--<MenuItem Header="Auto Abbrev Tags to Place Names" Name="MenuItem_AutoAddAbbrevTags_PlaceNames" Click="MenuItem_AutoAddAbbrevTags_PlaceNames_Click" />-->
+                <!--<MenuItem Header="Auto Date Tags" Name="MenuItem_AutoAddDateTags" Click="MenuItem_AutoAddDateTags_Click"/>-->
                 <!--<MenuItem Header="Auto-Add Record Tags" Name="MenuItem_AutoAddRecordTags" Click="MenuItem_AutoAddRecordTags_Click"/>-->
                 <Separator/>
                 <MenuItem Header="Mark Empty Abbrev Tags" Name="MenuItem_MarkEmptyAbbrevTags" Click="MenuItem_MarkEmptyAbbrevTags_Click"/>
@@ -111,17 +111,17 @@
 
             <MenuItem Header="_Content" >
                 <MenuItem Header="_Find &amp; Replace" Name="MenuItem_FindAndReplaceText" Click="MenuItem_FindAndReplaceText_Click"/>
-                <MenuItem Header="_Show Expanded Text" Name="MenuItem_ShowExpandedText" Click="MenuItem_ShowExpandedText_Click"/>
+                <!--<MenuItem Header="_Show Expanded Text" Name="MenuItem_ShowExpandedText" Click="MenuItem_ShowExpandedText_Click"/>-->
                 <!--<MenuItem Header="Show _Paragraphs" Name="MenuItem_ShowParagraphs" Click="MenuItem_ShowParagraphs_Click"/>-->
-                <Separator/>
-                <MenuItem Header="_Export Words" Name="MenuItem_ExportWords" Click="MenuItem_ExportWords_Click" />
+                <!--<Separator/>-->
+                <!--<MenuItem Header="_Export Words" Name="MenuItem_ExportWords" Click="MenuItem_ExportWords_Click" />-->
                 <Separator/>
                 <MenuItem Header="Show &amp; Export _Pages" Name="MenuItem_ShowAndExportPages" Click="MenuItem_ShowAndExportPages_Click" />
                 <MenuItem Header="Export as Plain _Text" Name="MenuItem_ExportAsPlainText" Click="MenuItem_ExportAsPlainText_Click" />
-                <MenuItem Header="Export Pseudo Ta_bles" Name="MenuItem_ExportPseudoTables" Click="MenuItem_ExportPseudoTables_Click"/>
+                <!--<MenuItem Header="Export Pseudo Ta_bles" Name="MenuItem_ExportPseudoTables" Click="MenuItem_ExportPseudoTables_Click"/>-->
                 <Separator/>
-                <MenuItem Header="Show _Images" Name="MenuItem_ShowImages" Click="MenuItem_ShowImages_Click"/>
-                <Separator/>
+                <!--<MenuItem Header="Show _Images" Name="MenuItem_ShowImages" Click="MenuItem_ShowImages_Click"/>-->
+                <!--<Separator/>-->
                 <MenuItem Header="Show _Lemmas" Name="MenuItem_ShowLemmas" Click="MenuItem_ShowLemmas_Click" />
                 <Separator/>
                 <MenuItem Header="Tag Empty TextLines" Name="MenuItem_TagEmptyTextLines" Click="MenuItem_TagEmptyTextLines_Click"/>
@@ -134,17 +134,17 @@
                 <MenuItem Header="List Pages With _Overlapping Regions" Name="MenuItem_ListPagesWithOverlappingRegions" Click="MenuItem_ListPagesWithOverlappingRegions_Click" />
             </MenuItem>
 
-            <MenuItem Header="_KB-test">
-                <!--<MenuItem Header="_Auto-Tagging" Name="MenuItem_AutoTagging" Click="MenuItem_AutoTagging_Click"  />-->
-                <!--<MenuItem Header="_Expand All Text" Name="MenuItem_ExpandAllText" Click="MenuItem_ExpandAllText_Click" />
-                <MenuItem Header="_Get All AccNos" Name="MenuItem_GetAllAccNos" Click="MenuItem_GetAllAccNos_Click"/>-->
+            <!--<MenuItem Header="_KB-test">
+                --><!--<MenuItem Header="_Auto-Tagging" Name="MenuItem_AutoTagging" Click="MenuItem_AutoTagging_Click"  />--><!--
+                --><!--<MenuItem Header="_Expand All Text" Name="MenuItem_ExpandAllText" Click="MenuItem_ExpandAllText_Click" />
+                <MenuItem Header="_Get All AccNos" Name="MenuItem_GetAllAccNos" Click="MenuItem_GetAllAccNos_Click"/>--><!--
                 <MenuItem Header="Elfelt Record Check" Name="MenuItem_ElfeltRecordCheck" Click="MenuItem_ElfeltRecordCheck_Click"/>
                 <MenuItem Header="Current Test Module" Name="MenuItem_CurrentTestModule" Click="MenuItem_CurrentTestModule_Click"/>
             </MenuItem>
 
             <MenuItem Header="_Damage Control">
                 <MenuItem Header="Check Table Situation" Name="MenuItem_CheckTableSituation" Click="MenuItem_CheckTableSituation_Click" />
-            </MenuItem>
+            </MenuItem>-->
 
         </Menu>
 
