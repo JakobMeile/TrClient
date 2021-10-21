@@ -5,8 +5,389 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TrClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        WindowState="Maximized"
+        WindowStyle="SingleBorderWindow"
+        Title="TrClient" >
+    <Grid x:Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="30"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <!--<ColumnDefinition/>-->
+            <!--<ColumnDefinition/>-->
+        </Grid.ColumnDefinitions>
+
+        <Menu Grid.Row="0" Grid.ColumnSpan="5">
+            <MenuItem Header="_File &amp; Server">
+                <!--<MenuItem Header="_Logon" />-->
+                <MenuItem Header="Load _All Docs in Current Collection" Name="MenuItem_LoadAllDocsInCurrentCollection" Click="MenuItem_LoadAllDocsInCurrentCollection_Click" />
+                <Separator/>
+                <MenuItem Header="Upload _Collection" Name="MenuItem_UploadCollection" Click="MenuItem_UploadCollection_Click" />
+                <MenuItem Header="Upload _Document" Name="MenuItem_UploadDocument" Click="MenuItem_UploadDocument_Click" />
+                <Separator/>
+                <!--<MenuItem Header="_Open XML-document" />-->
+                <MenuItem Header="_Save Current XML-document" Name="MenuItem_SaveCurrentDocument" Click="MenuItem_SaveCurrentDocument_Click"/>
+                <MenuItem Header="Save All Docs _in Current Collection" Name="MenuItem_SaveCurrentCollection" Click="MenuItem_SaveCurrentCollection_Click" />
+
+                <Separator/>
+                <MenuItem Header="_Exit" Name="MenuItem_Exit" Click="MenuItem_Exit_Click" />
+            </MenuItem>
+
+            <MenuItem Header="_Regions" >
+                <MenuItem Header="Create _Top Level Region" Name="MenuItem_CreateTopLevelRegion" Click="MenuItem_CreateTopLevelRegion_Click" />
+                <MenuItem Header="Create _Horizontal Regions" Name="CreateHorizontalRegions" Click="CreateHorizontalRegions_Click" />
+                <!--<MenuItem Header="Create _Vertical Regions" Name="CreateVerticalRegions" Click="CreateVerticalRegions_Click"  />-->
+                <!--<MenuItem Header="_Add Regional Tags..." Name="MenuItem_AddRegionalTags"  />-->
+                <Separator/>
+                <MenuItem Header="_Merge All to Top Level" Name="MenuItem_MergeAllToTopLevel" Click="MenuItem_MergeAllToTopLevel_Click"/>
+                <Separator/>
+                <MenuItem Header="_Delete Regions" Name="MenuItem_DeleteRegions" Click="MenuItem_DeleteRegions_Click"  />
+                <MenuItem Header="Delete _Empty Regions" Name="MenuItem_DeleteEmptyRegions" Click="MenuItem_DeleteEmptyRegions_Click"  />
+                <Separator/>
+                <MenuItem Header="_Move Regions" Name="MenuItem_MoveRegions" Click="MenuItem_MoveRegions_Click" />
+                <Separator/>
+                <MenuItem Header="_Renumber Horizontally" Name="MenuItem_RenumberRegionsHorizontally" Click="MenuItem_RenumberRegionsHorizontally_Click" />
+                <MenuItem Header="Renumber _Vertically" Name="MenuItem_RenumberRegionsVertically" Click="MenuItem_RenumberRegionsVertically_Click" />
+            </MenuItem>
+
+            <MenuItem Header="_Tables">
+                <MenuItem Header="Convert Tables to TextRegions" Name="MenuItem_ConvertTablesToTextRegions" Click="MenuItem_ConvertTablesToTextRegions_Click"/>
+                <MenuItem Header="Copy Forgotten Tables to Newest Transcript" Name="MenuItem_CopyForgottenTables" Click="MenuItem_CopyForgottenTables_Click" />
+            </MenuItem>
+
+            <MenuItem Header="_Lines">
+                <MenuItem Header="_Edit BaseLines" Name="MenuItem_EditBaseLines" Click="MenuItem_EditBaseLines_Click" />
+                <MenuItem Header="Repair _BaseLines" Name="MenuItem_RepairBaseLines" Click="MenuItem_RepairBaseLines_Click"/>
+                <Separator/>
+                <MenuItem Header="_Renumber Horizontally" Name="MenuItem_RenumberLinesHorizontally" Click="MenuItem_RenumberLinesHorizontally_Click" />
+                <MenuItem Header="Renumber _Vertically" Name="MenuItem_RenumberLinesVertically" Click="MenuItem_RenumberLinesVertically_Click"  />
+                <MenuItem Header="Renumber _Logically" Name="MenuItem_RenumberLinesLogically" Click="MenuItem_RenumberLinesLogically_Click" />
+                <Separator/>
+                <!--<MenuItem Header="Set Row _Numbers" Name="MenuItem_SetRowNumbers" Click="MenuItem_SetRowNumbers_Click"/>
+                <MenuItem Header="Set _Column Numbers" Name="MenuItem_SetColumnNumbers" Click="MenuItem_SetColumnNumbers_Click" />
+                <Separator/>-->
+                <MenuItem Header="_Simplify Bounding Boxes" Name="MenuItem_SimplifyBoundingBoxes" Click="MenuItem_SimplifyBoundingBoxes_Click" />
+                <Separator/>
+                <MenuItem Header="_Delete Lines" Name="MenuItem_DeleteLines" Click="MenuItem_DeleteLines_Click" />
+
+            </MenuItem>
+
+            <MenuItem Header="Ta_gs" >
+                <MenuItem Header="_Edit Structural Tags..." Name="MenuItem_EditStructuralTags" Click="MenuItem_EditStructuralTags_Click" />
+                <MenuItem Header="Show _Structural Tags" Name="MenuItem_ShowStructuralTags" Click="MenuItem_ShowStructuralTags_Click" />
+                <Separator/>
+                <MenuItem Header="Show _Regional Tags" Name="MenuItem_ShowRegionalTags" Click="MenuItem_ShowRegionalTags_Click" />
+                <MenuItem Header="_Add Regional Tags (Non-Tagged TR)" Name="AddRegionalTagsOnEmpty" Click="AddRegionalTagsOnEmpty_Click"/>
+                <Separator/>
+                <MenuItem Header="Show _Textual Tags" Name="MenuItem_ShowTextualTags" Click="MenuItem_ShowTextualTags_Click" />
+                <Separator/>
+                <MenuItem Header="_Filter Lines" Name="MenuItem_FilterLines" Click="MenuItem_FilterLines_Click" />
+                <MenuItem Header="Tag Lines By _Position" Name="MenuItem_TagLinesByPosition" Click="MenuItem_TagLinesByPosition_Click" />
+                <MenuItem Header="Tag Lines By Rege_x" Name="MenuItem_TagLinesByRegex" Click="MenuItem_TagLinesByRegex_Click"/>
+                <Separator/>
+                <MenuItem Header="Auto Roman Numeral Tags" Name="MenuItem_AutoTagRomanNumerals" Click="MenuItem_AutoTagRomanNumerals_Click"/>
+                <MenuItem Header="Auto Floor Number Superscript Tags" Name="MenuItem_AutoTagFloorNumbers" Click="MenuItem_AutoTagFloorNumbers_Click"/>
+                <MenuItem Header="Auto Abbrev Tags to Numeric Intervals" Name="MenuItem_AutoAddAbbrevTags_NumericIntervals" Click="MenuItem_AutoAddAbbrevTags_NumericIntervals_Click"/>
+                <MenuItem Header="Auto Abbrev Tags to Repetitions" Name="MenuItem_AutoAddAbbrevTags_Repetitions" Click="MenuItem_AutoAddAbbrevTags_Repetitions_Click"/>
+                <MenuItem Header="Auto Abbrev Tags to Place Names" Name="MenuItem_AutoAddAbbrevTags_PlaceNames" Click="MenuItem_AutoAddAbbrevTags_PlaceNames_Click" />
+                <MenuItem Header="Auto Date Tags" Name="MenuItem_AutoAddDateTags" Click="MenuItem_AutoAddDateTags_Click"/>
+                <!--<MenuItem Header="Auto-Add Record Tags" Name="MenuItem_AutoAddRecordTags" Click="MenuItem_AutoAddRecordTags_Click"/>-->
+                <Separator/>
+                <MenuItem Header="Mark Empty Abbrev Tags" Name="MenuItem_MarkEmptyAbbrevTags" Click="MenuItem_MarkEmptyAbbrevTags_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_Content" >
+                <MenuItem Header="_Find &amp; Replace" Name="MenuItem_FindAndReplaceText" Click="MenuItem_FindAndReplaceText_Click"/>
+                <MenuItem Header="_Show Expanded Text" Name="MenuItem_ShowExpandedText" Click="MenuItem_ShowExpandedText_Click"/>
+                <!--<MenuItem Header="Show _Paragraphs" Name="MenuItem_ShowParagraphs" Click="MenuItem_ShowParagraphs_Click"/>-->
+                <Separator/>
+                <MenuItem Header="_Export Words" Name="MenuItem_ExportWords" Click="MenuItem_ExportWords_Click" />
+                <Separator/>
+                <MenuItem Header="Show &amp; Export _Pages" Name="MenuItem_ShowAndExportPages" Click="MenuItem_ShowAndExportPages_Click" />
+                <MenuItem Header="Export as Plain _Text" Name="MenuItem_ExportAsPlainText" Click="MenuItem_ExportAsPlainText_Click" />
+                <MenuItem Header="Export Pseudo Ta_bles" Name="MenuItem_ExportPseudoTables" Click="MenuItem_ExportPseudoTables_Click"/>
+                <Separator/>
+                <MenuItem Header="Show _Images" Name="MenuItem_ShowImages" Click="MenuItem_ShowImages_Click"/>
+                <Separator/>
+                <MenuItem Header="Show _Lemmas" Name="MenuItem_ShowLemmas" Click="MenuItem_ShowLemmas_Click" />
+                <Separator/>
+                <MenuItem Header="Tag Empty TextLines" Name="MenuItem_TagEmptyTextLines" Click="MenuItem_TagEmptyTextLines_Click"/>
+                <MenuItem Header="Wrap Super/Subscript with Spaces" Name="MenuItem_WrapSuperAndSubscriptWithSpaces" Click="MenuItem_WrapSuperAndSubscriptWithSpaces_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_Statistics">
+                <MenuItem Header="_Count Pages with Regions" Name="MenuItem_CountPagesWithRegions" Click="MenuItem_CountPagesWithRegions_Click"/>
+                <MenuItem Header="List Pages w/o _Regional Tags" Name="MenuItem_ListPagesWORegionalTags" Click="MenuItem_ListPagesWORegionalTags_Click" />
+                <MenuItem Header="List Pages With _Overlapping Regions" Name="MenuItem_ListPagesWithOverlappingRegions" Click="MenuItem_ListPagesWithOverlappingRegions_Click" />
+            </MenuItem>
+
+            <MenuItem Header="_KB-test">
+                <!--<MenuItem Header="_Auto-Tagging" Name="MenuItem_AutoTagging" Click="MenuItem_AutoTagging_Click"  />-->
+                <!--<MenuItem Header="_Expand All Text" Name="MenuItem_ExpandAllText" Click="MenuItem_ExpandAllText_Click" />
+                <MenuItem Header="_Get All AccNos" Name="MenuItem_GetAllAccNos" Click="MenuItem_GetAllAccNos_Click"/>-->
+                <MenuItem Header="Elfelt Record Check" Name="MenuItem_ElfeltRecordCheck" Click="MenuItem_ElfeltRecordCheck_Click"/>
+                <MenuItem Header="Current Test Module" Name="MenuItem_CurrentTestModule" Click="MenuItem_CurrentTestModule_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_Damage Control">
+                <MenuItem Header="Check Table Situation" Name="MenuItem_CheckTableSituation" Click="MenuItem_CheckTableSituation_Click" />
+            </MenuItem>
+
+        </Menu>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.RowSpan="4" Margin="10,5,0,0" >
+            <Label Content="Credentials" Height="25" FontWeight="Bold" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Username:" Height="25" Width="80"/>
+                <TextBox x:Name="txtUserName" Height="25" Padding="2,4,2,2" TextWrapping="NoWrap" Text="" Width="160" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label Content="Password:" Height="25" Width="80"/>
+                <PasswordBox x:Name="txtPassword" Height="25" Padding="2,4,2,2" Width="160" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="80,20,0,0" >
+                <Button x:Name="btnLogin" Content="Login" Width="80" Height="25" HorizontalAlignment="Left" Click="BtnLogin_Click"/>
+                <Ellipse x:Name="StatusLight" Fill="{Binding StatusColor}"  Height="20" Width="20"  Margin="30,0,0,0" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="6" Grid.RowSpan="1" Margin="10,5,0,0" >
+            <Label Content="Current" Height="25" FontWeight="Bold" Margin="0,0,0,5"/>
+            <StackPanel x:Name="txtCurrentCollection" Orientation="Horizontal" Height="25" Margin="5,0,0,0">
+                <TextBlock Text="Collection:" Width="80"/>
+                <Ellipse Fill="{Binding StatusColor}" Height="8" Width="8" Margin="5" VerticalAlignment="Top" />
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+            </StackPanel>
+            <StackPanel x:Name="txtCurrentDocument" Orientation="Horizontal" Height="25" Margin="5,0,0,0">
+                <TextBlock Text="Document:" Width="80"/>
+                <Ellipse Fill="{Binding StatusColor}" Height="8" Width="8" Margin="5" VerticalAlignment="Top"/>
+                <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="9" Grid.RowSpan="1" Margin="10,5,0,0" >
+            <Label Content="Secondary" Height="25" FontWeight="Bold" Margin="0,0,0,5"/>
+            <StackPanel x:Name="txtSecondaryCollection" Orientation="Horizontal" Height="25" Margin="5,0,0,0">
+                <TextBlock Text="Collection:" Width="80"/>
+                <Ellipse Fill="{Binding StatusColor}" Height="8" Width="8" Margin="5" VerticalAlignment="Top" />
+                <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+            </StackPanel>
+            <StackPanel x:Name="txtSecondaryDocument" Orientation="Horizontal" Height="25" Margin="5,0,0,0">
+                <TextBlock Text="Document:" Width="80"/>
+                <Ellipse Fill="{Binding StatusColor}" Height="8" Width="8" Margin="5" VerticalAlignment="Top"/>
+                <TextBlock Text="{Binding Title}" FontWeight="Bold" />
+            </StackPanel>
+        </StackPanel>
+
+
+        <StackPanel Orientation="Vertical" Grid.Row="7" Grid.RowSpan="2" Margin="10,5,0,0" >
+            <Label Content="Legend" FontWeight="Bold" />
+            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                <Ellipse Fill="Red" Height="8" Width="8"/>
+                <Label Content="Not loaded"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                <Ellipse Fill="LimeGreen" Height="8" Width="8"/>
+                <Label Content="Loaded &amp; ready"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                <Ellipse Fill="Orange" Height="8" Width="8"/>
+                <Label Content="Has changed"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                <Ellipse Fill="DarkViolet" Height="8" Width="8"/>
+                <Label Content="Changes uploaded"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Label Grid.Column="1" Grid.Row="1" Content="Collections" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Bottom" Height="25"/>
+        <Label Grid.Column="2" Grid.Row="1" Content="Documents" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Bottom" Height="25"/>
+        <Label Grid.Column="3" Grid.Row="1" Content="Pages" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Bottom" Height="25"/>
+        <!--<Label Grid.Column="4" Grid.Row="1" Content="Transcripts" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Bottom" Height="25"/>-->
+        <!--<Label Grid.Column="5" Grid.Row="1" Content="Statistics" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Height="25"/>-->
+
+        <!--<TextBox x:Name="txtDocCount" Text="{Binding NrOfPagesLoaded}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right" Height="25" Margin="10,5,10,0" Padding="2,4,2,2" TextWrapping="NoWrap" VerticalAlignment="Top" Width="40" BorderThickness="0"/>
+        <TextBox x:Name="txtPagesCount" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Right" Height="25" Margin="10,5,10,0" Padding="2,4,2,2" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="40" BorderThickness="0"/>
+        <TextBox x:Name="txtTranscriptsCount" Grid.Column="4" Grid.Row="1" HorizontalAlignment="Right" Height="25" Margin="10,5,10,0" Padding="2,4,2,2" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="40" BorderThickness="0"/>-->
+
+
+        <ListBox x:Name="lstCollections" Grid.Column="1" Grid.Row="2" Grid.RowSpan="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstCollections_SelectionChanged" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MaxWidth="300"/>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" Grid.Column="0" />
+                        <TextBlock Text="{Binding NrOfDocsLoaded}" Grid.Column="1" HorizontalAlignment="Right"/>
+                        <TextBlock Text="/" Grid.Column="2" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding NrOfDocs}" Grid.Column="3" HorizontalAlignment="Right"/>
+                        <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
+                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
+        <ListBox x:Name="lstDocuments" Grid.Column="2" Grid.Row="2" Grid.RowSpan="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstDocuments_SelectionChanged" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="*"  MaxWidth="200"/>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding ID}" Grid.Column="0"/>
+                        <TextBlock Text="{Binding Title}" Grid.Column="1"/>
+                        <TextBlock Text="{Binding NrOfTranscriptsLoaded}" Grid.Column="2" HorizontalAlignment="Right"/>
+                        <TextBlock Text="/" Grid.Column="3" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding NrOfPages}" Grid.Column="4" HorizontalAlignment="Right"/>
+                        <Ellipse Fill="{Binding StatusColor}" Grid.Column="5" Height="8" Width="8"/>
+                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
+        <ListBox x:Name="lstPages" Grid.Column="3" Grid.Row="2" Grid.RowSpan="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstPages_SelectionChanged" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" MaxWidth="260"/>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="#" Grid.Column="0" />
+                        <TextBlock Text="{Binding PageNr}" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right"/>
+                        <TextBlock Text=":" Grid.Column="2" />
+                        <TextBlock Text="{Binding ImageFileName}" Grid.Column="3" />
+                        <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
+                        <TextBlock Text="{Binding TranscriptCount}" Grid.Column="5" />
+                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="2" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Grid.Column="1" Grid.Row="7" VerticalAlignment="Center">
+            <Button x:Name="btnCopyCollection" Content="Copy Collection" Width="120" Height="25" Click="BtnCopyCollection_Click" />
+        </StackPanel>
+
+
+        <StackPanel Grid.Column="2" Grid.Row="7" VerticalAlignment="Center">
+            <Button x:Name="btnCopyDocument" Content="Copy Document" Width="120" Height="25" Click="BtnCopyDocument_Click" />
+        </StackPanel>
+
+
+        <Label Grid.Column="1" Grid.Row="7" Content="Secondary Collections" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Bottom" Height="25"/>
+        <Label Grid.Column="2" Grid.Row="7" Content="Secondary Documents" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Bottom" Height="25"/>
+        <Label Grid.Column="3" Grid.Row="7" Content="Secondary Pages" FontWeight="Bold" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Bottom" Height="25"/>
+
+
+        <ListBox x:Name="lstSecondaryCollections" Grid.Column="1" Grid.Row="8" Grid.RowSpan="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstSecondaryCollections_SelectionChanged" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Name}" Grid.Column="0" />
+                        <TextBlock Text="{Binding NrOfDocsLoaded}" Grid.Column="1" HorizontalAlignment="Right"/>
+                        <TextBlock Text="/" Grid.Column="2" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding NrOfDocs}" Grid.Column="3" HorizontalAlignment="Right"/>
+                        <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
+                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
+
+        <ListBox x:Name="lstSecondaryDocuments" Grid.Column="2" Grid.Row="8" Grid.RowSpan="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstSecondaryDocuments_SelectionChanged" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Title}" Grid.Column="0"/>
+                        <TextBlock Text="{Binding NrOfTranscriptsLoaded}" Grid.Column="1" HorizontalAlignment="Right"/>
+                        <TextBlock Text="/" Grid.Column="2" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding NrOfPages}" Grid.Column="3" HorizontalAlignment="Right"/>
+                        <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
+                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
+        <ListBox x:Name="lstSecondaryPages" Grid.Column="3" Grid.Row="8" Grid.RowSpan="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstSecondaryPages_SelectionChanged" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="#" Grid.Column="0" />
+                        <TextBlock Text="{Binding PageNr}" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right"/>
+                        <TextBlock Text=":" Grid.Column="2" />
+                        <TextBlock Text="{Binding ImageFileName}" Grid.Column="3" />
+                        <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
+                        <TextBlock Text="{Binding TranscriptCount}" Grid.Column="5" />
+                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="2" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
+        <!--<ListBox x:Name="lstTranscripts" Grid.Column="4" Grid.Row="2" Grid.RowSpan="6" HorizontalAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" />-->
+        <!--<TextBox x:Name="txtStatistics" Grid.Column="5" Grid.Row="2" Grid.RowSpan="6" HorizontalAlignment="Stretch" Margin="10,0,10,10" Padding="2,4,2,2" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch"  BorderThickness="0"/>-->
+
+
+
     </Grid>
+
 </Window>

@@ -1,0 +1,36 @@
+﻿<Window x:Class="TrClient.dlgChooseMinMaxNumbers"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrClient"
+        mc:Ignorable="d"
+        Title="Choose Min-Max Numbers" 
+        Height="200" 
+        Width="200"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <StackPanel Orientation="Vertical" >
+            <GroupBox x:Name="dlgNumbers" Header="Numbers" Width="190" HorizontalAlignment="Left" Height="Auto" VerticalAlignment="Top" Margin="10" Padding="5">
+                <StackPanel Orientation="Vertical" >
+                    <StackPanel Orientation="Horizontal" Height="25" Margin="10,10,10,0" >
+                        <Label Content="Minimum:" Width="80" Margin="0,0,0,0" />
+                        <TextBox x:Name="txtMinimum" Height="25" Width="60" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Height="25" Margin="10,10,10,0" >
+                        <Label Content="Maximum:" Width="80" Margin="0,0,0,0" />
+                        <TextBox x:Name="txtMaximum" Height="25" Width="60" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="25,10">
+                <Button x:Name="btnOK" Content="OK" Width="60" IsDefault="True" Click="BtnOK_Click"  />
+                <Button x:Name="btnCancel" Content="Cancel" Width="60" Margin="15,0,0,0" IsCancel="true" Click="BtnCancel_Click" />
+            </StackPanel>
+        </StackPanel>
+
+
+    </Grid>
+</Window>
