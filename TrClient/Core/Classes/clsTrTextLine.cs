@@ -849,8 +849,10 @@ namespace TrClient
         public int TextSizeFactor
         {
             get
-            {
-                _textSizeFactor = Width / (Length);
+            {   if (Length > 0)
+                    _textSizeFactor = Width / (Length);
+                else
+                    _textSizeFactor = 0;
                 return _textSizeFactor;
             }
         }
