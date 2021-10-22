@@ -15,14 +15,14 @@ using System.Windows.Shapes;
 namespace TrClient
 {
     /// <summary>
-    /// Interaction logic for DialogEditLemma.xaml
+    /// Interaction logic for dlgEditLemma.xaml
     /// </summary>
-    public partial class DialogEditLemma : Window
+    public partial class dlgEditLemma : Window
     {
         public clsTrLemma CurrentLemma;
         private string OldText;
 
-        public DialogEditLemma(clsTrLemma Lemma)
+        public dlgEditLemma(clsTrLemma Lemma)
         {
             InitializeComponent();
 

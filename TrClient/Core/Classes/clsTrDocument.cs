@@ -24,7 +24,7 @@ namespace TrClient
     public class clsTrDocument : IComparable, INotifyPropertyChanged
     {
         public string TrpPages = "https://transkribus.eu/TrpServer/rest/collections/_ColID_/_DocID_/fulldoc.xml";
-      
+
 
         public string Folder { get; set; }
         public string ID { get; set; }
@@ -32,7 +32,7 @@ namespace TrClient
         private int _nrOfPages = 0;
         public int NrOfPages
         {
-            get { return _nrOfPages;  }
+            get { return _nrOfPages; }
             set { _nrOfPages = value; }
         }
 
@@ -133,7 +133,7 @@ namespace TrClient
         private bool _isLoaded = false;
         public bool IsLoaded
         {
-            get { return _isLoaded;  }
+            get { return _isLoaded; }
             set
             {
                 if (_isLoaded != value)
@@ -293,7 +293,7 @@ namespace TrClient
 
             XElement xRoot = new XElement("Root");
 
-            XElement xAccessions = new XElement("Accessions", 
+            XElement xAccessions = new XElement("Accessions",
                 new XAttribute("Document", Title));
 
             XElement xSources = new XElement("Sources");
@@ -584,7 +584,7 @@ namespace TrClient
             int i;
             int MaxRegion = GetHighestRegionNumber();
             int[] RegionsArray = new int[MaxRegion + 1];
-     
+
             foreach (clsTrPage Page in Pages)
             {
                 for (i = 1; i <= MaxRegion; i++)
@@ -600,7 +600,7 @@ namespace TrClient
                     temp.Add(i.ToString());
                 else
                     temp.Add(i.ToString());
-                    // temp.Add($"({i.ToString()})");
+                // temp.Add($"({i.ToString()})");
             }
 
             return temp;
@@ -627,7 +627,7 @@ namespace TrClient
                                 LinesArray[i]++;
                         }
                     }
-                        
+
                 }
             }
 
@@ -645,7 +645,7 @@ namespace TrClient
 
         private bool _hasRegions;
         public bool HasRegions
-        {   
+        {
             get
             {
                 _hasRegions = (NrOfPagesWithRegions() > 0);
@@ -754,7 +754,7 @@ namespace TrClient
             return temp;
         }
 
-        
+
         public clsTrTextLines GetAllLines()
         {
             clsTrTextLines TempList = new clsTrTextLines();
@@ -951,7 +951,7 @@ namespace TrClient
         public List<string> CheckElfeltRecordNumbers()
         {
             string CurrentRecord = "";
- 
+
             char Delimiter = clsTrLibrary.CSV_Delimiter;
             List<string> TempList = new List<string>();
 
@@ -1033,7 +1033,7 @@ namespace TrClient
                                     // men det gav mange fejl i 4'eren, hvor det er meningen, at man godt må hoppe LIDT baglæns...
                                     // værdien øges derfor fra 300 til 1500
 
-                                    if ((CurrentHpos < (PreviousHpos - 1500) && CurrentVpos > PreviousVpos) )
+                                    if ((CurrentHpos < (PreviousHpos - 1500) && CurrentVpos > PreviousVpos))
                                     {
                                         // Debug.Print("current er rykket til venstre og ned");
                                         // linieskift er indtruffet!
@@ -1139,7 +1139,7 @@ namespace TrClient
             }
             return TempRecords;
         }
-            
+
 
 
 
@@ -1352,7 +1352,7 @@ namespace TrClient
 
 
 
-                                        if (SetDate) 
+                                        if (SetDate)
                                         {
                                             // komplet dato?
                                             if (CurrentDay > 0 && CurrentMonth > 0)
@@ -1447,9 +1447,9 @@ namespace TrClient
                                 BorderOK = true;
                             else
                                 BorderOK = false;
-                                PageOK = PageOK && BorderOK; // det sidste +5 er for at få falske positive, hvor en region er klippet over - så har de samme t/b-værdi 
+                            PageOK = PageOK && BorderOK; // det sidste +5 er for at få falske positive, hvor en region er klippet over - så har de samme t/b-værdi 
                             if (!BorderOK)
-                                Debug.WriteLine($"Page {Page.PageNr}: Region {Transcript.Regions[i].Number}, bottom: {Transcript.Regions[i].BottomBorder} - Region {Transcript.Regions[i+1].Number}, top: {Transcript.Regions[i + 1].TopBorder}");
+                                Debug.WriteLine($"Page {Page.PageNr}: Region {Transcript.Regions[i].Number}, bottom: {Transcript.Regions[i].BottomBorder} - Region {Transcript.Regions[i + 1].Number}, top: {Transcript.Regions[i + 1].TopBorder}");
                         }
                         if (!PageOK)
                         {
@@ -1508,7 +1508,7 @@ namespace TrClient
             foreach (clsTrPage Page in Pages)
                 Page.DeleteEmptyRegions();
         }
-        
+
         public void SimplifyBoundingBoxes()
         {
             foreach (clsTrPage Page in Pages)
@@ -1520,7 +1520,7 @@ namespace TrClient
             foreach (clsTrPage Page in Pages)
                 Page.SimplifyBoundingBoxes(MinimumHeight, MaximumHeight);
         }
-        
+
 
         public void DeleteShortBaseLines(clsTrDialogTransferSettings Settings)
         {
@@ -1536,7 +1536,7 @@ namespace TrClient
                     ProcessThis = true;
                 else
                     ProcessThis = false;
-                
+
                 if (ProcessThis)
                 {
                     Log.AddLine();
@@ -1848,7 +1848,7 @@ namespace TrClient
 
                         T.LoadPageXML();
                         IsLoaded = true;
-                                                                   
+
                     }
                 }
                 Pages.Sort();
@@ -1985,7 +1985,7 @@ namespace TrClient
                         }
                     }
 
-                    clsTrTranscript Transcript = new clsTrTranscript(TranscriptID, TranscriptKey, PageNr, TranscriptStatus, 
+                    clsTrTranscript Transcript = new clsTrTranscript(TranscriptID, TranscriptKey, PageNr, TranscriptStatus,
                         TranscriptUser, Timestamp);
 
                     Transcripts.Add(Transcript);
@@ -2024,7 +2024,7 @@ namespace TrClient
                 if (Page.HasChanged)
                     Page.Transcripts[0].Upload(CurrentClient);
             }
-            
+
             Debug.Print($"***** RESULT: Transcripts changed: {NrOfTranscriptsChanged} - Transcripts uploaded: {NrOfTranscriptsUploaded}");
 
         }
@@ -2156,5 +2156,9 @@ namespace TrClient
             }
 
         }
+
+
+
+
     }
 }

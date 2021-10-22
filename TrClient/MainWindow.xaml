@@ -132,6 +132,8 @@
                 <MenuItem Header="_Count Pages with Regions" Name="MenuItem_CountPagesWithRegions" Click="MenuItem_CountPagesWithRegions_Click"/>
                 <MenuItem Header="List Pages w/o _Regional Tags" Name="MenuItem_ListPagesWORegionalTags" Click="MenuItem_ListPagesWORegionalTags_Click" />
                 <MenuItem Header="List Pages With _Overlapping Regions" Name="MenuItem_ListPagesWithOverlappingRegions" Click="MenuItem_ListPagesWithOverlappingRegions_Click" />
+                <Separator/>
+                <MenuItem Header="Show Histogram" Name="MenuItem_ShowHistogram" Click="MenuItem_ShowHistogram_Click" />
             </MenuItem>
 
             <!--<MenuItem Header="_KB-test">

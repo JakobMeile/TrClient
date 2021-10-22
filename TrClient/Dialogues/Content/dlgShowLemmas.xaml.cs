@@ -117,7 +117,7 @@ namespace TrClient
                 clsTrLemma Lemma = ((ListViewItem)sender).Content as clsTrLemma;
                 if (Lemma != null)
                 {
-                    DialogEditLemma dlgEdit = new DialogEditLemma(Lemma);
+                    dlgEditLemma dlgEdit = new dlgEditLemma(Lemma);
                     dlgEdit.Owner = this;
                     dlgEdit.ShowDialog();
                     if (dlgEdit.DialogResult == true)

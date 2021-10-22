@@ -22,6 +22,7 @@ using System.Timers;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using TrClient;
+using TrClient.Dialogues.Statistics;
 using DanishNLP;
 
 namespace TrClient
@@ -39,7 +40,7 @@ namespace TrClient
 
 
         public static clsTrUser User;
-        public static readonly HttpClient TrClient = new HttpClient();
+        public static readonly HttpClient Client = new HttpClient();
         public static XmlDocument MyCollectionsDocument = new XmlDocument();
         public static clsTrCollections MyCollections = new clsTrCollections();
         public static clsTrCurrent Current = new clsTrCurrent();
@@ -63,8 +64,8 @@ namespace TrClient
                     User = new clsTrUser();
             }
 
-            TrClient.BaseAddress = new Uri(clsTrLibrary.TrpBaseAdress);
-            TrClient.DefaultRequestHeaders.Accept.Clear();
+            Client.BaseAddress = new Uri(clsTrLibrary.TrpBaseAdress);
+            Client.DefaultRequestHeaders.Accept.Clear();
 
             InitializeComponent();
 
@@ -91,7 +92,7 @@ namespace TrClient
 
             try
             {
-                HttpResponseMessage LoginResponseMessage = await TrClient.PostAsync(clsTrLibrary.TrpLogin, Credentials);
+                HttpResponseMessage LoginResponseMessage = await Client.PostAsync(clsTrLibrary.TrpLogin, Credentials);
 
                 string LoginResponse = LoginResponseMessage.StatusCode.ToString();
 
@@ -99,7 +100,7 @@ namespace TrClient
                 if (Status)
                 {
                     // Henter brugerens collections ind i et XMLdoc
-                    HttpResponseMessage CollectionsResponseMessage = await TrClient.GetAsync(clsTrLibrary.TrpCollections);
+                    HttpResponseMessage CollectionsResponseMessage = await Client.GetAsync(clsTrLibrary.TrpCollections);
                     string CollectionsResponse = await CollectionsResponseMessage.Content.ReadAsStringAsync();
                     MyCollectionsDocument.LoadXml(CollectionsResponse);
 
@@ -286,7 +287,7 @@ namespace TrClient
                         }
                         else
                         {
-                            Current.Collection.Upload(TrClient);
+                            Current.Collection.Upload(Client);
                         }
                     }
                 }
@@ -313,7 +314,7 @@ namespace TrClient
                 }
                 else
                 {
-                    Task<bool> Loaded = Current.Collection.LoadDocuments(TrClient);
+                    Task<bool> Loaded = Current.Collection.LoadDocuments(Client);
                     bool OK = await Loaded;
                 }
 
@@ -327,7 +328,7 @@ namespace TrClient
                     {
                         try
                         {
-                            Task<bool> PagesLoaded = Doc.LoadPages(TrClient);
+                            Task<bool> PagesLoaded = Doc.LoadPages(Client);
                             bool PagesOK = await PagesLoaded;
                         }
                         catch (System.Threading.Tasks.TaskCanceledException eDocLoaded)
@@ -363,7 +364,7 @@ namespace TrClient
                             }
                             else
                             {
-                                Secondary.Collection.Upload(TrClient);
+                                Secondary.Collection.Upload(Client);
                             }
                         }
                     }
@@ -390,7 +391,7 @@ namespace TrClient
                     }
                     else
                     {
-                        Task<bool> Loaded = Secondary.Collection.LoadDocuments(TrClient);
+                        Task<bool> Loaded = Secondary.Collection.LoadDocuments(Client);
                         bool OK = await Loaded;
                     }
 
@@ -404,7 +405,7 @@ namespace TrClient
                         {
                             try
                             {
-                                Task<bool> PagesLoaded = Doc.LoadPages(TrClient);
+                                Task<bool> PagesLoaded = Doc.LoadPages(Client);
                                 bool PagesOK = await PagesLoaded;
                             }
                             catch (System.Threading.Tasks.TaskCanceledException eDocLoaded)
@@ -442,7 +443,7 @@ namespace TrClient
                         }
                         else
                         {
-                            Current.Document.Upload(TrClient);
+                            Current.Document.Upload(Client);
                         }
                 }
 
@@ -482,7 +483,7 @@ namespace TrClient
                         if (clsTrLibrary.LoadOnlyNewestTranscript)
                         {
                             // Henter kun det NYESTE transcript
-                            Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(TrClient);
+                            Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
                             bool OK = await Loaded;
                         }
                         else
@@ -490,7 +491,7 @@ namespace TrClient
                             // Henter ALLE transcripts - hvis man har brug for at reverte eller hente gamle tabeller
                             for (int i = 0; i < Page.TranscriptCount; i++)
                             {
-                                Task<bool> Loaded = Page.Transcripts[i].LoadTranscript(TrClient);
+                                Task<bool> Loaded = Page.Transcripts[i].LoadTranscript(Client);
                                 bool OK = await Loaded;
                             }
                         }
@@ -534,7 +535,7 @@ namespace TrClient
                         }
                         else
                         {
-                            Secondary.Document.Upload(TrClient);
+                            Secondary.Document.Upload(Client);
                         }
                 }
 
@@ -568,7 +569,7 @@ namespace TrClient
                     // henter nyeste transcript for hver side - nb: kun NYESTE 
                     foreach (clsTrPage Page in Secondary.Document.Pages)
                     {
-                        Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(TrClient);
+                        Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
                         bool OK = await Loaded;
                     }
                 }
@@ -583,7 +584,7 @@ namespace TrClient
             if (Current.Collection != null)
             {
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-                Current.Collection.Upload(TrClient);
+                Current.Collection.Upload(Client);
                 Mouse.OverrideCursor = null;
             }
         }
@@ -594,7 +595,7 @@ namespace TrClient
             if (Current.Collection != null && Current.Document != null)
             {
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-                Current.Document.Upload(TrClient);
+                Current.Document.Upload(Client);
                 Mouse.OverrideCursor = null;
             }
         }
@@ -608,7 +609,7 @@ namespace TrClient
 
                 if (Result == MessageBoxResult.Yes)
                     foreach (clsTrCollection Coll in MyCollections)
-                        Coll.Upload(TrClient);
+                        Coll.Upload(Client);
             }
             this.Close();
         }
@@ -729,7 +730,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgRepairBaseLines RepairBaseLines = new dlgRepairBaseLines(Current.Document, TrClient);
+                dlgRepairBaseLines RepairBaseLines = new dlgRepairBaseLines(Current.Document, Client);
                 RepairBaseLines.Owner = this;
                 RepairBaseLines.ShowDialog();
 
@@ -754,7 +755,7 @@ namespace TrClient
             if (Current.Collection != null && Current.Document != null)
             {
                 clsTrDialogTransferSettings Settings = new clsTrDialogTransferSettings();
-                dlgEditBaseLines dlgBaseLines = new dlgEditBaseLines(Current.Document, TrClient, Settings);
+                dlgEditBaseLines dlgBaseLines = new dlgEditBaseLines(Current.Document, Client, Settings);
                 dlgBaseLines.Owner = this;
                 dlgBaseLines.ShowDialog();
             }
@@ -783,7 +784,7 @@ namespace TrClient
             {
                 if (Current.Document.HasRegions)
                 {
-                    dlgEditStructuralTags EditTags = new dlgEditStructuralTags(Current.Document, TrClient);
+                    dlgEditStructuralTags EditTags = new dlgEditStructuralTags(Current.Document, Client);
                     // EditTags.cmbRegion.ItemsSource = Current.Document.GetListOfPossibleRegions();
                     EditTags.Owner = this;
                     EditTags.ShowDialog();
@@ -799,7 +800,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgFilterLinesByLocation FilterLines = new dlgFilterLinesByLocation(Current.Document, TrClient);
+                dlgFilterLinesByLocation FilterLines = new dlgFilterLinesByLocation(Current.Document, Client);
                 FilterLines.Owner = this;
                 FilterLines.ShowDialog();
             }
@@ -902,7 +903,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgFindReplace FindReplace = new dlgFindReplace(Current.Document, TrClient);
+                dlgFindReplace FindReplace = new dlgFindReplace(Current.Document, Client);
                 FindReplace.Owner = this;
                 FindReplace.ShowDialog();
             }
@@ -958,7 +959,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowAndExportPages ShowExportPages = new dlgShowAndExportPages(Current.Document, TrClient);
+                dlgShowAndExportPages ShowExportPages = new dlgShowAndExportPages(Current.Document, Client);
                 ShowExportPages.Owner = this;
                 ShowExportPages.ShowDialog();
             }
@@ -1019,7 +1020,7 @@ namespace TrClient
                     {
                         foreach (clsTrPage Page in Doc.Pages)
                         {
-                            Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(TrClient);
+                            Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
                             bool OK = await Loaded;
                         }
 
@@ -1065,7 +1066,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgMoveRegions MoveRegions = new dlgMoveRegions(Current.Document, TrClient);
+                dlgMoveRegions MoveRegions = new dlgMoveRegions(Current.Document, Client);
                 MoveRegions.Owner = this;
                 MoveRegions.ShowDialog();
             }
@@ -1299,7 +1300,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgSimplifyBoundingBoxes SimplifyBoundingBoxes = new dlgSimplifyBoundingBoxes(Current.Document, TrClient);
+                dlgSimplifyBoundingBoxes SimplifyBoundingBoxes = new dlgSimplifyBoundingBoxes(Current.Document, Client);
                 SimplifyBoundingBoxes.Owner = this;
                 SimplifyBoundingBoxes.ShowDialog();
             }
@@ -1403,7 +1404,7 @@ namespace TrClient
             {
                 clsTrPage TestPage = Current.Document.Pages[1];
 
-                dlgShowPage ShowPage = new dlgShowPage(TestPage, TrClient);
+                dlgShowPage ShowPage = new dlgShowPage(TestPage, Client);
                 ShowPage.Owner = this;
                 ShowPage.ShowDialog();
 
@@ -1943,7 +1944,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgFilterLinesByRegex FilterLines = new dlgFilterLinesByRegex(Current.Document, TrClient);
+                dlgFilterLinesByRegex FilterLines = new dlgFilterLinesByRegex(Current.Document, Client);
                 FilterLines.Owner = this;
                 FilterLines.ShowDialog();
             }
@@ -2019,6 +2020,20 @@ namespace TrClient
 
         }
 
+
+        // Histogram
+        private void MenuItem_ShowHistogram_Click(object sender, RoutedEventArgs e)
+        {
+            if (Current.Collection != null && Current.Document != null)
+            {
+                dlgShowHistogram Histogram = new dlgShowHistogram(Current.Document);
+                Histogram.Owner = this;
+                Histogram.ShowDialog();
+            }
+            else
+                TellUser("You have to choose a collection AND a document!");
+
+        }
     }
 
 

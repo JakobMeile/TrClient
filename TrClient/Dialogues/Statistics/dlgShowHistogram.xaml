@@ -1,0 +1,72 @@
+﻿<Window x:Class="TrClient.Dialogues.Statistics.dlgShowHistogram"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrClient.Dialogues.Statistics"
+        mc:Ignorable="d"
+        Title="Histogram" 
+        Height="450" 
+        Width="800"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+
+        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,10,0,0" HorizontalAlignment="Left" >
+            <Label x:Name="lblHistogramType" Content="Show histogram for:" Height="25" />
+            <ComboBox x:Name="cmbHistogramType" Height="25" Width="130" />
+            <Label x:Name="lblBucketSize" Content="Bucketsize:" Height="25" Margin="0,10,0,0"/>
+            <ComboBox x:Name="cmbBucketSize" Height="25" Width="130"/>
+            <Button x:Name="btnDrawHistogram" Content="Draw histogram" Height="25" Margin="0,30,0,0" Click="BtnDrawHistogram_Click" />
+            <Button x:Name="btnClose" Content="Close" Height="25" Margin="0,100,0,0" IsCancel="true" Click="BtnClose_Click"/>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,10,0,0" HorizontalAlignment="Left" >
+            <Grid Grid.IsSharedSizeScope="True">
+                <!-- Look HERE -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Title  -->
+                <Grid Margin="10,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" SharedSizeGroup="grpRange" />
+                        <!-- Look HERE -->
+                        <ColumnDefinition Width="100" SharedSizeGroup="grpCount"/>
+
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0">
+                        <TextBlock Text="Range" HorizontalAlignment="Left"/>
+                    </Border>
+                    <Border Grid.Column="1" >
+                        <TextBlock Text="Count" HorizontalAlignment="Left"/>
+                    </Border>
+
+                </Grid>
+                <ListBox Grid.Row="1" x:Name="lstRanges" HorizontalAlignment="Stretch" Height="380" HorizontalContentAlignment="Stretch" Margin="0,0,10,10" VerticalAlignment="Stretch" >
+                    <ListBox.ItemTemplate >
+                        <DataTemplate>
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" SharedSizeGroup="grpRange" />
+                                    <ColumnDefinition Width="100" SharedSizeGroup="grpCount"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Range}" Grid.Column="0" Margin="0,0,5,0" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Count}" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+
+        </StackPanel>
+    </Grid>
+</Window>
