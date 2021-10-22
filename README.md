@@ -8,7 +8,7 @@ The main focuses have been to automate tedious tasks and to make some batch proc
 
 TrClient communicates directly with the Transkribus servers: All changes can be uploaded and viewed at once in other client apps.
 
-NB: To use this app, you need to be have an account at Transkribus - and of course some documents uploaded at their server.
+NB: To use this app, you need to have an account at Transkribus - and of course some documents uploaded at their server.
 
 ## Highlighted features
 
