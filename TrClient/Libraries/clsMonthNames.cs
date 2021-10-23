@@ -16,9 +16,10 @@ namespace DanishNLP
 
         public clsMonthNames()
         {
-            string MonthNamesFileName = @"C:\Users\jakob\Dropbox\Code\DanishNLP\DanishNLP\MonthNames.txt";
+            string MonthNamesFileName = "Resources/MonthNames.txt"; // @"C:\Users\jakob\Dropbox\Code\DanishNLP\DanishNLP\MonthNames.txt";
             string FileLine;
-
+            
+            
             StreamReader ListFile = new StreamReader(MonthNamesFileName);
             while ((FileLine = ListFile.ReadLine()) != null)
                 MonthNames.Add(FileLine);

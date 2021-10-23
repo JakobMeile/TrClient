@@ -112,7 +112,8 @@ namespace TrClient
             LogFileCaption = Caption;
             LogCollection = ColName;
             LogDocument = DocTitle;
-            LogFileName = clsTrLibrary.LogFolder + LogFileCaption.Replace(" ", "") + "_" + ColName + "_" + DocTitle + "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
+            // clsTrLibrary.LogFolder + 
+            LogFileName = LogFileCaption.Replace(" ", "") + "_" + ColName + "_" + DocTitle + "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
 
             Events = new clsTrLogEvents();
             AddHeader();

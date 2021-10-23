@@ -605,8 +605,8 @@ namespace TrClient
                     string TranscriptResponse = await TranscriptResponseMessage.Content.ReadAsStringAsync();
                     TranscriptionDocument = XDocument.Parse(TranscriptResponse);
                     // Og gemmer - i udviklingsfasen - xml-filen.
-                    string XMLFileName = clsTrLibrary.ExportFolder + ParentPage.ParentDocument.Title + "_" + ParentPage.PageNr.ToString("0000") + ".xml";
-                    TranscriptionDocument.Save(XMLFileName);
+                    //string XMLFileName = clsTrLibrary.ExportFolder + ParentPage.ParentDocument.Title + "_" + ParentPage.PageNr.ToString("0000") + ".xml";
+                    //TranscriptionDocument.Save(XMLFileName);
 
                     XNamespace tr = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
 

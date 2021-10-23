@@ -98,8 +98,8 @@ namespace TrClient
         }
 
         private void BtnSaveParagraphs_Click(object sender, RoutedEventArgs e)
-        {
-            string FileName = clsTrLibrary.ExportFolder + CurrentDocument.ParentCollection.Name + "_" + CurrentDocument.Title + "_" 
+        {   // clsTrLibrary.ExportFolder + 
+            string FileName = CurrentDocument.ParentCollection.Name + "_" + CurrentDocument.Title + "_" 
                 + "Paragraphs_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
             using (StreamWriter ParagraphsFile = new StreamWriter(FileName, true))
             {
@@ -113,24 +113,24 @@ namespace TrClient
             }
         }
 
-        private void BtnExportAsExcelSheet_Click(object sender, RoutedEventArgs e)
-        {
-            string FileName = clsTrLibrary.ExportFolder + CurrentDocument.ParentCollection.Name + "_" + CurrentDocument.Title + "_"
-                + "Paragraphs_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".xlsx";
+        //private void BtnExportAsExcelSheet_Click(object sender, RoutedEventArgs e)
+        //{   // clsTrLibrary.ExportFolder + 
+        //    string FileName = CurrentDocument.ParentCollection.Name + "_" + CurrentDocument.Title + "_"
+        //        + "Paragraphs_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".xlsx";
 
-            clsTrExcelSheet Sheet = new clsTrExcelSheet();
+        //    clsTrExcelSheet Sheet = new clsTrExcelSheet();
 
-            List<string> Headers = CurrentDocument.GetStructuralTags();
-            // List<string> Headers = CurrentPage.GetParagraphs().GetNames(); // CurrentDocument.GetStructuralTags();
-            Sheet.AddHeaders(Headers);
+        //    List<string> Headers = CurrentDocument.GetStructuralTags();
+        //    // List<string> Headers = CurrentPage.GetParagraphs().GetNames(); // CurrentDocument.GetStructuralTags();
+        //    Sheet.AddHeaders(Headers);
 
 
-            foreach (clsTrPage Page in CurrentDocument.Pages)
-            {
-                Sheet.AddRecord(Page.GetParagraphs());
-            }
+        //    foreach (clsTrPage Page in CurrentDocument.Pages)
+        //    {
+        //        Sheet.AddRecord(Page.GetParagraphs());
+        //    }
 
-        }
+        //}
 
         private void BtnSaveMarcRecords_Click(object sender, RoutedEventArgs e)
         {

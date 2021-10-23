@@ -59,12 +59,12 @@
                         HorizontalAlignment="Left" 
                         Margin="0,50,0,0" 
                         Width="200">
-                <Button x:Name="btnExport" 
+                <!--<Button x:Name="btnExport" 
                         Content="Export" 
                         Width="100" 
                         Height="30" 
                         Margin="10,10" 
-                        Click="BtnExport_Click"/>
+                        Click="BtnExport_Click"/>-->
             </StackPanel>
         </StackPanel>
 

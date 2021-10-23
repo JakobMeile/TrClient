@@ -127,22 +127,22 @@ namespace TrClient
         }
 
 
-        private void BtnExport_Click(object sender, RoutedEventArgs e)
-        {
-            string FileName = clsTrLibrary.ExportFolder + CurrentDocument.ParentCollection.Name + "_" + CurrentDocument.Title + "_"
-                            + "Lemmas_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".xlsx";
+        //private void BtnExport_Click(object sender, RoutedEventArgs e)
+        //{   // clsTrLibrary.ExportFolder + 
+        //    string FileName = CurrentDocument.ParentCollection.Name + "_" + CurrentDocument.Title + "_"
+        //                    + "Lemmas_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".xlsx";
 
-            clsTrExcelSheet Sheet = new clsTrExcelSheet();
+        //    clsTrExcelSheet Sheet = new clsTrExcelSheet();
 
-            List<string> Headers = new List<string> { "Content", "Stripped", "Count" };
-            // List<string> Headers = CurrentPage.GetParagraphs().GetNames(); // CurrentDocument.GetStructuralTags();
-            Sheet.AddHeaders(Headers);
+        //    List<string> Headers = new List<string> { "Content", "Stripped", "Count" };
+        //    // List<string> Headers = CurrentPage.GetParagraphs().GetNames(); // CurrentDocument.GetStructuralTags();
+        //    Sheet.AddHeaders(Headers);
 
-            foreach(clsTrLemma trLemma in CurrentDocument.Lemmas)
-                Sheet.AddLemma(trLemma);
+        //    foreach(clsTrLemma trLemma in CurrentDocument.Lemmas)
+        //        Sheet.AddLemma(trLemma);
 
 
-        }
+        //}
 
     }
 

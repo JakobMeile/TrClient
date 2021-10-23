@@ -86,6 +86,7 @@ namespace TrClient
                     break;
             }
             
+            // BUG: crasher, hvis sekvenser ikke indeholder elementer
             if (LookUp != null)
             {
                 int Smallest = LookUp.Min(x => x.Key);

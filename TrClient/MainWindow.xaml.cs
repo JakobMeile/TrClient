@@ -158,85 +158,85 @@ namespace TrClient
 
         }
 
-        public void OpenCollections()
-        {
-            // * åbn en fildims og find basis folder - load collections fra mappestruktur
-            DirectoryInfo diCollections = new DirectoryInfo(clsTrLibrary.OfflineBaseFolder);
-            DirectoryInfo[] diCollectionsArr = diCollections.GetDirectories();
+        //public void OpenCollections()
+        //{
+        //    // * åbn en fildims og find basis folder - load collections fra mappestruktur
+        //    DirectoryInfo diCollections = new DirectoryInfo(clsTrLibrary.OfflineBaseFolder);
+        //    DirectoryInfo[] diCollectionsArr = diCollections.GetDirectories();
 
-            foreach (DirectoryInfo diCollection in diCollectionsArr)
-            {
-                // så er vi inde i den enkelte collection
-                // ------------------------------------------------------------------------------------------------------------------
-                string CollectionName = diCollection.Name;
-                string CollectionFolder = clsTrLibrary.OfflineBaseFolder + CollectionName;
-                string ColID = "";
+        //    foreach (DirectoryInfo diCollection in diCollectionsArr)
+        //    {
+        //        // så er vi inde i den enkelte collection
+        //        // ------------------------------------------------------------------------------------------------------------------
+        //        string CollectionName = diCollection.Name;
+        //        string CollectionFolder = clsTrLibrary.OfflineBaseFolder + CollectionName;
+        //        string ColID = "";
 
-                // Debug.WriteLine($"Name: {CollectionName}, Folder: {CollectionFolder}");
+        //        // Debug.WriteLine($"Name: {CollectionName}, Folder: {CollectionFolder}");
 
-                DirectoryInfo diDocuments = new DirectoryInfo(CollectionFolder);
-                DirectoryInfo[] diDocumentsArr = diDocuments.GetDirectories();
-                int NrOfDocs = diDocumentsArr.Length;
+        //        DirectoryInfo diDocuments = new DirectoryInfo(CollectionFolder);
+        //        DirectoryInfo[] diDocumentsArr = diDocuments.GetDirectories();
+        //        int NrOfDocs = diDocumentsArr.Length;
 
-                // hvis collection ikke er tom..:
-                if (NrOfDocs >= 1)
-                {
-                    DirectoryInfo diFirstDocument = diDocumentsArr.First();
-                    string FirstDocumentID = diFirstDocument.Name;          // VED export af hel collection er strukturen ID/Title
+        //        // hvis collection ikke er tom..:
+        //        if (NrOfDocs >= 1)
+        //        {
+        //            DirectoryInfo diFirstDocument = diDocumentsArr.First();
+        //            string FirstDocumentID = diFirstDocument.Name;          // VED export af hel collection er strukturen ID/Title
 
 
-                    string FirstDocumentIDFolder = CollectionFolder + "\\" + FirstDocumentID + "\\";
+        //            string FirstDocumentIDFolder = CollectionFolder + "\\" + FirstDocumentID + "\\";
 
-                    DirectoryInfo diDocTitles = new DirectoryInfo(FirstDocumentIDFolder);
-                    DirectoryInfo[] diDocTitlesArr = diDocTitles.GetDirectories();
-                    DirectoryInfo diFirstDocTitle = diDocTitlesArr.First();
-                    string FirstDocumentTitle = diFirstDocTitle.Name;
+        //            DirectoryInfo diDocTitles = new DirectoryInfo(FirstDocumentIDFolder);
+        //            DirectoryInfo[] diDocTitlesArr = diDocTitles.GetDirectories();
+        //            DirectoryInfo diFirstDocTitle = diDocTitlesArr.First();
+        //            string FirstDocumentTitle = diFirstDocTitle.Name;
 
-                    string FirstDocumentFolder = CollectionFolder + "\\" + FirstDocumentID + "\\" + FirstDocumentTitle + "\\";
+        //            string FirstDocumentFolder = CollectionFolder + "\\" + FirstDocumentID + "\\" + FirstDocumentTitle + "\\";
 
-                    string MetsFileName = FirstDocumentFolder + "mets.xml";
-                    XmlDocument MetsDocument = new XmlDocument();
-                    MetsDocument.Load(MetsFileName);
+        //            string MetsFileName = FirstDocumentFolder + "mets.xml";
+        //            XmlDocument MetsDocument = new XmlDocument();
+        //            MetsDocument.Load(MetsFileName);
 
-                    XmlNodeList DocumentNodes = MetsDocument.DocumentElement.SelectNodes("//colList"); // //trpDocMetadata
-                    foreach (XmlNode xnDocument in DocumentNodes)
-                    {
-                        XmlNodeList DocumentMetaData = xnDocument.ChildNodes;
-                        string TempID = "";
+        //            XmlNodeList DocumentNodes = MetsDocument.DocumentElement.SelectNodes("//colList"); // //trpDocMetadata
+        //            foreach (XmlNode xnDocument in DocumentNodes)
+        //            {
+        //                XmlNodeList DocumentMetaData = xnDocument.ChildNodes;
+        //                string TempID = "";
 
-                        foreach (XmlNode xnDocumentMetaData in DocumentMetaData)
-                        {
-                            string Name = xnDocumentMetaData.Name;
-                            string Value = xnDocumentMetaData.InnerText;
+        //                foreach (XmlNode xnDocumentMetaData in DocumentMetaData)
+        //                {
+        //                    string Name = xnDocumentMetaData.Name;
+        //                    string Value = xnDocumentMetaData.InnerText;
 
-                            if (Name == "colId")
-                            {
-                                TempID = Value;
-                                // Debug.WriteLine($"TempID: {TempID}");
-                            }
+        //                    if (Name == "colId")
+        //                    {
+        //                        TempID = Value;
+        //                        // Debug.WriteLine($"TempID: {TempID}");
+        //                    }
 
-                            // den næste linie er meget meget mærkelig *************************************************************
-                            if (TempID != "54183" && TempID != "")
-                            {
-                                ColID = TempID;
-                                break;
-                            }
-                        }
-                    }
-                    // Debug.WriteLine($"ID: {ColID}, NrOfDocs: {NrOfDocs}");
+        //                    // den næste linie er meget meget mærkelig *************************************************************
+        //                    if (TempID != "54183" && TempID != "")
+        //                    {
+        //                        ColID = TempID;
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //            // Debug.WriteLine($"ID: {ColID}, NrOfDocs: {NrOfDocs}");
 
-                    clsTrCollection Coll = new clsTrCollection(CollectionName, ColID, NrOfDocs, CollectionFolder);
-                    MyCollections.Add(Coll);
+        //            clsTrCollection Coll = new clsTrCollection(CollectionName, ColID, NrOfDocs, CollectionFolder);
+        //            MyCollections.Add(Coll);
 
-                }
+        //        }
 
-            }
-            MyCollections.Sort();
+        //    }
+        //    MyCollections.Sort();
 
-            lstCollections.ItemsSource = MyCollections;
-            lstSecondaryCollections.ItemsSource = MyCollections;
-            MyCollections.IsLoaded = true;
-        }
+        //    lstCollections.ItemsSource = MyCollections;
+        //    lstSecondaryCollections.ItemsSource = MyCollections;
+        //    MyCollections.IsLoaded = true;
+        //}
 
 
         // EVENTS
@@ -248,7 +248,7 @@ namespace TrClient
             if (clsTrLibrary.OfflineMode)
             {
                 // Offline
-                OpenCollections();
+                //OpenCollections();
             }
             else
             {
@@ -814,8 +814,8 @@ namespace TrClient
         private void MenuItem_ExportWords_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
-            {
-                string FileName = clsTrLibrary.ExportFolder + Current.Collection.Name + "_" + Current.Document.Title + "_"
+            {   // clsTrLibrary.ExportFolder + 
+                string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                 + "Words_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
 
 
@@ -970,8 +970,8 @@ namespace TrClient
         private void MenuItem_ExportAsPlainText_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
-            {
-                string FileName = clsTrLibrary.ExportFolder + Current.Collection.Name + "_" + Current.Document.Title + "_"
+            {   // clsTrLibrary.ExportFolder + 
+                string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                     + "PlainText_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
                 using (StreamWriter TextFile = new StreamWriter(FileName, true))
                 {
@@ -1284,8 +1284,8 @@ namespace TrClient
                 if (Result == MessageBoxResult.Yes)
                 {
                     XDocument xAccessions = Current.Collection.KOBACC_ExportAccessions(); // Current.Document.KOBACC_ExportAccessions();
-
-                    string FileName = clsTrLibrary.ExportFolder + @"AccNos\" + "Accessions_" + Current.Collection.Name + ".xml";
+                    // clsTrLibrary.ExportFolder + 
+                    string FileName = @"AccNos\" + "Accessions_" + Current.Collection.Name + ".xml";
 
                     xAccessions.Save(FileName);
 
@@ -1640,8 +1640,8 @@ namespace TrClient
                 {
                     if (Choose.Minimum != 0)
                         MinimumRecordNumber = Choose.Minimum;
-
-                    string FileName = clsTrLibrary.ExportFolder + Current.Collection.Name + "_" + Current.Document.Title + "_"
+                    // clsTrLibrary.ExportFolder + 
+                    string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                         + "PseudoTableRecords_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".csv";
                     using (StreamWriter TextFile = new StreamWriter(FileName, true, Encoding.UTF8))
                     {
@@ -1740,7 +1740,8 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    string FileName = clsTrLibrary.ExportFolder + Current.Collection.Name + "_" + Current.Document.Title + "_"
+                    // clsTrLibrary.ExportFolder +
+                    string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                         + "ElfeltRecordCheck_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".csv";
                     using (StreamWriter TextFile = new StreamWriter(FileName, true, Encoding.UTF8))
                     {

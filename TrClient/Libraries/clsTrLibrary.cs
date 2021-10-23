@@ -42,10 +42,10 @@ namespace TrClient
         public static char CSV_Delimiter = '\t';
         public static char NullChar = '\0';
 
-        public static string OfflineBaseFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\SYNC\";
+        //public static string OfflineBaseFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\SYNC\";
 
-        public static string ExportFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Export\";
-        public static string LogFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Log\";
+        //public static string ExportFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Export\";
+        //public static string LogFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Log\";
 
         public static XNamespace xmlns = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
         public static XNamespace xsi = "http://www.w3.org/2001/XMLSchema-instance";

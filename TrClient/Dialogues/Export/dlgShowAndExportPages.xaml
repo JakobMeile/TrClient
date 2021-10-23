@@ -48,7 +48,7 @@
             <Label Content="Paragraphs" FontWeight="Bold" Width="200"/>
             <Button x:Name="btnFilterParagraphs" Width="60" Content="Filter" Click="BtnFilterParagraphs_Click" />
             <Button x:Name="btnSaveParagraphs" Width="60" Content="Save" Margin="20,0,0,0" Click="BtnSaveParagraphs_Click"/>
-            <Button x:Name="btnExportAsExcelSheet" Width="60" Content="Export" Margin="20,0,0,0" Click="BtnExportAsExcelSheet_Click"/>
+            <!--<Button x:Name="btnExportAsExcelSheet" Width="60" Content="Export" Margin="20,0,0,0" Click="BtnExportAsExcelSheet_Click"/>-->
         </StackPanel>
         <!--<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" Margin="10" >
             <Label Content="MARC-records" FontWeight="Bold" Width="200"/>
