@@ -22,7 +22,13 @@ using System.Timers;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using TrClient;
-using TrClient.Dialogues.Statistics;
+using TrClient.Core;
+using TrClient.Dialog;
+using TrClient.Extensions;
+using TrClient.Helpers;
+using TrClient.Libraries;
+using TrClient.Settings;
+using TrClient.Tags;
 using DanishNLP;
 
 namespace TrClient
@@ -39,12 +45,12 @@ namespace TrClient
         }
 
 
-        public static clsTrUser User;
+        public static TrUser User;
         public static readonly HttpClient Client = new HttpClient();
         public static XmlDocument MyCollectionsDocument = new XmlDocument();
-        public static clsTrCollections MyCollections = new clsTrCollections();
-        public static clsTrCurrent Current = new clsTrCurrent();
-        public static clsTrCurrent Secondary = new clsTrCurrent();    // bruges til at kopiere FRA
+        public static TrCollections MyCollections = new TrCollections();
+        public static TrCurrent Current = new TrCurrent();
+        public static TrCurrent Secondary = new TrCurrent();    // bruges til at kopiere FRA
 
         // MAIN
         // --------------------------------------------------------------------------------------------------------------------
@@ -56,15 +62,15 @@ namespace TrClient
                 {
                     using (var Stream = File.OpenRead("User.xml"))
                     {
-                        var Serializer = new XmlSerializer(typeof(clsTrUser));
-                        User = Serializer.Deserialize(Stream) as clsTrUser;
+                        var Serializer = new XmlSerializer(typeof(TrUser));
+                        User = Serializer.Deserialize(Stream) as TrUser;
                     }
                 }
                 else
-                    User = new clsTrUser();
+                    User = new TrUser();
             }
 
-            Client.BaseAddress = new Uri(clsTrLibrary.TrpBaseAdress);
+            Client.BaseAddress = new Uri(TrLibrary.TrpBaseAdress);
             Client.DefaultRequestHeaders.Accept.Clear();
 
             InitializeComponent();
@@ -92,7 +98,7 @@ namespace TrClient
 
             try
             {
-                HttpResponseMessage LoginResponseMessage = await Client.PostAsync(clsTrLibrary.TrpLogin, Credentials);
+                HttpResponseMessage LoginResponseMessage = await Client.PostAsync(TrLibrary.TrpLogin, Credentials);
 
                 string LoginResponse = LoginResponseMessage.StatusCode.ToString();
 
@@ -100,7 +106,7 @@ namespace TrClient
                 if (Status)
                 {
                     // Henter brugerens collections ind i et XMLdoc
-                    HttpResponseMessage CollectionsResponseMessage = await Client.GetAsync(clsTrLibrary.TrpCollections);
+                    HttpResponseMessage CollectionsResponseMessage = await Client.GetAsync(TrLibrary.TrpCollections);
                     string CollectionsResponse = await CollectionsResponseMessage.Content.ReadAsStringAsync();
                     MyCollectionsDocument.LoadXml(CollectionsResponse);
 
@@ -131,7 +137,7 @@ namespace TrClient
                                     break;
                             }
                         }
-                        clsTrCollection Coll = new clsTrCollection(ColName, ColID, NrOfDocs);
+                        TrCollection Coll = new TrCollection(ColName, ColID, NrOfDocs);
                         MyCollections.Add(Coll);
                     }
                 }
@@ -144,7 +150,7 @@ namespace TrClient
             }
             catch (TaskCanceledException e)
             {
-                // MessageBox.Show("Exception occured!", clsTrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                // MessageBox.Show("Exception occured!", TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 Debug.WriteLine($"Task canceled! Exception message when logging in: {e.Message}");
             }
             catch (OperationCanceledException e)
@@ -161,7 +167,7 @@ namespace TrClient
         //public void OpenCollections()
         //{
         //    // * åbn en fildims og find basis folder - load collections fra mappestruktur
-        //    DirectoryInfo diCollections = new DirectoryInfo(clsTrLibrary.OfflineBaseFolder);
+        //    DirectoryInfo diCollections = new DirectoryInfo(TrLibrary.OfflineBaseFolder);
         //    DirectoryInfo[] diCollectionsArr = diCollections.GetDirectories();
 
         //    foreach (DirectoryInfo diCollection in diCollectionsArr)
@@ -169,7 +175,7 @@ namespace TrClient
         //        // så er vi inde i den enkelte collection
         //        // ------------------------------------------------------------------------------------------------------------------
         //        string CollectionName = diCollection.Name;
-        //        string CollectionFolder = clsTrLibrary.OfflineBaseFolder + CollectionName;
+        //        string CollectionFolder = TrLibrary.OfflineBaseFolder + CollectionName;
         //        string ColID = "";
 
         //        // Debug.WriteLine($"Name: {CollectionName}, Folder: {CollectionFolder}");
@@ -225,7 +231,7 @@ namespace TrClient
         //            }
         //            // Debug.WriteLine($"ID: {ColID}, NrOfDocs: {NrOfDocs}");
 
-        //            clsTrCollection Coll = new clsTrCollection(CollectionName, ColID, NrOfDocs, CollectionFolder);
+        //            TrCollection Coll = new TrCollection(CollectionName, ColID, NrOfDocs, CollectionFolder);
         //            MyCollections.Add(Coll);
 
         //        }
@@ -245,7 +251,7 @@ namespace TrClient
         // LOGIN-knap
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
-            if (clsTrLibrary.OfflineMode)
+            if (TrLibrary.OfflineMode)
             {
                 // Offline
                 //OpenCollections();
@@ -259,7 +265,7 @@ namespace TrClient
                     User.Password = txtPassword.Password;
                     using (var Stream = File.Open("User.xml", FileMode.Create))
                     {
-                        var Serializer = new XmlSerializer(typeof(clsTrUser));
+                        var Serializer = new XmlSerializer(typeof(TrUser));
                         Serializer.Serialize(Stream, User);
                     }
                     RunLoginAndGetMyCollections(txtUserName.Text, txtPassword.Password);
@@ -281,7 +287,7 @@ namespace TrClient
 
                     if (Result == MessageBoxResult.Yes)
                     {
-                        if (clsTrLibrary.OfflineMode)
+                        if (TrLibrary.OfflineMode)
                         {
                             // Current.Collection.Save();
                         }
@@ -299,7 +305,7 @@ namespace TrClient
                 lstPages.ItemsSource = null;
                 Current.Document = null;
 
-                Current.Collection = (lstCollections.SelectedItem as clsTrCollection);
+                Current.Collection = (lstCollections.SelectedItem as TrCollection);
                 txtCurrentCollection.DataContext = Current.Collection;
                 txtCurrentDocument.DataContext = Current.Document;
 
@@ -308,7 +314,7 @@ namespace TrClient
                 Progress.DataContext = Current.Collection;
                 Progress.Show();
 
-                if (clsTrLibrary.OfflineMode)
+                if (TrLibrary.OfflineMode)
                 {
                     Current.Collection.OpenDocuments();
                 }
@@ -321,10 +327,10 @@ namespace TrClient
                 // fylder box op
                 lstDocuments.ItemsSource = Current.Collection.Documents;
 
-                if (!clsTrLibrary.OfflineMode)
+                if (!TrLibrary.OfflineMode)
                 {
                     // henter sider
-                    foreach (clsTrDocument Doc in Current.Collection.Documents)
+                    foreach (TrDocument Doc in Current.Collection.Documents)
                     {
                         try
                         {
@@ -358,7 +364,7 @@ namespace TrClient
 
                         if (Result == MessageBoxResult.Yes)
                         {
-                            if (clsTrLibrary.OfflineMode)
+                            if (TrLibrary.OfflineMode)
                             {
 
                             }
@@ -376,7 +382,7 @@ namespace TrClient
                     lstSecondaryPages.ItemsSource = null;
                     Secondary.Document = null;
 
-                    Secondary.Collection = (lstSecondaryCollections.SelectedItem as clsTrCollection);
+                    Secondary.Collection = (lstSecondaryCollections.SelectedItem as TrCollection);
                     txtSecondaryCollection.DataContext = Secondary.Collection;
                     txtSecondaryDocument.DataContext = Secondary.Document;
 
@@ -385,7 +391,7 @@ namespace TrClient
                     Progress.DataContext = Secondary.Collection;
                     Progress.Show();
 
-                    if (clsTrLibrary.OfflineMode)
+                    if (TrLibrary.OfflineMode)
                     {
                         Secondary.Collection.OpenDocuments();
                     }
@@ -398,10 +404,10 @@ namespace TrClient
                     // fylder box op
                     lstSecondaryDocuments.ItemsSource = Secondary.Collection.Documents;
 
-                    if (!clsTrLibrary.OfflineMode)
+                    if (!TrLibrary.OfflineMode)
                     {
                         // henter sider
-                        foreach (clsTrDocument Doc in Secondary.Collection.Documents)
+                        foreach (TrDocument Doc in Secondary.Collection.Documents)
                         {
                             try
                             {
@@ -437,7 +443,7 @@ namespace TrClient
                     MessageBoxResult Result = AskUser(Question);
 
                     if (Result == MessageBoxResult.Yes)
-                        if (clsTrLibrary.OfflineMode)
+                        if (TrLibrary.OfflineMode)
                         {
                             Current.Document.Save();
                         }
@@ -450,7 +456,7 @@ namespace TrClient
                 // rydder op
                 lstPages.ItemsSource = null;
 
-                Current.Document = (lstDocuments.SelectedItem as clsTrDocument);
+                Current.Document = (lstDocuments.SelectedItem as TrDocument);
                 Debug.WriteLine($"Current.Document er valgt: ID = {Current.Document.ID}, Title = {Current.Document.Title}, Pages = {Current.Document.NrOfPages}");
 
                 txtCurrentDocument.DataContext = Current.Document;
@@ -462,7 +468,7 @@ namespace TrClient
                 Progress.DataContext = Current.Document;
                 Progress.Show();
 
-                if (clsTrLibrary.OfflineMode)
+                if (TrLibrary.OfflineMode)
                 {
                     // OFFLINE MODE
                     Current.Document.OpenPages();
@@ -477,10 +483,10 @@ namespace TrClient
                     lstPages.ItemsSource = Current.Document.Pages;
 
                     // henter transcripts for hver side - NB: ALLE transcripts (vha. i = 0 to transcript.count - 1)
-                    foreach (clsTrPage Page in Current.Document.Pages)
+                    foreach (TrPage Page in Current.Document.Pages)
                     {
                         // TrTranscript Tra;
-                        if (clsTrLibrary.LoadOnlyNewestTranscript)
+                        if (TrLibrary.LoadOnlyNewestTranscript)
                         {
                             // Henter kun det NYESTE transcript
                             Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
@@ -529,7 +535,7 @@ namespace TrClient
                     MessageBoxResult Result = AskUser(Question);
 
                     if (Result == MessageBoxResult.Yes)
-                        if (clsTrLibrary.OfflineMode)
+                        if (TrLibrary.OfflineMode)
                         {
 
                         }
@@ -542,7 +548,7 @@ namespace TrClient
                 // rydder op
                 lstSecondaryPages.ItemsSource = null;
 
-                Secondary.Document = (lstSecondaryDocuments.SelectedItem as clsTrDocument);
+                Secondary.Document = (lstSecondaryDocuments.SelectedItem as TrDocument);
                 Debug.WriteLine($"Secondary.Document er valgt: Title = {Secondary.Document.Title}, Pages = {Secondary.Document.NrOfPages}");
 
                 txtSecondaryDocument.DataContext = Secondary.Document;
@@ -554,7 +560,7 @@ namespace TrClient
                 Progress.DataContext = Secondary.Document;
                 Progress.Show();
 
-                if (clsTrLibrary.OfflineMode)
+                if (TrLibrary.OfflineMode)
                 {
                     Secondary.Document.OpenPages();
                     //Debug.WriteLine($"OpenPages er kaldt! Current.Document.Title = {Current.Document.Title}");
@@ -567,7 +573,7 @@ namespace TrClient
                     // fylder box op
                     lstSecondaryPages.ItemsSource = Secondary.Document.Pages;
                     // henter nyeste transcript for hver side - nb: kun NYESTE 
-                    foreach (clsTrPage Page in Secondary.Document.Pages)
+                    foreach (TrPage Page in Secondary.Document.Pages)
                     {
                         Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
                         bool OK = await Loaded;
@@ -608,7 +614,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
 
                 if (Result == MessageBoxResult.Yes)
-                    foreach (clsTrCollection Coll in MyCollections)
+                    foreach (TrCollection Coll in MyCollections)
                         Coll.Upload(Client);
             }
             this.Close();
@@ -754,7 +760,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                clsTrDialogTransferSettings Settings = new clsTrDialogTransferSettings();
+                TrDialogTransferSettings Settings = new TrDialogTransferSettings();
                 dlgEditBaseLines dlgBaseLines = new dlgEditBaseLines(Current.Document, Client, Settings);
                 dlgBaseLines.Owner = this;
                 dlgBaseLines.ShowDialog();
@@ -814,7 +820,7 @@ namespace TrClient
         private void MenuItem_ExportWords_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
-            {   // clsTrLibrary.ExportFolder + 
+            {   // TrLibrary.ExportFolder + 
                 string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                 + "Words_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
 
@@ -841,7 +847,7 @@ namespace TrClient
                 int Count = Current.Document.NrOfPagesWithRegions();
                 string Message = $"Document {Current.Document.Title} has {Count} pages (out of {Current.Document.NrOfPages}) with regions: \n\n"
                     + Current.Document.GetListOfPagesWithRegions();
-                MessageBox.Show(Message, clsTrLibrary.AppName, MessageBoxButton.OK);
+                MessageBox.Show(Message, TrLibrary.AppName, MessageBoxButton.OK);
             }
             else
                 TellUser("You have to choose a collection AND a document!");
@@ -851,13 +857,13 @@ namespace TrClient
 
         public MessageBoxResult AskUser(string Question)
         {
-            MessageBoxResult Result = MessageBox.Show(Question, clsTrLibrary.AppName, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult Result = MessageBox.Show(Question, TrLibrary.AppName, MessageBoxButton.YesNo, MessageBoxImage.Question);
             return Result;
         }
 
         public void TellUser(string Information)
         {
-            MessageBox.Show(Information, clsTrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            MessageBox.Show(Information, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         private void MenuItem_ListPagesWORegionalTags_Click(object sender, RoutedEventArgs e)
@@ -932,7 +938,7 @@ namespace TrClient
             ListBox lb = sender as ListBox;
             if (lstPages.SelectedItem != null)
             {
-                Current.Page = (lstPages.SelectedItem as clsTrPage);
+                Current.Page = (lstPages.SelectedItem as TrPage);
                 dlgShowParagraphs ShowParagraphs = new dlgShowParagraphs(Current.Page);
                 ShowParagraphs.Owner = this;
                 ShowParagraphs.ShowDialog();
@@ -945,7 +951,7 @@ namespace TrClient
             ListBox lb = sender as ListBox;
             if (lstSecondaryPages.SelectedItem != null)
             {
-                Secondary.Page = (lstSecondaryPages.SelectedItem as clsTrPage);
+                Secondary.Page = (lstSecondaryPages.SelectedItem as TrPage);
                 dlgShowParagraphs ShowParagraphs = new dlgShowParagraphs(Secondary.Page);
                 ShowParagraphs.Owner = this;
                 ShowParagraphs.ShowDialog();
@@ -970,7 +976,7 @@ namespace TrClient
         private void MenuItem_ExportAsPlainText_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
-            {   // clsTrLibrary.ExportFolder + 
+            {   // TrLibrary.ExportFolder + 
                 string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                     + "PlainText_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
                 using (StreamWriter TextFile = new StreamWriter(FileName, true))
@@ -978,7 +984,7 @@ namespace TrClient
                     TextFile.WriteLine("Plain text from " + Current.Collection.Name + " - " + Current.Document.Title);
 
                     List<string> Lines = new List<string>();
-                    foreach (clsTrPage P in Current.Document.Pages)
+                    foreach (TrPage P in Current.Document.Pages)
                     {
                         TextFile.WriteLine("------------------------------------------------------------------------------------");
                         TextFile.WriteLine("Page nr. " + P.PageNr.ToString());
@@ -999,7 +1005,7 @@ namespace TrClient
             {
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-                foreach (clsTrDocument Doc in Current.Collection.Documents)
+                foreach (TrDocument Doc in Current.Collection.Documents)
                 {
                     // Current.Document = Doc;
 
@@ -1012,13 +1018,13 @@ namespace TrClient
                     // lstPages.ItemsSource = Current.Document.Pages;
 
                     // henter nyeste transcript for hver side
-                    if (clsTrLibrary.OfflineMode)
+                    if (TrLibrary.OfflineMode)
                     {
                         Doc.OpenPages();
                     }
                     else
                     {
-                        foreach (clsTrPage Page in Doc.Pages)
+                        foreach (TrPage Page in Doc.Pages)
                         {
                             Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
                             bool OK = await Loaded;
@@ -1100,9 +1106,9 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrDocument CurrentDoc in Current.Collection.Documents)
+                    foreach (TrDocument CurrentDoc in Current.Collection.Documents)
                         CurrentDoc.OpenPages();
-                    foreach (clsTrDocument SecondaryDoc in Secondary.Collection.Documents)
+                    foreach (TrDocument SecondaryDoc in Secondary.Collection.Documents)
                         SecondaryDoc.OpenPages();
 
 
@@ -1114,17 +1120,17 @@ namespace TrClient
         }
 
 
-        public void CopyFromSecondaryDocument(clsTrDocument SourceDocument, clsTrDocument DestinationDocument)
+        public void CopyFromSecondaryDocument(TrDocument SourceDocument, TrDocument DestinationDocument)
         {
 
             Debug.WriteLine($"*** CopyFromSecondaryDocument ***");
-            foreach (clsTrPage SourcePage in SourceDocument.Pages)
+            foreach (TrPage SourcePage in SourceDocument.Pages)
             {
                 string SourceFileName = SourcePage.ImageFileName;
 
                 // Debug.WriteLine($"SourceFileName: {SourceFileName}");
 
-                foreach (clsTrPage DestinationPage in DestinationDocument.Pages)
+                foreach (TrPage DestinationPage in DestinationDocument.Pages)
                 {
                     string DestinationFileName = DestinationPage.ImageFileName;
                     // Debug.WriteLine($"DestinationFileName: {DestinationFileName}");
@@ -1132,9 +1138,9 @@ namespace TrClient
                     if (SourceFileName == DestinationFileName)
                     {
                         Debug.WriteLine($"Filename match!!! (page nr. {DestinationPage.PageNr}): {DestinationPage.ImageFileName}");
-                        clsTrRegions SourceRegions = SourcePage.Transcripts[0].Regions;
+                        TrRegions SourceRegions = SourcePage.Transcripts[0].Regions;
 
-                        foreach (clsTrRegion SourceRegion in SourceRegions)
+                        foreach (TrRegion SourceRegion in SourceRegions)
                         {
                             // Debug.WriteLine($"Sourceregion # {SourceRegion.Number}");
                             DestinationPage.AppendRegion(SourceRegion);
@@ -1145,15 +1151,15 @@ namespace TrClient
 
         }
 
-        public void CopyFromSecondaryCollection(clsTrCollection SourceColl, clsTrCollection DestinationColl)
+        public void CopyFromSecondaryCollection(TrCollection SourceColl, TrCollection DestinationColl)
         {
             Debug.WriteLine($"*** CopyFromSecondaryCollection ***");
-            foreach (clsTrDocument SourceDocument in SourceColl.Documents)
+            foreach (TrDocument SourceDocument in SourceColl.Documents)
             {
                 string SourceDocumentName = SourceDocument.Title;
                 // Debug.WriteLine($"SourceDocumentName: {SourceDocumentName}");
                 {
-                    foreach (clsTrDocument DestinationDocument in DestinationColl.Documents)
+                    foreach (TrDocument DestinationDocument in DestinationColl.Documents)
                     {
                         string DestinationDocumentName = DestinationDocument.Title;
                         // Debug.WriteLine($"DestinationDocumentName: {DestinationDocumentName}");
@@ -1185,7 +1191,7 @@ namespace TrClient
         {
             if (Current.Collection != null)
             {
-                foreach (clsTrDocument Doc in Current.Collection.Documents)
+                foreach (TrDocument Doc in Current.Collection.Documents)
                     Doc.Save();
             }
 
@@ -1195,7 +1201,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                foreach (clsTrPage P in Current.Document.Pages)
+                foreach (TrPage P in Current.Document.Pages)
                     P.KOBACC_ExpandText();
             }
             else
@@ -1207,7 +1213,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                foreach (clsTrPage P in Current.Document.Pages)
+                foreach (TrPage P in Current.Document.Pages)
                     P.Elfelt_AutoTag();
                 // P.KOBACC_AutoTag();
             }
@@ -1224,7 +1230,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage TP in Current.Document.Pages)
+                    foreach (TrPage TP in Current.Document.Pages)
                     {
                         TP.Transcripts[0].SetRegionalTagsOnNonTaggedRegions("_NoTag");
                     }
@@ -1243,7 +1249,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage TP in Current.Document.Pages)
+                    foreach (TrPage TP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
                         TP.RenumberRegionsHorizontally();
@@ -1263,7 +1269,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage TP in Current.Document.Pages)
+                    foreach (TrPage TP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
                         TP.RenumberRegionsVertically();
@@ -1284,7 +1290,7 @@ namespace TrClient
                 if (Result == MessageBoxResult.Yes)
                 {
                     XDocument xAccessions = Current.Collection.KOBACC_ExportAccessions(); // Current.Document.KOBACC_ExportAccessions();
-                    // clsTrLibrary.ExportFolder + 
+                    // TrLibrary.ExportFolder + 
                     string FileName = @"AccNos\" + "Accessions_" + Current.Collection.Name + ".xml";
 
                     xAccessions.Save(FileName);
@@ -1318,13 +1324,13 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage TP in Current.Document.Pages)
+                    foreach (TrPage TP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
-                        foreach (clsTrTextRegion TR in TP.Transcripts[0].Regions)
+                        foreach (TrRegion_Text TR in TP.Transcripts[0].Regions)
                         {
-                            if (TR.GetType() == typeof(clsTrTextRegion))
-                                (TR as clsTrTextRegion).TextLines.ReNumberHorizontally();
+                            if (TR.GetType() == typeof(TrRegion_Text))
+                                (TR as TrRegion_Text).TextLines.ReNumberHorizontally();
                         }
 
                     }
@@ -1343,13 +1349,13 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage TP in Current.Document.Pages)
+                    foreach (TrPage TP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
-                        foreach (clsTrRegion TR in TP.Transcripts[0].Regions)
+                        foreach (TrRegion TR in TP.Transcripts[0].Regions)
                         {
-                            if (TR.GetType() == typeof(clsTrTextRegion))
-                                (TR as clsTrTextRegion).TextLines.ReNumberVertically();
+                            if (TR.GetType() == typeof(TrRegion_Text))
+                                (TR as TrRegion_Text).TextLines.ReNumberVertically();
                         }
 
                     }
@@ -1377,15 +1383,15 @@ namespace TrClient
                         int StartPage = ChoosePageRange.StartPage;
                         int EndPage = ChoosePageRange.EndPage;
                         int LinePixelLimit = 40;    // 60 er bedst til Elfelt - måske til håndskrift generelt. Og mindre til maskinskrift?
-                        foreach (clsTrPage TP in Current.Document.Pages)
+                        foreach (TrPage TP in Current.Document.Pages)
                         {
                             if (TP.PageNr >= StartPage && TP.PageNr <= EndPage)
                             {
                                 Debug.WriteLine($"Page nr. {TP.PageNr}");
-                                foreach (clsTrRegion TR in TP.Transcripts[0].Regions)
+                                foreach (TrRegion TR in TP.Transcripts[0].Regions)
                                 {
-                                    if (TR.GetType() == typeof(clsTrTextRegion))
-                                        (TR as clsTrTextRegion).TextLines.ReNumberLogically(LinePixelLimit);
+                                    if (TR.GetType() == typeof(TrRegion_Text))
+                                        (TR as TrRegion_Text).TextLines.ReNumberLogically(LinePixelLimit);
                                 }
                             }
                         }
@@ -1402,7 +1408,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                clsTrPage TestPage = Current.Document.Pages[1];
+                TrPage TestPage = Current.Document.Pages[1];
 
                 dlgShowPage ShowPage = new dlgShowPage(TestPage, Client);
                 ShowPage.Owner = this;
@@ -1505,7 +1511,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                foreach (clsTrPage TP in Current.Document.Pages)
+                foreach (TrPage TP in Current.Document.Pages)
                 {
                     Debug.Print($"Page # {TP.PageNr} : Current tables? {TP.HasTables.ToString()} - Former tables? {TP.HasFormerTables.ToString()}");
                 }
@@ -1599,7 +1605,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage P in Current.Document.Pages)
+                    foreach (TrPage P in Current.Document.Pages)
                         P.AutoAbbrevTagRepetitions();
                 }
             }
@@ -1615,7 +1621,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage P in Current.Document.Pages)
+                    foreach (TrPage P in Current.Document.Pages)
                         P.AutoTagRomanNumerals();
                 }
             }
@@ -1640,18 +1646,18 @@ namespace TrClient
                 {
                     if (Choose.Minimum != 0)
                         MinimumRecordNumber = Choose.Minimum;
-                    // clsTrLibrary.ExportFolder + 
+                    // TrLibrary.ExportFolder + 
                     string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                         + "PseudoTableRecords_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".csv";
                     using (StreamWriter TextFile = new StreamWriter(FileName, true, Encoding.UTF8))
                     {
                         Debug.Print($"Exporting pseudo table text from {Current.Collection.Name} - {Current.Document.Title} - Minimum = {MinimumRecordNumber}");
 
-                        List<clsTrRecord> PageRecords = Current.Document.GetPseudoTableText(MinimumRecordNumber);
+                        List<TrRecord> PageRecords = Current.Document.GetPseudoTableText(MinimumRecordNumber);
 
                         Debug.Print($"Result: {PageRecords.Count} records in this doc! Writing to file.");
 
-                        foreach (clsTrRecord PageRec in PageRecords)
+                        foreach (TrRecord PageRec in PageRecords)
                             TextFile.WriteLine(PageRec.ToString());
 
 
@@ -1740,7 +1746,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    // clsTrLibrary.ExportFolder +
+                    // TrLibrary.ExportFolder +
                     string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                         + "ElfeltRecordCheck_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".csv";
                     using (StreamWriter TextFile = new StreamWriter(FileName, true, Encoding.UTF8))
@@ -1795,17 +1801,17 @@ namespace TrClient
                     Regex Numbers = new Regex(@"\d{4,}\p{L}?");
                     Regex YearOnly = new Regex(@"^\d{4}(?!(\-|\d))|^\d{4}$");
 
-                    foreach (clsTrPage P in Current.Document.Pages)
+                    foreach (TrPage P in Current.Document.Pages)
                     {
                         //if (P.PageNr >= 3 && P.PageNr <= 10)
                         {
                             Debug.Print($"Page# {P.PageNr} ----------------------------------------------------");
                             //bool RegionOK;
                             //int i = 0;
-                            foreach (clsTrRegion TR in P.Transcripts[0].Regions)
-                                if (TR.GetType() == typeof(clsTrTextRegion))
+                            foreach (TrRegion TR in P.Transcripts[0].Regions)
+                                if (TR.GetType() == typeof(TrRegion_Text))
                                 {
-                                    foreach (clsTrTextLine TL in (TR as clsTrTextRegion).TextLines)
+                                    foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
                                     {
                                         bool Found = false;
                                         //MatchCollection NumberMatches = Numbers.Matches(TL.ExpandedText);
@@ -1863,13 +1869,13 @@ namespace TrClient
 
                                     //do
                                     //{
-                                    //    (TR as clsTrTextRegion).TextLines.TestSort();
+                                    //    (TR as TrRegion_Text).TextLines.TestSort();
                                     //    i++;
                                     //    Debug.Print($"Iteration # {i} --------------------------");
                                     //    RegionOK = true;
                                     //    bool OK = true;
 
-                                    //    foreach (TrTextLine TL in (TR as clsTrTextRegion).TextLines)
+                                    //    foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
                                     //    {
                                     //        if (TL.Next != null)
                                     //        {
@@ -1900,14 +1906,14 @@ namespace TrClient
 
 
                         }
-                        //foreach (clsTrRegion TR in P.Transcripts[0].Regions)
+                        //foreach (TrRegion TR in P.Transcripts[0].Regions)
                         //{
                         //    //Debug.Print($"Region# {TR.Number} ----------");
-                        //    if (TR.GetType() == typeof(clsTrTextRegion))
+                        //    if (TR.GetType() == typeof(TrRegion_Text))
                         //    {
-                        //        (TR as clsTrTextRegion).TextLines.TestSort();
+                        //        (TR as TrRegion_Text).TextLines.TestSort();
 
-                        //        //foreach (TrTextLine TL in (TR as clsTrTextRegion).TextLines)
+                        //        //foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
                         //        //{
                         //        //    //if (TL.PercentualHendPos > 75 && !TL.HasSpecificStructuralTag("RecordName"))
                         //        //    //{
@@ -1978,7 +1984,7 @@ namespace TrClient
                 {
                     string TagName = "RecordName";
                     // vælg hvilket struct-tag, der skal bestemme det
-                    foreach (clsTrPage P in Current.Document.Pages)
+                    foreach (TrPage P in Current.Document.Pages)
                         P.AutoAbbrevTagNumericIntervals(TagName);
                 }
             }
@@ -1995,7 +2001,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage P in Current.Document.Pages)
+                    foreach (TrPage P in Current.Document.Pages)
                         P.AutoAbbrevTagPlaceNames();
                 }
             }
@@ -2012,7 +2018,7 @@ namespace TrClient
                 MessageBoxResult Result = AskUser(Question);
                 if (Result == MessageBoxResult.Yes)
                 {
-                    foreach (clsTrPage P in Current.Document.Pages)
+                    foreach (TrPage P in Current.Document.Pages)
                         P.AutoTagFloorNumberSuperScript();
                 }
             }

@@ -1,0 +1,30 @@
+﻿<Window x:Class="TrClient.Dialog.dlgDeleteLines"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrClient.Dialog"
+        mc:Ignorable="d"
+        Title="Delete Lines" 
+        Height="200" 
+        Width="400"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="10">
+        <StackPanel Orientation="Vertical"  >
+            <TextBlock Text="Choose structural tag:" HorizontalAlignment="Left" FontWeight="Bold"/>
+            <ComboBox x:Name="txtStructuralTag" Width="200" HorizontalAlignment="Left" Margin="0,10"/>
+            <StackPanel Orientation="Vertical" >
+                <RadioButton x:Name="rdDelete" GroupName="rdDeleteAction" Content="Delete" Margin="10,10,10,0" HorizontalAlignment="Left" />
+                <RadioButton x:Name="rdPreserve" GroupName="rdDeleteAction" Content="Preserve" Margin="10,10,10,0" HorizontalAlignment="Left"  />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnOK" Content="OK" Width="60" IsDefault="True" Click="BtnOK_Click" />
+                <Button x:Name="btnCancel" Content="Cancel" Width="60" Margin="15,0,0,0" IsCancel="true" Click="BtnCancel_Click"/>
+            </StackPanel>
+        </StackPanel>
+
+
+
+    </Grid>
+</Window>

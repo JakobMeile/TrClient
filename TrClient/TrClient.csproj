@@ -42,6 +42,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -96,133 +99,133 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Dialogues\Statistics\dlgShowHistogram.xaml.cs">
+    <Compile Include="Dialog\Statistics\dlgShowHistogram.xaml.cs">
       <DependentUpon>dlgShowHistogram.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Classes\clsHistogram.cs" />
-    <Compile Include="Tags\Classes\clsTrAbbrevTag.cs" />
-    <Compile Include="Tags\Classes\clsTrCommentTag.cs" />
-    <Compile Include="Tags\Classes\clsTrDateTag.cs" />
-    <Compile Include="Tags\Classes\clsTrReadingOrderTag.cs" />
-    <Compile Include="Tags\Classes\clsTrRomanNumeralTag.cs" />
-    <Compile Include="Tags\Classes\clsTrSicTag.cs" />
-    <Compile Include="Tags\Classes\clsTrStructuralTag.cs" />
-    <Compile Include="Tags\Classes\clsTrStyleTag.cs" />
-    <Compile Include="Tags\Classes\clsTrTag.cs" />
-    <Compile Include="Tags\Classes\clsTrTagProperty.cs" />
-    <Compile Include="Tags\Classes\clsTrTextualTag.cs" />
-    <Compile Include="Tags\Classes\clsTrUnclearTag.cs" />
-    <Compile Include="Tags\Containers\clsTrTagProperties.cs" />
-    <Compile Include="Tags\Containers\clsTrTags.cs" />
-    <Page Include="Dialogues\Collections\dlgCopyFromCollection.xaml">
+    <Compile Include="Helpers\Histogram.cs" />
+    <Compile Include="Tags\TrTag_Textual_Abbrev.cs" />
+    <Compile Include="Tags\TrTag_Textual_Comment.cs" />
+    <Compile Include="Tags\TrTag_Textual_Date.cs" />
+    <Compile Include="Tags\TrTag_ReadingOrder.cs" />
+    <Compile Include="Tags\TrTag_Textual_RomanNumeral.cs" />
+    <Compile Include="Tags\TrTag_Textual_Sic.cs" />
+    <Compile Include="Tags\TrTag_Structural.cs" />
+    <Compile Include="Tags\TrTag_Textual_Style.cs" />
+    <Compile Include="Tags\TrTag.cs" />
+    <Compile Include="Tags\TrTagProperty.cs" />
+    <Compile Include="Tags\TrTag_Textual.cs" />
+    <Compile Include="Tags\TrTag_Textual_Unclear.cs" />
+    <Compile Include="Tags\TrTagProperties.cs" />
+    <Compile Include="Tags\TrTags.cs" />
+    <Page Include="Dialog\Collections\dlgCopyFromCollection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Content\dlgEditLemma.xaml">
+    <Page Include="Dialog\Content\dlgEditLemma.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Content\dlgFindReplace.xaml">
+    <Page Include="Dialog\Content\dlgFindReplace.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Content\dlgShowLemmas.xaml">
+    <Page Include="Dialog\Content\dlgShowLemmas.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Content\dlgShowParagraphs.xaml">
+    <Page Include="Dialog\Content\dlgShowParagraphs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Export\dlgShowAndExportPages.xaml">
+    <Page Include="Dialog\Export\dlgShowAndExportPages.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Filters\dlgFilterLines.xaml">
+    <Page Include="Dialog\Filters\dlgFilterLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Filters\dlgFilterLinesByLocation.xaml">
+    <Page Include="Dialog\Filters\dlgFilterLinesByLocation.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Filters\dlgFilterLinesByRegex.xaml">
+    <Page Include="Dialog\Filters\dlgFilterLinesByRegex.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\General\dlgChooseMinMaxNumbers.xaml">
+    <Page Include="Dialog\General\dlgChooseMinMaxNumbers.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\General\dlgChoosePageRange.xaml">
+    <Page Include="Dialog\General\dlgChoosePageRange.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Lines\dlgDeleteLines.xaml">
+    <Page Include="Dialog\Lines\dlgDeleteLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Lines\dlgEditBaseLines.xaml">
+    <Page Include="Dialog\Lines\dlgEditBaseLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Lines\dlgEditTextLine.xaml">
+    <Page Include="Dialog\Lines\dlgEditTextLine.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Lines\dlgRepairBaseLines.xaml">
+    <Page Include="Dialog\Lines\dlgRepairBaseLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Lines\dlgShowTextLine.xaml">
+    <Page Include="Dialog\Lines\dlgShowTextLine.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Lines\dlgSimplifyBoundingBoxes.xaml">
+    <Page Include="Dialog\Lines\dlgSimplifyBoundingBoxes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Log\dlgShowLog.xaml">
+    <Page Include="Dialog\Log\dlgShowLog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Pages\dlgShowPage.xaml">
+    <Page Include="Dialog\Pages\dlgShowPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\ProgressBars\dlgProgressCopy.xaml">
+    <Page Include="Dialog\ProgressBars\dlgProgressCopy.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\ProgressBars\dlgProgressLoadDocs.xaml">
+    <Page Include="Dialog\ProgressBars\dlgProgressLoadDocs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\ProgressBars\dlgProgressLoadPages.xaml">
+    <Page Include="Dialog\ProgressBars\dlgProgressLoadPages.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Regions\dlgDeleteRegions.xaml">
+    <Page Include="Dialog\Regions\dlgDeleteRegions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Regions\dlgMoveRegions.xaml">
+    <Page Include="Dialog\Regions\dlgMoveRegions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Statistics\dlgShowHistogram.xaml">
+    <Page Include="Dialog\Statistics\dlgShowHistogram.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialogues\Tags\dlgEditStructuralTags.xaml">
+    <Page Include="Dialog\Tags\dlgEditStructuralTags.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Tags\dlgRenameTags.xaml">
+    <Page Include="Dialog\Tags\dlgRenameTags.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialogues\Tags\dlgShowTags.xaml">
+    <Page Include="Dialog\Tags\dlgShowTags.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -234,130 +237,130 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Classes\clsTrCell.cs" />
-    <Compile Include="Core\Classes\clsTrCollection.cs" />
-    <Compile Include="Core\Classes\clsTrCoord.cs" />
-    <Compile Include="Core\Classes\clsTrDocument.cs" />
-    <Compile Include="Core\Classes\clsTrPage.cs" />
-    <Compile Include="Core\Classes\clsTrRegion.cs" />
-    <Compile Include="Core\Classes\clsTrTableRegion.cs" />
-    <Compile Include="Core\Classes\clsTrTextLine.cs" />
-    <Compile Include="Core\Classes\clsTrTextRegion.cs" />
-    <Compile Include="Core\Classes\clsTrTranscript.cs" />
-    <Compile Include="Dialogues\Collections\dlgCopyFromCollection.xaml.cs">
+    <Compile Include="Core\TrCell.cs" />
+    <Compile Include="Core\TrCollection.cs" />
+    <Compile Include="Core\TrCoord.cs" />
+    <Compile Include="Core\TrDocument.cs" />
+    <Compile Include="Core\TrPage.cs" />
+    <Compile Include="Core\TrRegion.cs" />
+    <Compile Include="Core\TrRegion_Table.cs" />
+    <Compile Include="Core\TrTextLine.cs" />
+    <Compile Include="Core\TrRegion_Text.cs" />
+    <Compile Include="Core\TrTranscript.cs" />
+    <Compile Include="Dialog\Collections\dlgCopyFromCollection.xaml.cs">
       <DependentUpon>dlgCopyFromCollection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Content\dlgEditLemma.xaml.cs">
+    <Compile Include="Dialog\Content\dlgEditLemma.xaml.cs">
       <DependentUpon>dlgEditLemma.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Content\dlgFindReplace.xaml.cs">
+    <Compile Include="Dialog\Content\dlgFindReplace.xaml.cs">
       <DependentUpon>dlgFindReplace.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Content\dlgShowLemmas.xaml.cs">
+    <Compile Include="Dialog\Content\dlgShowLemmas.xaml.cs">
       <DependentUpon>dlgShowLemmas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Content\dlgShowParagraphs.xaml.cs">
+    <Compile Include="Dialog\Content\dlgShowParagraphs.xaml.cs">
       <DependentUpon>dlgShowParagraphs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Export\dlgShowAndExportPages.xaml.cs">
+    <Compile Include="Dialog\Export\dlgShowAndExportPages.xaml.cs">
       <DependentUpon>dlgShowAndExportPages.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Filters\dlgFilterLines.xaml.cs">
+    <Compile Include="Dialog\Filters\dlgFilterLines.xaml.cs">
       <DependentUpon>dlgFilterLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Filters\dlgFilterLinesByLocation.xaml.cs">
+    <Compile Include="Dialog\Filters\dlgFilterLinesByLocation.xaml.cs">
       <DependentUpon>dlgFilterLinesByLocation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Filters\dlgFilterLinesByRegex.xaml.cs">
+    <Compile Include="Dialog\Filters\dlgFilterLinesByRegex.xaml.cs">
       <DependentUpon>dlgFilterLinesByRegex.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\General\dlgChooseMinMaxNumbers.xaml.cs">
+    <Compile Include="Dialog\General\dlgChooseMinMaxNumbers.xaml.cs">
       <DependentUpon>dlgChooseMinMaxNumbers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\General\dlgChoosePageRange.xaml.cs">
+    <Compile Include="Dialog\General\dlgChoosePageRange.xaml.cs">
       <DependentUpon>dlgChoosePageRange.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Lines\dlgDeleteLines.xaml.cs">
+    <Compile Include="Dialog\Lines\dlgDeleteLines.xaml.cs">
       <DependentUpon>dlgDeleteLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Lines\dlgEditBaseLines.xaml.cs">
+    <Compile Include="Dialog\Lines\dlgEditBaseLines.xaml.cs">
       <DependentUpon>dlgEditBaseLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Lines\dlgEditTextLine.xaml.cs">
+    <Compile Include="Dialog\Lines\dlgEditTextLine.xaml.cs">
       <DependentUpon>dlgEditTextLine.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Lines\dlgRepairBaseLines.xaml.cs">
+    <Compile Include="Dialog\Lines\dlgRepairBaseLines.xaml.cs">
       <DependentUpon>dlgRepairBaseLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Lines\dlgShowTextLine.xaml.cs">
+    <Compile Include="Dialog\Lines\dlgShowTextLine.xaml.cs">
       <DependentUpon>dlgShowTextLine.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Lines\dlgSimplifyBoundingBoxes.xaml.cs">
+    <Compile Include="Dialog\Lines\dlgSimplifyBoundingBoxes.xaml.cs">
       <DependentUpon>dlgSimplifyBoundingBoxes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Log\dlgShowLog.xaml.cs">
+    <Compile Include="Dialog\Log\dlgShowLog.xaml.cs">
       <DependentUpon>dlgShowLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Pages\dlgShowPage.xaml.cs">
+    <Compile Include="Dialog\Pages\dlgShowPage.xaml.cs">
       <DependentUpon>dlgShowPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\ProgressBars\dlgProgressCopy.xaml.cs">
+    <Compile Include="Dialog\ProgressBars\dlgProgressCopy.xaml.cs">
       <DependentUpon>dlgProgressCopy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\ProgressBars\dlgProgressLoadDocs.xaml.cs">
+    <Compile Include="Dialog\ProgressBars\dlgProgressLoadDocs.xaml.cs">
       <DependentUpon>dlgProgressLoadDocs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\ProgressBars\dlgProgressLoadPages.xaml.cs">
+    <Compile Include="Dialog\ProgressBars\dlgProgressLoadPages.xaml.cs">
       <DependentUpon>dlgProgressLoadPages.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Regions\dlgDeleteRegions.xaml.cs">
+    <Compile Include="Dialog\Regions\dlgDeleteRegions.xaml.cs">
       <DependentUpon>dlgDeleteRegions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Regions\dlgMoveRegions.xaml.cs">
+    <Compile Include="Dialog\Regions\dlgMoveRegions.xaml.cs">
       <DependentUpon>dlgMoveRegions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Tags\dlgEditStructuralTags.xaml.cs">
+    <Compile Include="Dialog\Tags\dlgEditStructuralTags.xaml.cs">
       <DependentUpon>dlgEditStructuralTags.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Tags\dlgRenameTags.xaml.cs">
+    <Compile Include="Dialog\Tags\dlgRenameTags.xaml.cs">
       <DependentUpon>dlgRenameTags.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialogues\Tags\dlgShowTags.xaml.cs">
+    <Compile Include="Dialog\Tags\dlgShowTags.xaml.cs">
       <DependentUpon>dlgShowTags.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\Classes\clsTrLemma.cs" />
-    <Compile Include="Extensions\Classes\clsTrMarcField.cs" />
-    <Compile Include="Extensions\Classes\clsTrMarcRecord.cs" />
-    <Compile Include="Extensions\Classes\clsTrParagraph.cs" />
-    <Compile Include="Extensions\Classes\clsTrRecord.cs" />
-    <Compile Include="Extensions\Classes\clsTrRow.cs" />
-    <Compile Include="Extensions\Classes\clsTrWord.cs" />
-    <Compile Include="Extensions\Containers\clsTrLemmas.cs" />
-    <Compile Include="Extensions\Containers\clsTrMarcFields.cs" />
-    <Compile Include="Extensions\Containers\clsTrParagraphs.cs" />
-    <Compile Include="Extensions\Containers\clsTrRows.cs" />
-    <Compile Include="Extensions\Containers\clsTrWords.cs" />
-    <Compile Include="Helpers\Classes\clsSortAdorner.cs" />
-    <Compile Include="Helpers\Classes\clsTrBaseLineFilter.cs" />
-    <Compile Include="Helpers\Classes\clsTrDialogTransferSettings.cs" />
-    <Compile Include="Helpers\Classes\clsTrLineFilterSettings.cs" />
-    <Compile Include="Helpers\Classes\clsTrLog.cs" />
-    <Compile Include="Helpers\Classes\clsTrLogEvent.cs" />
-    <Compile Include="Helpers\Classes\clsTrObservableCollection.cs" />
-    <Compile Include="Helpers\Classes\clsTrPairOrderID.cs" />
-    <Compile Include="Helpers\Containers\clsTrLogEvents.cs" />
-    <Compile Include="Helpers\Containers\clsTrPairOrderIDs.cs" />
-    <Compile Include="Libraries\clsTrLibrary.cs" />
-    <Compile Include="Settings\clsTrCurrent.cs" />
-    <Compile Include="Settings\clsTrUser.cs" />
-    <Compile Include="Core\Containers\clsTrCells.cs" />
-    <Compile Include="Core\Containers\clsTrCollections.cs" />
-    <Compile Include="Core\Containers\clsTrCoords.cs" />
-    <Compile Include="Core\Containers\clsTrDocuments.cs" />
-    <Compile Include="Core\Containers\clsTrPages.cs" />
-    <Compile Include="Core\Containers\clsTrRegions.cs" />
-    <Compile Include="Core\Containers\clsTrTextLines.cs" />
-    <Compile Include="Core\Containers\clsTrTranscripts.cs" />
+    <Compile Include="Extensions\TrLemma.cs" />
+    <Compile Include="Extensions\TrMarcField.cs" />
+    <Compile Include="Extensions\TrMarcRecord.cs" />
+    <Compile Include="Extensions\TrParagraph.cs" />
+    <Compile Include="Extensions\TrRecord.cs" />
+    <Compile Include="Extensions\TrRow.cs" />
+    <Compile Include="Extensions\TrWord.cs" />
+    <Compile Include="Extensions\TrLemmas.cs" />
+    <Compile Include="Extensions\TrMarcFields.cs" />
+    <Compile Include="Extensions\TrParagraphs.cs" />
+    <Compile Include="Extensions\TrRows.cs" />
+    <Compile Include="Extensions\TrWords.cs" />
+    <Compile Include="Helpers\SortAdorner.cs" />
+    <Compile Include="Helpers\TrBaseLineFilter.cs" />
+    <Compile Include="Helpers\TrDialogTransferSettings.cs" />
+    <Compile Include="Helpers\TrLineFilterSettings.cs" />
+    <Compile Include="Helpers\TrLog.cs" />
+    <Compile Include="Helpers\TrLogEvent.cs" />
+    <Compile Include="Helpers\TrObservableCollection.cs" />
+    <Compile Include="Helpers\TrPairOrderID.cs" />
+    <Compile Include="Helpers\TrLogEvents.cs" />
+    <Compile Include="Helpers\TrPairOrderIDs.cs" />
+    <Compile Include="Libraries\TrLibrary.cs" />
+    <Compile Include="Settings\TrCurrent.cs" />
+    <Compile Include="Settings\TrUser.cs" />
+    <Compile Include="Core\TrCells.cs" />
+    <Compile Include="Core\TrCollections.cs" />
+    <Compile Include="Core\TrCoords.cs" />
+    <Compile Include="Core\TrDocuments.cs" />
+    <Compile Include="Core\TrPages.cs" />
+    <Compile Include="Core\TrRegions.cs" />
+    <Compile Include="Core\TrTextLines.cs" />
+    <Compile Include="Core\TrTranscripts.cs" />
     <Compile Include="Libraries\clsLanguageLibrary.cs" />
     <Compile Include="Libraries\clsMonthNames.cs" />
     <Compile Include="Libraries\clsRomanNumerals.cs" />
