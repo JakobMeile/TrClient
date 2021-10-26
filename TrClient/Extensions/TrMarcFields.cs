@@ -1,66 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-using System.Diagnostics;
+﻿// <copyright file="TrMarcFields.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System.Collections;
+    using System.Collections.Generic;
+
     public class TrMarcFields : IEnumerable
     {
-        private List<TrMarcField> Fields;
-        public int Count { get => Fields.Count; }
+        private List<TrMarcField> fields;
+
+        public int Count { get => fields.Count; }
 
         public TrMarcRecord ParentRecord;
 
-        public void Add(TrMarcField Field)
+        public void Add(TrMarcField field)
         {
-            Fields.Add(Field);
-            Field.ParentContainer = this;
-            Field.ParentRecord = this.ParentRecord;
+            fields.Add(field);
+            field.ParentContainer = this;
+            field.ParentRecord = ParentRecord;
         }
 
         public void Clear()
         {
-            Fields.Clear();
+            fields.Clear();
         }
 
         public void Sort()
         {
-            Fields.Sort();
+            fields.Sort();
         }
 
         public void RemoveAt(int i)
         {
-            Fields.RemoveAt(i);
+            fields.RemoveAt(i);
         }
 
         public TrMarcField this[int index]
         {
-            get { return Fields[index]; }
-            set { Fields[index] = value; }
+            get { return fields[index]; }
+            set { fields[index] = value; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Fields).GetEnumerator();
+            return ((IEnumerable)fields).GetEnumerator();
         }
 
         public TrMarcFields()
         {
-            Fields = new List<TrMarcField>();
+            fields = new List<TrMarcField>();
         }
-
     }
 }

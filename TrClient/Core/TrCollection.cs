@@ -1,95 +1,101 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.IO;
-using System.ComponentModel;
-using System.Windows.Media;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrCollection.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System;
+    using System.ComponentModel;
+    using System.IO;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Threading.Tasks;
+    using System.Windows.Media;
+    using System.Xml;
+    using System.Xml.Linq;
+    using TrClient.Libraries;
+
     public class TrCollection : IComparable, INotifyPropertyChanged
     {
         public string TrpDocuments = "https://transkribus.eu/TrpServer/rest/collections/_ColID_/list.xml";
 
-        private string _name = "";
+        private string name = string.Empty;
+
         public string Name
         {
-            get { return _name; }
+            get
+            {
+                return name;
+            }
+
             set
             {
-                if (_name != value)
+                if (name != value)
                 {
-                    _name = value;
+                    name = value;
                     NotifyPropertyChanged("Name");
                 }
             }
-
         }
-
 
         public string Folder { get; set; }
 
         public string ID { get; set; }
 
-        private int _nrOfDocs = 0;
+        private int nrOfDocs = 0;
+
         public int NrOfDocs
         {
-            get { return _nrOfDocs; }
+            get
+            {
+                return nrOfDocs;
+            }
+
             set
             {
-                if (_nrOfDocs != value)
+                if (nrOfDocs != value)
                 {
-                    _nrOfDocs = value;
+                    nrOfDocs = value;
                     NotifyPropertyChanged("NrOfDocs");
                 }
             }
         }
 
-        private int _nrOfDocsLoaded = 0;
+        private int nrOfDocsLoaded = 0;
+
         public int NrOfDocsLoaded
         {
-            get { return _nrOfDocsLoaded; }
+            get
+            {
+                return nrOfDocsLoaded;
+            }
+
             set
             {
-                if (_nrOfDocsLoaded != value)
+                if (nrOfDocsLoaded != value)
                 {
-                    _nrOfDocsLoaded = value;
+                    nrOfDocsLoaded = value;
                     NotifyPropertyChanged("NrOfDocsLoaded");
                 }
             }
         }
 
+        private bool isLoaded = false;
 
-
-
-        private bool _isLoaded = false;
         public bool IsLoaded
         {
-            get { return _isLoaded; }
+            get
+            {
+                return isLoaded;
+            }
+
             set
             {
-                if (_isLoaded != value)
+                if (isLoaded != value)
                 {
-                    _isLoaded = value;
+                    isLoaded = value;
                     NotifyPropertyChanged("IsLoaded");
-                    switch (_isLoaded)
+                    switch (isLoaded)
                     {
                         case true:
                             StatusColor = Brushes.LimeGreen;
@@ -102,48 +108,68 @@ namespace TrClient.Core
             }
         }
 
-        private SolidColorBrush _statusColor = Brushes.Red;
+        private SolidColorBrush statusColor = Brushes.Red;
+
         public SolidColorBrush StatusColor
         {
-            get { return _statusColor; }
+            get
+            {
+                return statusColor;
+            }
+
             set
             {
-                if (_statusColor != value)
+                if (statusColor != value)
                 {
-                    _statusColor = value;
+                    statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
         }
 
-        private bool _hasChanged = false;
+        private bool hasChanged = false;
+
         public bool HasChanged
         {
-            get { return _hasChanged; }
+            get
+            {
+                return hasChanged;
+            }
+
             set
             {
-                _hasChanged = value;
+                hasChanged = value;
                 NotifyPropertyChanged("HasChanged");
-                if (_hasChanged)
+                if (hasChanged)
+                {
                     StatusColor = Brushes.Orange;
-                ParentContainer.HasChanged = value;        
+                }
+
+                ParentContainer.HasChanged = value;
             }
         }
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
+                changesUploaded = value;
                 NotifyPropertyChanged("ChangesUploaded");
-                if (_changesUploaded)
+                if (changesUploaded)
+                {
                     StatusColor = Brushes.DarkViolet;
+                }
+
                 ParentContainer.ChangesUploaded = value;
             }
         }
-
 
         public XmlDocument DocumentsMetadata = new XmlDocument();
         public TrDocuments Documents = new TrDocuments();
@@ -155,36 +181,35 @@ namespace TrClient.Core
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
 
-
         // constructor ONLINE
-        public TrCollection(string CollName, string CollID, int CollNrOfDocs)
+        public TrCollection(string collName, string collID, int collNrOfDocs)
         {
-            Name = CollName;
-            ID = CollID;
-            NrOfDocs = CollNrOfDocs;
-            // Debug.WriteLine($"Collection created! Name: {Name}, ID: {ID}, NrOfDocs: {NrOfDocs}");
+            Name = collName;
+            ID = collID;
+            NrOfDocs = collNrOfDocs;
 
+            // Debug.WriteLine($"Collection created! Name: {Name}, ID: {ID}, NrOfDocs: {NrOfDocs}");
             Documents.ParentCollection = this;
             IsLoaded = false;
         }
 
         // constuctor OFFLINE
-        public TrCollection(string CollName, string CollID, int CollNrOfDocs, string CollFolder) // , string CollID, int CollNrOfDocs
-        {
-            Name = CollName;
-            Folder = CollFolder;
-            ID = CollID;
-            NrOfDocs = CollNrOfDocs;
-            // Debug.WriteLine($"Collection created! Name: {Name}, ID: {ID}, NrOfDocs: {NrOfDocs}, Folder: {Folder}");
+        //public TrCollection(string collName, string collID, int collNrOfDocs, string collFolder) // , string CollID, int CollNrOfDocs
+        //{
+        //    Name = collName;
+        //    Folder = collFolder;
+        //    ID = collID;
+        //    NrOfDocs = collNrOfDocs;
 
-            Documents.ParentCollection = this;
-            IsLoaded = false;
-        }
-
-
+        //    // Debug.WriteLine($"Collection created! Name: {Name}, ID: {ID}, NrOfDocs: {NrOfDocs}, Folder: {Folder}");
+        //    Documents.ParentCollection = this;
+        //    IsLoaded = false;
+        //}
 
         public int CompareTo(object obj)
         {
@@ -192,18 +217,20 @@ namespace TrClient.Core
             return Name.CompareTo(coll.Name);
         }
 
-        public async Task<bool> LoadDocuments(HttpClient CurrentClient)
+        public async Task<bool> LoadDocuments(HttpClient currentClient)
         {
             // bruges kun ONLINE
             if (!IsLoaded)
             {
                 TrpDocuments = TrpDocuments.Replace("_ColID_", ID);
+
                 // Debug.WriteLine(TrpDocuments);
 
                 // Henter de relevante documents ind i et XMLdoc
-                HttpResponseMessage DocumentsResponseMessage = await CurrentClient.GetAsync(TrpDocuments);
-                string DocumentsResponse = await DocumentsResponseMessage.Content.ReadAsStringAsync();
-                DocumentsMetadata.LoadXml(DocumentsResponse);
+                HttpResponseMessage documentsResponseMessage = await currentClient.GetAsync(TrpDocuments);
+                string documentsResponse = await documentsResponseMessage.Content.ReadAsStringAsync();
+                DocumentsMetadata.LoadXml(documentsResponse);
+
                 // Debug.WriteLine($"henter doks i samlingen {Name}, {ID}");
                 // Debug.WriteLine($"antal doks 1 = {Documents.Count}");
 
@@ -213,215 +240,213 @@ namespace TrClient.Core
                 // DocumentsMetadata.Save(XMLFileName);
 
                 // Udtrækker de enkelte documents
-                XmlNodeList DocumentNodes = DocumentsMetadata.DocumentElement.SelectNodes("//trpDocMetadata");
-                foreach (XmlNode xnDocument in DocumentNodes)
+                XmlNodeList documentNodes = DocumentsMetadata.DocumentElement.SelectNodes("//trpDocMetadata");
+                foreach (XmlNode xnDocument in documentNodes)
                 {
-                    XmlNodeList DocumentMetaData = xnDocument.ChildNodes;
-                    string DocID = "";
-                    string DocTitle = "";
-                    int NrOfPages = 0;
+                    XmlNodeList documentMetaData = xnDocument.ChildNodes;
+                    string docID = string.Empty;
+                    string docTitle = string.Empty;
+                    int nrOfPages = 0;
 
-                    foreach (XmlNode xnDocumentMetaData in DocumentMetaData)
+                    foreach (XmlNode xnDocumentMetaData in documentMetaData)
                     {
-                        string Name = xnDocumentMetaData.Name;
-                        string Value = xnDocumentMetaData.InnerText;
+                        string name = xnDocumentMetaData.Name;
+                        string value = xnDocumentMetaData.InnerText;
 
-                        switch (Name)
+                        switch (name)
                         {
                             case "docId":
-                                DocID = Value;
+                                docID = value;
                                 break;
                             case "title":
-                                DocTitle = Value;
+                                docTitle = value;
                                 break;
                             case "nrOfPages":
-                                NrOfPages = Int32.Parse(Value);
+                                nrOfPages = Int32.Parse(value);
                                 break;
                         }
                     }
-                    if (DocTitle.Substring(0, 4) != "TRAI")
-                    {
-                        TrDocument Doc = new TrDocument(DocTitle, DocID, NrOfPages);
-                        Documents.Add(Doc);
-                    }
 
+                    if (docTitle.Substring(0, 4) != "TRAI")
+                    {
+                        TrDocument doc = new TrDocument(docTitle, docID, nrOfPages);
+                        Documents.Add(doc);
+                    }
                 }
+
                 // Debug.WriteLine($"antal doks 2 = {Documents.Count}");
                 Documents.Sort();
                 NrOfDocs = Documents.Count;
                 IsLoaded = true;
             }
+
             return true;
         }
 
-        public void OpenDocuments()
-        {
-            if (!IsLoaded)
-            {
-                DirectoryInfo diDocumentIDs = new DirectoryInfo(Folder);
-                DirectoryInfo[] diDocumentIDsArr = diDocumentIDs.GetDirectories();
+        //public void OpenDocuments()
+        //{
+        //    if (!IsLoaded)
+        //    {
+        //        DirectoryInfo diDocumentIDs = new DirectoryInfo(Folder);
+        //        DirectoryInfo[] diDocumentIDsArr = diDocumentIDs.GetDirectories();
 
-                foreach (DirectoryInfo diDocumentID in diDocumentIDsArr)
-                {
-                    // så er vi inde i det enkelte dokument
-                    // ------------------------------------------------------------------------------------------------------------------
-                    string DocumentID = diDocumentID.Name;
-                    string DocumentIDFolder = Folder + "\\" + DocumentID + "\\";
+        //        foreach (DirectoryInfo diDocumentID in diDocumentIDsArr)
+        //        {
+        //            // så er vi inde i det enkelte dokument
+        //            // ------------------------------------------------------------------------------------------------------------------
+        //            string documentID = diDocumentID.Name;
+        //            string documentIDFolder = Folder + "\\" + documentID + "\\";
 
-                    DirectoryInfo diDocumentTitles = new DirectoryInfo(DocumentIDFolder);
-                    DirectoryInfo[] diDocumentTitlesArr = diDocumentTitles.GetDirectories();
-                    DirectoryInfo diDocumentTitle = diDocumentTitlesArr.First();
+        //            DirectoryInfo diDocumentTitles = new DirectoryInfo(documentIDFolder);
+        //            DirectoryInfo[] diDocumentTitlesArr = diDocumentTitles.GetDirectories();
+        //            DirectoryInfo diDocumentTitle = diDocumentTitlesArr.First();
 
-                    string DocumentTitle = diDocumentTitle.Name;
-                    string DocumentFolder = Folder + "\\" + DocumentID + "\\" + DocumentTitle + "\\";
+        //            string documentTitle = diDocumentTitle.Name;
+        //            string documentFolder = Folder + "\\" + documentID + "\\" + documentTitle + "\\";
 
-                    string MetsFileName = DocumentFolder + "mets.xml";
-                    XmlDocument MetsDocument = new XmlDocument();
-                    MetsDocument.Load(MetsFileName);
+        //            string metsFileName = documentFolder + "mets.xml";
+        //            XmlDocument metsDocument = new XmlDocument();
+        //            metsDocument.Load(metsFileName);
 
-                    XmlNodeList DocumentNodes = MetsDocument.DocumentElement.SelectNodes("//trpDocMetadata"); // 
+        //            XmlNodeList documentNodes = metsDocument.DocumentElement.SelectNodes("//trpDocMetadata");
 
-                    foreach (XmlNode xnDocument in DocumentNodes)
-                    {
-                        XmlNodeList DocumentMetaData = xnDocument.ChildNodes;
-                        string DocID = "";
-                        string DocTitle = "";
-                        int NrOfPages = 0;
+        //            foreach (XmlNode xnDocument in documentNodes)
+        //            {
+        //                XmlNodeList documentMetaData = xnDocument.ChildNodes;
+        //                string docID = string.Empty;
+        //                string docTitle = string.Empty;
+        //                int nrOfPages = 0;
 
-                        foreach (XmlNode xnDocumentMetaData in DocumentMetaData)
-                        {
-                            string Name = xnDocumentMetaData.Name;
-                            string Value = xnDocumentMetaData.InnerText;
+        //                foreach (XmlNode xnDocumentMetaData in documentMetaData)
+        //                {
+        //                    string name = xnDocumentMetaData.Name;
+        //                    string value = xnDocumentMetaData.InnerText;
 
-                            switch (Name)
-                            {
-                                case "docId":
-                                    DocID = Value;
-                                    break;
-                                case "title":
-                                    DocTitle = Value;
-                                    break;
-                                case "nrOfPages":
-                                    NrOfPages = Int32.Parse(Value);
-                                    break;
-                            }
-                        }
-                        TrDocument Doc = new TrDocument(DocTitle, DocID, NrOfPages, DocumentFolder);
-                        Documents.Add(Doc);
-                        NrOfDocsLoaded++;
+        //                    switch (name)
+        //                    {
+        //                        case "docId":
+        //                            docID = value;
+        //                            break;
+        //                        case "title":
+        //                            docTitle = value;
+        //                            break;
+        //                        case "nrOfPages":
+        //                            nrOfPages = Int32.Parse(value);
+        //                            break;
+        //                    }
+        //                }
 
-                    }
-                    // Debug.WriteLine($"antal doks 2 = {Documents.Count}");
-                    Documents.Sort();
-                    NrOfDocs = Documents.Count;
-                    IsLoaded = true;
+        //                TrDocument doc = new TrDocument(docTitle, docID, nrOfPages, documentFolder);
+        //                Documents.Add(doc);
+        //                NrOfDocsLoaded++;
+        //            }
 
-                }
+        //            // Debug.WriteLine($"antal doks 2 = {Documents.Count}");
+        //            Documents.Sort();
+        //            NrOfDocs = Documents.Count;
+        //            IsLoaded = true;
+        //        }
+        //    }
+        //}
 
-            }
-        }
-
-
-        public void Upload(HttpClient CurrentClient)
+        public void Upload(HttpClient currentClient)
         {
             // bruges kun ONLINE
-
-            foreach (TrDocument Doc in Documents)
+            foreach (TrDocument doc in Documents)
             {
-                if (Doc.HasChanged)
-                    Doc.Upload(CurrentClient);
-            }
-        }
-
-        public XDocument KOBACC_ExportAccessions()
-        {
-            XDocument xAccessionsDoc = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"),
-                new XComment("Created by Transkribus Client - The Royal Danish Library"));
-
-            XElement xRoot = new XElement("Root");
-
-            XElement xAccessions = new XElement("Accessions",
-                new XAttribute("Document", Name));
-
-            XElement xSources = new XElement("Sources");
-
-            foreach (TrDocument Doc in Documents)
-            {
-                Doc.OpenPages();
-
-                foreach (TrPage Page in Doc.Pages)
+                if (doc.HasChanged)
                 {
-                    if (Page.HasRegions)
-                    {
-                        foreach (TrRegion TR in Page.Transcripts[0].Regions)
-                        {
-                            if (TR.GetType() == typeof(TrRegion_Text))
-                            {
-                                foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
-                                {
-                                    if (TL.TextEquiv != "")
-                                    {
-                                        if (TL.HasSpecificStructuralTag("Acc"))
-                                        {
-                                            // Der kan være een eller flere...
-                                            if (TL.TextEquiv.Contains(" - "))
-                                            {
-                                                // der ER flere
-                                                string[] AccessionNumbers = TL.TextEquiv.Split('-').ToArray();
-                                                foreach (string AN in AccessionNumbers)
-                                                {
-                                                    if (AN != "n/a")
-                                                    {
-                                                        XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(AN),
-                                                            new XAttribute("Doc", Doc.Title),
-                                                            new XAttribute("Page", Page.PageNr),
-                                                            new XAttribute("Hpos", TL.Hpos),
-                                                            new XAttribute("Vpos", TL.Vpos));
-                                                        xAccessions.Add(xAccession);
-                                                    }
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                // der er kun een
-                                                if (TL.TextEquiv != "n/a")
-                                                {
-                                                    XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(TL.TextEquiv),
-                                                        new XAttribute("Doc", Doc.Title),
-                                                        new XAttribute("Page", Page.PageNr),
-                                                        new XAttribute("Hpos", TL.Hpos),
-                                                        new XAttribute("Vpos", TL.Vpos));
-                                                    xAccessions.Add(xAccession);
-                                                }
-                                            }
-                                        }
-                                        else if (TL.HasSpecificStructuralTag("caption"))
-                                        {
-                                            XElement xSource = new XElement("Source", TL.TextEquiv,
-                                                new XAttribute("Doc", Doc.Title),
-                                                new XAttribute("Page", Page.PageNr),
-                                                new XAttribute("Hpos", TL.Hpos),
-                                                new XAttribute("Vpos", TL.Vpos));
-                                            xSources.Add(xSource);
-                                        }
-                                    }
-                                }
-
-                            }
-                        }
-                    }
+                    doc.Upload(currentClient);
                 }
-                    
             }
-
-
-            xRoot.Add(xAccessions);
-            // xRoot.Add(xSources);
-            xAccessionsDoc.Add(xRoot);
-            return xAccessionsDoc;
         }
 
+        //public XDocument KOBACC_ExportAccessions()
+        //{
+        //    XDocument xAccessionsDoc = new XDocument(
+        //        new XDeclaration("1.0", "UTF-8", "yes"),
+        //        new XComment("Created by Transkribus Client - The Royal Danish Library"));
 
+        //    XElement xRoot = new XElement("Root");
+
+        //    XElement xAccessions = new XElement(
+        //        "Accessions",
+        //        new XAttribute("Document", Name));
+
+        //    XElement xSources = new XElement("Sources");
+
+        //    foreach (TrDocument doc in Documents)
+        //    {
+        //        doc.OpenPages();
+
+        //        foreach (TrPage page in doc.Pages)
+        //        {
+        //            if (page.HasRegions)
+        //            {
+        //                foreach (TrRegion textRegion in page.Transcripts[0].Regions)
+        //                {
+        //                    if (textRegion.GetType() == typeof(TrTextRegion))
+        //                    {
+        //                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
+        //                        {
+        //                            if (textLine.TextEquiv != string.Empty)
+        //                            {
+        //                                if (textLine.HasSpecificStructuralTag("Acc"))
+        //                                {
+        //                                    // Der kan være een eller flere...
+        //                                    if (textLine.TextEquiv.Contains(" - "))
+        //                                    {
+        //                                        // der ER flere
+        //                                        string[] accessionNumbers = textLine.TextEquiv.Split('-').ToArray();
+        //                                        foreach (string aN in accessionNumbers)
+        //                                        {
+        //                                            if (aN != "n/a")
+        //                                            {
+        //                                                XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(aN),
+        //                                                    new XAttribute("Doc", doc.Title),
+        //                                                    new XAttribute("Page", page.PageNr),
+        //                                                    new XAttribute("Hpos", textLine.Hpos),
+        //                                                    new XAttribute("Vpos", textLine.Vpos));
+        //                                                xAccessions.Add(xAccession);
+        //                                            }
+        //                                        }
+        //                                    }
+        //                                    else
+        //                                    {
+        //                                        // der er kun een
+        //                                        if (textLine.TextEquiv != "n/a")
+        //                                        {
+        //                                            XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(textLine.TextEquiv),
+        //                                                new XAttribute("Doc", doc.Title),
+        //                                                new XAttribute("Page", page.PageNr),
+        //                                                new XAttribute("Hpos", textLine.Hpos),
+        //                                                new XAttribute("Vpos", textLine.Vpos));
+        //                                            xAccessions.Add(xAccession);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else if (textLine.HasSpecificStructuralTag("caption"))
+        //                                {
+        //                                    XElement xSource = new XElement("Source", textLine.TextEquiv,
+        //                                        new XAttribute("Doc", doc.Title),
+        //                                        new XAttribute("Page", page.PageNr),
+        //                                        new XAttribute("Hpos", textLine.Hpos),
+        //                                        new XAttribute("Vpos", textLine.Vpos));
+        //                                    xSources.Add(xSource);
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    xRoot.Add(xAccessions);
+
+        //    // xRoot.Add(xSources);
+        //    xAccessionsDoc.Add(xRoot);
+        //    return xAccessionsDoc;
+        //}
     }
 }

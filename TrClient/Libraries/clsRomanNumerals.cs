@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="clsRomanNumerals.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace DanishNLP
 {
-    public static class clsRomanNumerals
+    public static class ClsRomanNumerals
     {
-        public static int RomanToArabic(string RomanValue)
+        public static int RomanToArabic(string romanValue)
         {
             // Return the Arabic version of this number.
             int result = 0;
             int new_value = 0;
             int old_value = 1000;
 
-            RomanValue = RomanValue.ToUpper();
+            romanValue = romanValue.ToUpper();
 
-            for (int i = 0; i < RomanValue.Length; i++)
+            for (int i = 0; i < romanValue.Length; i++)
             {
                 // See what the next character is worth.
-                string ch = RomanValue.Substring(i, 1);
+                string ch = romanValue.Substring(i, 1);
 
                 switch (ch)
                 {
@@ -47,7 +45,6 @@ namespace DanishNLP
                         break;
                 }
 
-
                 // See if this character is bigger
                 // than the previous one.
                 if (new_value > old_value)
@@ -55,7 +52,7 @@ namespace DanishNLP
                     // The new value > the previous one.
                     // Add this value to the result
                     // and subtract the previous one twice.
-                    result = result + new_value - 2 * old_value;
+                    result = result + new_value - (2 * old_value);
                 }
                 else
                 {
@@ -63,44 +60,44 @@ namespace DanishNLP
                     // Add it to the result.
                     result = result + new_value;
                 }
+
                 old_value = new_value;
             }
+
             return result;
         }
 
-
-        public static string ArabicToRoman(int ArabicValue)
+        public static string ArabicToRoman(int arabicValue)
         {
             // Return the Roman numeral version of this number.
-
-            int arabic_number = ArabicValue;
+            int arabic_number = arabicValue;
             int digit = 0;
-            string result = "";
+            string result = string.Empty;
 
-            if (ArabicValue > 0)
+            if (arabicValue > 0)
             {
                 // Pull out thousands.
                 digit = arabic_number / 1000;
-                arabic_number = arabic_number - digit * 1000;
+                arabic_number = arabic_number - (digit * 1000);
                 result = result + new string('M', digit);
 
                 // Pull out hundreds.
                 digit = arabic_number / 100;
-                arabic_number = arabic_number - digit * 100;
+                arabic_number = arabic_number - (digit * 100);
                 result = AddRomanDigits(result, digit, 'M', 'D', 'C');
 
                 // Pull out tens.
                 digit = arabic_number / 10;
-                arabic_number = arabic_number - digit * 10;
+                arabic_number = arabic_number - (digit * 10);
                 result = AddRomanDigits(result, digit, 'C', 'L', 'X');
 
                 // Pull out ones.
                 digit = arabic_number;
                 result = AddRomanDigits(result, digit, 'X', 'V', 'I');
             }
+
             return result;
         }
-
 
         private static string AddRomanDigits(string temp_result, int arabic_digit, char ten_letter, char five_letter, char one_letter)
         {
@@ -111,7 +108,6 @@ namespace DanishNLP
             // are the digits for 10, 5, and 1 at this
             // power of ten. For example, 10/5/1 = X/V/I,
             // 100/50/10 = C/L/X, etc.
-
             switch (arabic_digit)
             {
                 case 1:
@@ -134,8 +130,8 @@ namespace DanishNLP
                     result = result + one_letter + ten_letter;
                     break;
             }
+
             return result;
         }
-
     }
 }

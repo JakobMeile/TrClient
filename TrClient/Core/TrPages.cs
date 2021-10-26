@@ -1,85 +1,79 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrPages.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class TrPages : IEnumerable
     {
-        private List<TrPage> Pages;
-        public int Count { get => Pages.Count; }
+        private List<TrPage> pages;
+
+        public int Count { get => pages.Count; }
 
         public TrDocument ParentDocument;
 
-        public void Add(TrPage Page)
+        public void Add(TrPage page)
         {
-            Pages.Add(Page);
-            Page.ParentContainer = this;
-            Page.ParentDocument = this.ParentDocument;
+            pages.Add(page);
+            page.ParentContainer = this;
+            page.ParentDocument = ParentDocument;
         }
 
         public void Sort()
         {
-            Pages.Sort();
+            pages.Sort();
         }
 
         public void Clear()
         {
-            Pages.Clear();
+            pages.Clear();
         }
 
         public TrPage this[int index]
         {
-            get { return Pages[index]; }
-            set { Pages[index] = value; }
+            get { return pages[index]; }
+            set { pages[index] = value; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Pages).GetEnumerator();
+            return ((IEnumerable)pages).GetEnumerator();
         }
 
-        public TrPage GetPageFromPageNr(int Search)
+        public TrPage GetPageFromPageNr(int search)
         {
-            var Page = Pages.Where(p => p.PageNr == Search).FirstOrDefault();
-            return Page;
+            var page = pages.Where(p => p.PageNr == search).FirstOrDefault();
+            return page;
         }
 
-        public TrPage GetPageFromID(string Search)
+        public TrPage GetPageFromID(string search)
         {
-            var Page = Pages.Where(p => p.ID == Search).FirstOrDefault();
-            return Page;
+            var page = pages.Where(p => p.ID == search).FirstOrDefault();
+            return page;
         }
-        
-        public string GetIDFromPageNumber(int SearchNumber)
+
+        public string GetIDFromPageNumber(int searchNumber)
         {
-            string Temp = "";
-            foreach (TrPage Page in Pages)
+            string temp = string.Empty;
+            foreach (TrPage page in pages)
             {
-                if (Page.PageNr == SearchNumber)
+                if (page.PageNr == searchNumber)
                 {
-                    Temp = Page.ID;
+                    temp = page.ID;
                     break;
                 }
             }
-            return Temp;
+
+            return temp;
         }
 
         public TrPages()
         {
-            Pages = new List<TrPage>();
+            pages = new List<TrPage>();
         }
-
     }
 }

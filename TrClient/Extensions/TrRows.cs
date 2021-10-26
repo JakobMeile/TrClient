@@ -1,88 +1,85 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrRows.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using TrClient.Core;
+
     public class TrRows : IEnumerable
     {
-        private List<TrRow> Rows;
-        public int Count { get => Rows.Count; }
+        private List<TrRow> rows;
 
-        private int _maxCellCount = 0;
+        public int Count { get => rows.Count; }
+
+        private int maxCellCount = 0;
+
         public int MaxCellCount
         {
             get
-            {   if (Count > 0)
-                    foreach (TrRow Row in Rows)
-                        if (Row.CellCount > _maxCellCount)
-                            _maxCellCount = Row.CellCount;
-                return _maxCellCount;
+            {
+                if (Count > 0)
+                {
+                    foreach (TrRow row in rows)
+                    {
+                        if (row.CellCount > maxCellCount)
+                        {
+                            maxCellCount = row.CellCount;
+                        }
+                    }
+                }
+
+                return maxCellCount;
             }
         }
 
-        public TrRegion_Text ParentRegion;
+        public TrTextRegion ParentRegion;
 
         // constructor
         public TrRows()
         {
-            Rows = new List<TrRow>();
+            rows = new List<TrRow>();
         }
 
-
-        public void Add(TrRow Row)
+        public void Add(TrRow row)
         {
-            Rows.Add(Row);
-            Row.ParentContainer = this;
-            Row.ParentRegion = this.ParentRegion;
+            rows.Add(row);
+            row.ParentContainer = this;
+            row.ParentRegion = ParentRegion;
         }
 
-        public void Delete(TrRow Row)
+        public void Delete(TrRow row)
         {
-            Rows.Remove(Row);
+            rows.Remove(row);
         }
 
         public void Clear()
         {
-            Rows.Clear();
+            rows.Clear();
         }
 
         public void Sort()
         {
-            Rows.Sort();
+            rows.Sort();
         }
 
         public void RemoveAt(int i)
         {
-            Rows.RemoveAt(i);
+            rows.RemoveAt(i);
             ParentRegion.HasChanged = true;
         }
 
         public TrRow this[int index]
         {
-            get { return Rows[index]; }
-            set { Rows[index] = value; }
+            get { return rows[index]; }
+            set { rows[index] = value; }
         }
-
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Rows).GetEnumerator();
+            return ((IEnumerable)rows).GetEnumerator();
         }
-
     }
 }

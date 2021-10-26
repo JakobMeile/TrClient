@@ -1,49 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
+﻿// <copyright file="TrLogEvent.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System.Text;
+    using TrClient.Core;
+    using TrClient.Libraries;
+
     public class TrLogEvent
     {
         public string PageNr { get; set; }
+
         public string RegionNr { get; set; }
+
         public string LineNr { get; set; }
+
         public string Content { get; set; }
+
         public string LogMessage { get; set; }
 
-        public TrLogEvent(TrTextLine Line, string Message)
+        public TrLogEvent(TrTextLine line, string message)
         {
-            PageNr = Line.ParentRegion.ParentTranscript.ParentPage.PageNr.ToString();
-            RegionNr = Line.ParentRegion.Number.ToString();
-            LineNr = Line.Number.ToString();
-            if (Line.TextEquiv.Length >= TrLibrary.BroadColumnWidth - 3)
-                Content = Line.TextEquiv.Substring(0, TrLibrary.BroadColumnWidth - 5) + "...";
+            PageNr = line.ParentRegion.ParentTranscript.ParentPage.PageNr.ToString();
+            RegionNr = line.ParentRegion.Number.ToString();
+            LineNr = line.Number.ToString();
+            if (line.TextEquiv.Length >= TrLibrary.BroadColumnWidth - 3)
+            {
+                Content = line.TextEquiv.Substring(0, TrLibrary.BroadColumnWidth - 5) + "...";
+            }
             else
-                Content = Line.TextEquiv.PadRight(TrLibrary.BroadColumnWidth);
-            LogMessage = Message;
+            {
+                Content = line.TextEquiv.PadRight(TrLibrary.BroadColumnWidth);
+            }
+
+            LogMessage = message;
         }
 
-        public TrLogEvent(TrPage Page, string Message)
+        public TrLogEvent(TrPage page, string message)
         {
-            PageNr = Page.PageNr.ToString();
+            PageNr = page.PageNr.ToString();
             RegionNr = "-";
             LineNr = "-";
-            Content = "";
-            LogMessage = Message;
+            Content = string.Empty;
+            LogMessage = message;
         }
 
         public TrLogEvent()
         {
-
         }
 
         public override string ToString()

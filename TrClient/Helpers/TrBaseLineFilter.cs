@@ -1,56 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using TrClient;
-using System.Windows.Media;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrBaseLineFilter.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System.ComponentModel;
+
     public class TrBaseLineFilter : INotifyPropertyChanged
     {
-        private bool _coordinatesPositive = true;
+        private bool coordinatesPositive = true;
+
         public bool CoordinatesPositive
         {
-            get { return _coordinatesPositive; }
+            get
+            {
+                return coordinatesPositive;
+            }
+
             set
             {
-                _coordinatesPositive = value;
+                coordinatesPositive = value;
                 NotifyPropertyChanged("CoordinatesPositive");
             }
         }
 
-        private bool _baseLineStraight = true;
+        private bool baseLineStraight = true;
+
         public bool BaseLineStraight
         {
-            get { return _baseLineStraight; }
+            get
+            {
+                return baseLineStraight;
+            }
+
             set
             {
-                _baseLineStraight = value;
+                baseLineStraight = value;
                 NotifyPropertyChanged("BaseLineStraight");
             }
         }
 
-        private bool _baseLineDirectionOK = true;
+        private bool baseLineDirectionOK = true;
+
         public bool BaseLineDirectionOK
         {
-            get { return _baseLineDirectionOK; }
+            get
+            {
+                return baseLineDirectionOK;
+            }
+
             set
             {
-                _baseLineDirectionOK = value;
+                baseLineDirectionOK = value;
                 NotifyPropertyChanged("BaseLineDirectionOK");
             }
         }
-
 
         // Constructor
         public TrBaseLineFilter()
@@ -64,13 +68,14 @@ namespace TrClient.Helpers
             BaseLineDirectionOK = true;
         }
 
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
     }
 }

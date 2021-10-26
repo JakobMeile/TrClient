@@ -1,123 +1,115 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrMarcField.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System;
+    using TrClient.Libraries;
+
     public class TrMarcField : IComparable
     {
-
-        private string RawText;
+        private string rawText;
         public TrLibrary.MarcFelt Number;
 
         public TrMarcFields ParentContainer;
         public TrMarcRecord ParentRecord;
 
-
-        public TrMarcField(string Content, TrLibrary.MarcFelt FieldType)
+        public TrMarcField(string content, TrLibrary.MarcFelt fieldType)
         {
-            RawText = Content;
-            Number = FieldType;
+            rawText = content;
+            Number = fieldType;
         }
 
         public string GetAsText()
         {
-            int TempCode = Convert.ToInt32(Number) * 100;
-            string FieldCode = TempCode.ToString().PadLeft(5, '0') + " L ";
-            string SubFields;
+            int tempCode = Convert.ToInt32(Number) * 100;
+            string fieldCode = tempCode.ToString().PadLeft(5, '0') + " L ";
+            string subFields;
 
-            switch(Number)
+            switch (Number)
             {
                 // Ordinære felter
                 case TrLibrary.MarcFelt.Opstilling:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
                 case TrLibrary.MarcFelt.Forfatter:
-                    SubFields = "$$a" + ExtractSurname(RawText) + "$$h" + ExtractGivenName(RawText);
+                    subFields = "$$a" + ExtractSurname(rawText) + "$$h" + ExtractGivenName(rawText);
                     break;
                 case TrLibrary.MarcFelt.Titel:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
                 case TrLibrary.MarcFelt.Udgivelse:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
                 case TrLibrary.MarcFelt.Datering:
-                    SubFields = "$$c" + RawText;
+                    subFields = "$$c" + rawText;
                     break;
                 case TrLibrary.MarcFelt.Beskrivelse:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
                 case TrLibrary.MarcFelt.Indhold:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
                 case TrLibrary.MarcFelt.Indbinding:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
                 case TrLibrary.MarcFelt.TitelSomEmneord:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
                 case TrLibrary.MarcFelt.Ophav:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
 
                 // særlige felter
                 case TrLibrary.MarcFelt.BrevAfsender:
-                    SubFields = "$$a" + ExtractSurname(RawText) + "$$h" + ExtractGivenName(RawText) + "$$4dkbra";
+                    subFields = "$$a" + ExtractSurname(rawText) + "$$h" + ExtractGivenName(rawText) + "$$4dkbra";
                     break;
                 case TrLibrary.MarcFelt.BrevModtager:
-                    SubFields = "$$a" + ExtractSurname(RawText) + "$$h" + ExtractGivenName(RawText) + "$$4dkbrm";
+                    subFields = "$$a" + ExtractSurname(rawText) + "$$h" + ExtractGivenName(rawText) + "$$4dkbrm";
                     break;
 
                 // udefineret
                 default:
-                    SubFields = "$$a" + RawText;
+                    subFields = "$$a" + rawText;
                     break;
             }
-            return FieldCode + " " + SubFields;
+
+            return fieldCode + " " + subFields;
         }
 
-        private string ExtractGivenName(string Content)
+        private string ExtractGivenName(string content)
         {
-            string temp = Content;
+            string temp = content;
             temp = temp.Substring(temp.IndexOf(' '));
             return temp;
         }
 
-        private string ExtractSurname(string Content)
+        private string ExtractSurname(string content)
         {
-            string temp = DeleteTrailingPunctuation(Content);
+            string temp = DeleteTrailingPunctuation(content);
             temp = temp.Substring(temp.LastIndexOf(' ') + 1);
             return temp;
         }
 
-        private string DeleteTrailingPunctuation(string Content)
+        private string DeleteTrailingPunctuation(string content)
         {
-            string temp = Content.Trim();
+            string temp = content.Trim();
 
-            string PunctuationMarks = ",.;:?!";
-            char Last = temp[temp.Length];
-            if (PunctuationMarks.IndexOf(Last) != -1)
+            string punctuationMarks = ",.;:?!";
+            char last = temp[temp.Length];
+            if (punctuationMarks.IndexOf(last) != -1)
+            {
                 temp = temp.Substring(temp.Length - 1).Trim();
+            }
+
             return temp;
         }
-
 
         public int CompareTo(object obj)
         {
             var field = obj as TrMarcField;
             return Number.CompareTo(field.Number);
         }
-
     }
 }

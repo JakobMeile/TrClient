@@ -1,331 +1,428 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using TrClient;
-using System.Windows.Media;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
+﻿// <copyright file="TrLineFilterSettings.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System.ComponentModel;
+    using System.Windows.Media;
+
     public class TrLineFilterSettings : INotifyPropertyChanged
     {
+        private bool filterByPageNumber;
 
-
-
-        private bool _filterByPageNumber;
         public bool FilterByPageNumber
         {
-            get { return _filterByPageNumber; }
+            get
+            {
+                return filterByPageNumber;
+            }
+
             set
             {
-                _filterByPageNumber = value;
+                filterByPageNumber = value;
                 NotifyPropertyChanged("FilterByPageNumber");
             }
         }
 
-        private bool _filterByRegEx;
+        private bool filterByRegEx;
+
         public bool FilterByRegEx
         {
-            get { return _filterByRegEx; }
+            get
+            {
+                return filterByRegEx;
+            }
+
             set
             {
-                _filterByRegEx = value;
+                filterByRegEx = value;
                 NotifyPropertyChanged("FilterByRegEx");
             }
         }
 
-        private bool _filterByStructuralTag;
+        private bool filterByStructuralTag;
+
         public bool FilterByStructuralTag
         {
-            get { return _filterByStructuralTag; }
+            get
+            {
+                return filterByStructuralTag;
+            }
+
             set
             {
-                _filterByStructuralTag = value;
+                filterByStructuralTag = value;
                 NotifyPropertyChanged("FilterByStructuralTag");
             }
         }
 
-        private bool _filterByTextSizeFactor;
+        private bool filterByTextSizeFactor;
+
         public bool FilterByTextSizeFactor
         {
-            get { return _filterByTextSizeFactor; }
+            get
+            {
+                return filterByTextSizeFactor;
+            }
+
             set
             {
-                _filterByTextSizeFactor = value;
+                filterByTextSizeFactor = value;
                 NotifyPropertyChanged("FilterByTextSizeFactor");
             }
         }
 
-        private bool _filterByTextLength;
+        private bool filterByTextLength;
+
         public bool FilterByTextLength
         {
-            get { return _filterByTextLength; }
+            get
+            {
+                return filterByTextLength;
+            }
+
             set
             {
-                _filterByTextLength = value;
+                filterByTextLength = value;
                 NotifyPropertyChanged("FilterByTextLength");
             }
         }
 
+        private bool filterByPosition;
 
-        private bool _filterByPosition;
         public bool FilterByPosition
         {
-            get { return _filterByPosition;  }
+            get
+            {
+                return filterByPosition;
+            }
+
             set
             {
-                _filterByPosition = value;
+                filterByPosition = value;
                 NotifyPropertyChanged("FilterByPosition");
             }
         }
 
+        private int startPage;
 
-
-
-
-        private int _startPage;
         public int StartPage
         {
-            get { return _startPage; }
+            get
+            {
+                return startPage;
+            }
+
             set
             {
-                _startPage = value;
+                startPage = value;
                 NotifyPropertyChanged("StartPage");
             }
         }
 
-        private int _endPage;
+        private int endPage;
+
         public int EndPage
         {
-            get { return _endPage; }
+            get
+            {
+                return endPage;
+            }
+
             set
             {
-                _endPage = value;
+                endPage = value;
                 NotifyPropertyChanged("EndPage");
             }
         }
 
-        private string _rexExPattern;
+        private string rexExPattern;
+
         public string RegExPattern
         {
-            get { return _rexExPattern; }
+            get
+            {
+                return rexExPattern;
+            }
+
             set
             {
-                _rexExPattern = value;
+                rexExPattern = value;
                 NotifyPropertyChanged("RegExPattern");
             }
         }
 
-        private string _structuralTag;
+        private string structuralTag;
+
         public string StructuralTag
         {
-            get { return _structuralTag; }
+            get
+            {
+                return structuralTag;
+            }
+
             set
             {
-                _structuralTag = value;
+                structuralTag = value;
                 NotifyPropertyChanged("StructuralTag");
             }
         }
 
-        private int _lowerLimitTextSizeFactor = 0;
+        private int lowerLimitTextSizeFactor = 0;
+
         public int LowerLimitTextSizeFactor
         {
-            get { return _lowerLimitTextSizeFactor; }
+            get
+            {
+                return lowerLimitTextSizeFactor;
+            }
+
             set
             {
-                _lowerLimitTextSizeFactor = value;
+                lowerLimitTextSizeFactor = value;
                 NotifyPropertyChanged("LowerLimitTextSizeFactor");
             }
         }
 
-        private int _upperLimitTextSizeFactor = 0;
+        private int upperLimitTextSizeFactor = 0;
+
         public int UpperLimitTextSizeFactor
         {
-            get { return _upperLimitTextSizeFactor; }
+            get
+            {
+                return upperLimitTextSizeFactor;
+            }
+
             set
             {
-                _upperLimitTextSizeFactor = value;
+                upperLimitTextSizeFactor = value;
                 NotifyPropertyChanged("UpperLimitTextSizeFactor");
             }
         }
 
-        private int _lowerLimitTextLength = 0;
+        private int lowerLimitTextLength = 0;
+
         public int LowerLimitTextLength
         {
-            get { return _lowerLimitTextLength; }
+            get
+            {
+                return lowerLimitTextLength;
+            }
+
             set
             {
-                _lowerLimitTextLength = value;
+                lowerLimitTextLength = value;
                 NotifyPropertyChanged("LowerLimitTextLength");
             }
         }
 
-        private int _upperLimitTextLength = 0;
+        private int upperLimitTextLength = 0;
+
         public int UpperLimitTextLength
         {
-            get { return _upperLimitTextLength; }
+            get
+            {
+                return upperLimitTextLength;
+            }
+
             set
             {
-                _upperLimitTextLength = value;
+                upperLimitTextLength = value;
                 NotifyPropertyChanged("UpperLimitTextLength");
             }
         }
 
+        private double topBorder = 0;
 
-
-        private double _topBorder = 0;
         public double TopBorder
         {
-            get { return _topBorder; }
+            get
+            {
+                return topBorder;
+            }
+
             set
             {
-                _topBorder = value;
+                topBorder = value;
                 NotifyPropertyChanged("TopBorder");
             }
         }
 
-        private double _bottomBorder = 100;
+        private double bottomBorder = 100;
+
         public double BottomBorder
         {
-            get { return _bottomBorder; }
+            get
+            {
+                return bottomBorder;
+            }
+
             set
             {
-                _bottomBorder = value;
+                bottomBorder = value;
                 NotifyPropertyChanged("BottomBorder");
             }
         }
 
-        private double _leftBorder = 0;
+        private double leftBorder = 0;
+
         public double LeftBorder
         {
-            get { return _leftBorder; }
+            get
+            {
+                return leftBorder;
+            }
+
             set
             {
-                _leftBorder = value;
+                leftBorder = value;
                 NotifyPropertyChanged("LeftBorder");
             }
         }
 
+        private double rightBorder = 100;
 
-        private double _rightBorder = 100;
         public double RightBorder
         {
-            get { return _rightBorder; }
+            get
+            {
+                return rightBorder;
+            }
+
             set
             {
-                _rightBorder = value;
+                rightBorder = value;
                 NotifyPropertyChanged("RightBorder");
             }
         }
 
-        private double _windowWidth;
+        private double windowWidth;
+
         public double WindowWidth
         {
             get
             {
-                _windowWidth = RightBorder - LeftBorder;
-                return _windowWidth;
+                windowWidth = RightBorder - LeftBorder;
+                return windowWidth;
             }
+
             set
             {
-                _windowWidth = value;
+                windowWidth = value;
                 NotifyPropertyChanged("WindowWidth");
             }
         }
 
-        private double _windowHeigth;
+        private double windowHeigth;
+
         public double WindowHeigth
         {
             get
             {
-                _windowHeigth = BottomBorder - TopBorder;
-                return _windowHeigth;
+                windowHeigth = BottomBorder - TopBorder;
+                return windowHeigth;
             }
+
             set
             {
-                _windowHeigth = value;
+                windowHeigth = value;
                 NotifyPropertyChanged("WindowHeigth");
             }
         }
 
-        private bool _inside = true;
+        private bool inside = true;
+
         public bool Inside
         {
-            get { return _inside; }
+            get
+            {
+                return inside;
+            }
+
             set
             {
-                _inside = value;
+                inside = value;
                 NotifyPropertyChanged("Inside");
                 if (Inside)
                 {
                     FrontColor = Brushes.LightCyan;
                     BackColor = Brushes.LightBlue;
-
                 }
                 else
                 {
                     FrontColor = Brushes.LightBlue;
                     BackColor = Brushes.LightCyan;
-
                 }
             }
         }
 
-        private SolidColorBrush _frontColor = Brushes.Red;
+        private SolidColorBrush frontColor = Brushes.Red;
+
         public SolidColorBrush FrontColor
         {
-            get { return _frontColor; }
+            get
+            {
+                return frontColor;
+            }
+
             set
             {
-                if (_frontColor != value)
+                if (frontColor != value)
                 {
-                    _frontColor = value;
+                    frontColor = value;
                     NotifyPropertyChanged("FrontColor");
                 }
             }
         }
 
-        private SolidColorBrush _backColor = Brushes.Red;
+        private SolidColorBrush backColor = Brushes.Red;
+
         public SolidColorBrush BackColor
         {
-            get { return _backColor; }
+            get
+            {
+                return backColor;
+            }
+
             set
             {
-                if (_backColor != value)
+                if (backColor != value)
                 {
-                    _backColor = value;
+                    backColor = value;
                     NotifyPropertyChanged("BackColor");
                 }
             }
         }
 
+        private bool includeEnding;
 
-        private bool _includeEnding;
         public bool IncludeEnding
         {
-            get { return _includeEnding; }
+            get
+            {
+                return includeEnding;
+            }
+
             set
             {
-                _includeEnding = value;
+                includeEnding = value;
                 NotifyPropertyChanged("IncludeEnding");
             }
         }
 
-        private bool _excludeOddSizedPages;
+        private bool excludeOddSizedPages;
+
         public bool ExcludeOddSizedPages
         {
-            get { return _excludeOddSizedPages;  }
+            get
+            {
+                return excludeOddSizedPages;
+            }
+
             set
             {
-                _excludeOddSizedPages = value;
+                excludeOddSizedPages = value;
                 NotifyPropertyChanged("ExcludeOddSizedPages");
             }
         }
@@ -335,9 +432,10 @@ namespace TrClient.Helpers
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
-
 
         public void Reset()
         {
@@ -350,8 +448,8 @@ namespace TrClient.Helpers
 
             StartPage = 0;
             EndPage = 0;
-            RegExPattern = "";
-            StructuralTag = "";
+            RegExPattern = string.Empty;
+            StructuralTag = string.Empty;
 
             LowerLimitTextSizeFactor = 0;
             UpperLimitTextSizeFactor = 0;
@@ -370,13 +468,9 @@ namespace TrClient.Helpers
         }
 
         // Constructor
-
         public TrLineFilterSettings()
         {
             Reset();
-
         }
-
-
     }
 }

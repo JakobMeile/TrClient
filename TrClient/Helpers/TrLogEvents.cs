@@ -1,43 +1,36 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrLogEvents.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System.Collections;
+    using System.Collections.Generic;
+
     public class TrLogEvents : IEnumerable
     {
-        private List<TrLogEvent> Events;
-        public int Count { get => Events.Count; }
+        private List<TrLogEvent> events;
 
-        public void Add(TrLogEvent Event)
+        public int Count { get => events.Count; }
+
+        public void Add(TrLogEvent @event)
         {
-            Events.Add(Event);
+            events.Add(@event);
         }
 
         public void Clear()
         {
-            Events.Clear();
+            events.Clear();
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Events).GetEnumerator();
+            return ((IEnumerable)events).GetEnumerator();
         }
 
         public TrLogEvents()
         {
-            Events = new List<TrLogEvent>();
+            events = new List<TrLogEvent>();
         }
-
     }
 }

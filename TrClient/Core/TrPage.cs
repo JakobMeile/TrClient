@@ -1,44 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Serialization;
-using System.IO;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Text.RegularExpressions;
-using DanishNLP;
+﻿// <copyright file="TrPage.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+    using DanishNLP;
+    using TrClient.Extensions;
+    using TrClient.Helpers;
+    using TrClient.Libraries;
+
     public class TrPage : IComparable, INotifyPropertyChanged
     {
         public string ID { get; set; }
+
         public int PageNr { get; set; }
+
         public string ImageFileName { get; set; }
 
         public string ImageURL { get; set; }
+
         public int Width { get; set; }
+
         public int Height { get; set; }
+
         public string PageFileName { get; set; }
+
         public int AssumedRowCount { get; set; }
+
         public double ActualRowHeight { get; set; }
+
         public TrTranscripts Transcripts = new TrTranscripts();
 
         public TrPages ParentContainer;
@@ -46,52 +45,57 @@ namespace TrClient.Core
 
         public BitmapImage PageImage { get; set; }
 
-        private int _transcriptCount;
+        private int transcriptCount;
+
         public int TranscriptCount
         {
             get
             {
-                _transcriptCount = Transcripts.Count;
-                return _transcriptCount;
+                transcriptCount = Transcripts.Count;
+                return transcriptCount;
             }
         }
 
-        private bool _hasTables;
+        private bool hasTables;
+
         public bool HasTables
         {
             get
             {
-                _hasTables = Transcripts[0].HasTables;
-                return _hasTables;
+                hasTables = Transcripts[0].HasTables;
+                return hasTables;
             }
         }
 
-        private bool _hasFormerTables;
+        private bool hasFormerTables;
+
         public bool HasFormerTables
         {
             get
             {
-                _hasFormerTables = false;
+                hasFormerTables = false;
                 if (TranscriptCount > 1)
                 {
-                    TrTranscript Transcript;
+                    TrTranscript transcript;
                     for (int i = 0; i < TranscriptCount; i++)
                     {
                         // Debug.WriteLine($"Page {PageNr}, Transcript {i}:");
-                        Transcript = Transcripts[i];
-                        foreach (TrRegion Region in Transcript.Regions)
+                        transcript = Transcripts[i];
+                        foreach (TrRegion region in transcript.Regions)
                         {
-                            _hasFormerTables = _hasFormerTables || (Region.GetType() == typeof(TrRegion_Table));
+                            hasFormerTables = hasFormerTables || (region.GetType() == typeof(TrTableRegion));
+
                             // Debug.WriteLine($"Region {Region.Number}, Type {Region.GetType().ToString()}");
                         }
+
                         //if (Tra.Regions.Count > 0)
                         //{
 
                         //}
-                       
                     }
                 }
-                return _hasFormerTables;
+
+                return hasFormerTables;
             }
         }
 
@@ -102,47 +106,45 @@ namespace TrClient.Core
                 Debug.WriteLine($"Page {PageNr}: Calling convert tables");
                 Transcripts[0].ConvertTablesToRegions();
             }
-                
         }
 
         public void CopyOldTablesToNewestTranscript()
         {
             // NB: Kopierer også, selv om der er tabeller i SENESTE transcript - derfor er dette tjek lagt ud i DOCUMENT
-
             if (HasRegions && HasFormerTables)
             {
-                bool TablesFound = false;
-                int TranscriptNumberWithTables = 0;
+                bool tablesFound = false;
+                int transcriptNumberWithTables = 0;
 
-                TrTranscript NewestTranscript = Transcripts[0];
-                TrTranscript FormerTranscript = null;
+                TrTranscript newestTranscript = Transcripts[0];
+                TrTranscript formerTranscript = null;
 
                 // find latest transcript with tables
                 if (TranscriptCount > 1)
                 {
                     for (int i = 1; i < TranscriptCount; i++)
                     {
-                        FormerTranscript = Transcripts[i];
-                        if (FormerTranscript.HasTables)
+                        formerTranscript = Transcripts[i];
+                        if (formerTranscript.HasTables)
                         {
-                            TablesFound = true;
-                            TranscriptNumberWithTables = i;
-                            Debug.WriteLine($"Page {PageNr}: Found former table in transcript # {TranscriptNumberWithTables}");
+                            tablesFound = true;
+                            transcriptNumberWithTables = i;
+                            Debug.WriteLine($"Page {PageNr}: Found former table in transcript # {transcriptNumberWithTables}");
                             break;
                         }
                     }
                 }
-                
-                if (TablesFound)
+
+                if (tablesFound)
                 {
                     // FormerTranscript er nu det seneste transcript med tables
-                    foreach (TrRegion FormerRegion in FormerTranscript.Regions)
+                    foreach (TrRegion formerRegion in formerTranscript.Regions)
                     {
-                        if (FormerRegion.GetType() == typeof(TrRegion_Table))
+                        if (formerRegion.GetType() == typeof(TrTableRegion))
                         {
-                            Debug.WriteLine($"Page {PageNr}: Copying former table from transcript # {TranscriptNumberWithTables}");
-                            NewestTranscript.Regions.Add(FormerRegion);
-                            NewestTranscript.HasChanged = true;
+                            Debug.WriteLine($"Page {PageNr}: Copying former table from transcript # {transcriptNumberWithTables}");
+                            newestTranscript.Regions.Add(formerRegion);
+                            newestTranscript.HasChanged = true;
                         }
                     }
                 }
@@ -154,47 +156,60 @@ namespace TrClient.Core
             }
         }
 
+        private bool isPageImageLoaded = false;
 
-
-        private bool _isPageImageLoaded = false;
         public bool IsPageImageLoaded
         {
             get
-            { return _isPageImageLoaded; }
+            {
+                return isPageImageLoaded;
+            }
+
             set
             {
-                if (_isPageImageLoaded != value)
+                if (isPageImageLoaded != value)
                 {
-                    _isPageImageLoaded = value;
+                    isPageImageLoaded = value;
                     NotifyPropertyChanged("IsPageImageLoaded");
                 }
             }
         }
 
-        private double _assumedRowHeight;
+        private double assumedRowHeight;
+
         public double AssumedRowHeight
         {
             get
             {
                 if (AssumedRowCount != 0)
-                    _assumedRowHeight = (double)Height / (double)AssumedRowCount;
+                {
+                    assumedRowHeight = (double)Height / (double)AssumedRowCount;
+                }
                 else
-                    _assumedRowHeight = 0;
-                return _assumedRowHeight;
+                {
+                    assumedRowHeight = 0;
+                }
+
+                return assumedRowHeight;
             }
         }
 
-        private bool _isLoaded = false;
+        private bool isLoaded = false;
+
         public bool IsLoaded
         {
-            get { return _isLoaded; }
+            get
+            {
+                return isLoaded;
+            }
+
             set
             {
-                if (_isLoaded != value)
+                if (isLoaded != value)
                 {
-                    _isLoaded = value;
+                    isLoaded = value;
                     NotifyPropertyChanged("IsLoaded");
-                    switch (_isLoaded)
+                    switch (isLoaded)
                     {
                         case true:
                             StatusColor = Brushes.LimeGreen;
@@ -207,65 +222,102 @@ namespace TrClient.Core
             }
         }
 
+        private SolidColorBrush statusColor = Brushes.Red;
 
-        private SolidColorBrush _statusColor = Brushes.Red;
         public SolidColorBrush StatusColor
         {
-            get { return _statusColor; }
+            get
+            {
+                return statusColor;
+            }
+
             set
             {
-                if (_statusColor != value)
+                if (statusColor != value)
                 {
-                    _statusColor = value;
+                    statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
         }
 
-        private bool _hasChanged = false;
+        private bool hasChanged = false;
+
         public bool HasChanged
         {
-            get { return _hasChanged; }
+            get
+            {
+                return hasChanged;
+            }
+
             set
             {
-                _hasChanged = value;
+                hasChanged = value;
                 NotifyPropertyChanged("HasChanged");
-                if (_hasChanged)
+                if (hasChanged)
+                {
                     StatusColor = Brushes.Orange;
+                }
+
                 ParentDocument.HasChanged = value;
             }
         }
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
+                changesUploaded = value;
                 NotifyPropertyChanged("ChangesUploaded");
-                if (_changesUploaded)
+                if (changesUploaded)
+                {
                     StatusColor = Brushes.DarkViolet;
+                }
+
                 ParentDocument.ChangesUploaded = value;
             }
         }
 
-        private bool _hasRegions;
+        private bool hasRegions;
+
         public bool HasRegions
         {
             get
             {
-                _hasRegions = Transcripts[0].HasRegions;
-                return _hasRegions;
+                hasRegions = Transcripts[0].HasRegions;
+                return hasRegions;
             }
         }
 
-        public bool ExistsRegionNumber(int RegionNumber)
+        private bool hasLines;
+
+        public bool HasLines
+        {
+            get
+            {
+                hasLines = GetLines().Count > 0;
+                return hasLines;
+            }
+        }
+
+        public bool ExistsRegionNumber(int regionNumber)
         {
             bool temp = false;
             if (HasRegions)
-                if (RegionNumber <= Transcripts[0].Regions.Count)
+            {
+                if (regionNumber <= Transcripts[0].Regions.Count)
+                {
                     temp = true;
+                }
+            }
+
             return temp;
         }
 
@@ -294,7 +346,9 @@ namespace TrClient.Core
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
 
         public int CompareTo(object obj)
@@ -304,41 +358,35 @@ namespace TrClient.Core
         }
 
         // constructor ONLINE
-        public TrPage(string PageID, int iPageNr, string PageFileName, string ImageFileURL, int PageW, int PageH)
+        public TrPage(string pageID, int iPageNr, string pageFileName, string imageFileURL, int pageW, int pageH)
         {
-            ID = PageID;
+            ID = pageID;
             PageNr = iPageNr;
-            ImageFileName = PageFileName;
-            ImageURL = ImageFileURL;
-            Width = PageW;
-            Height = PageH;
+            ImageFileName = pageFileName;
+            ImageURL = imageFileURL;
+            Width = pageW;
+            Height = pageH;
 
             Transcripts.ParentPage = this;
             IsLoaded = false;
         }
 
         // constructor OFFLINE
-        public TrPage(string PageID, int iPageNr, string PageFileName, string ImageFileURL, int PageW, int PageH, string PageFile)
+        public TrPage(string pageID, int iPageNr, string pageFileName, string imageFileURL, int pageW, int pageH, string pageFile)
         {
-            ID = PageID;
+            ID = pageID;
             PageNr = iPageNr;
-            ImageFileName = PageFileName;
-            ImageURL = ImageFileURL;
-            Width = PageW;
-            Height = PageH;
-            PageFileName = PageFile;
+            ImageFileName = pageFileName;
+            ImageURL = imageFileURL;
+            Width = pageW;
+            Height = pageH;
+            pageFileName = pageFile;
 
             Transcripts.ParentPage = this;
             IsLoaded = false;
 
             // Debug.WriteLine("Page created! ");
-
-
-
-
-
         }
-
 
         //public void SetColumnNumbers(int AssumedNumberOfColumns)
         //{
@@ -413,55 +461,52 @@ namespace TrClient.Core
         //            //    TL.RowNumber = (int)(Convert.ToDouble(TL.Vpos) / ActualRowHeight);
         //            //    Debug.WriteLine($"Row = {TL.RowNumber}, Vpos = {TL.Vpos}, Hpos = {TL.Hpos}");
         //            //}
-                      
-
-
 
         //        }
         //    }
         //}
-
-        public void DeleteRegionsWithTag(string RegionalTagValue)
+        public void DeleteRegionsWithTag(string regionalTagValue)
         {
-            TrTranscript Transcript = Transcripts[0];
-            foreach (TrRegion TR in Transcript.Regions)
+            TrTranscript transcript = Transcripts[0];
+            foreach (TrRegion textRegion in transcript.Regions)
             {
                 // if (TR.HasStructuralTag && TR.StructuralTagValue != RegionalTagValue)
-
-                if (TR.StructuralTagValue == RegionalTagValue)
+                if (textRegion.StructuralTagValue == regionalTagValue)
                 {
-                    TR.MarkToDeletion = true;
-                    Debug.WriteLine($"Page# {PageNr}, Region# {TR.Number}: Marked to deletion (struct. tag = {TR.StructuralTagValue}, chosen tag = {RegionalTagValue})");
+                    textRegion.MarkToDeletion = true;
+                    Debug.WriteLine($"Page# {PageNr}, Region# {textRegion.Number}: Marked to deletion (struct. tag = {textRegion.StructuralTagValue}, chosen tag = {regionalTagValue})");
                 }
             }
-            for (int i = Transcript.Regions.Count - 1; i >= 0; i--)
-            {
-                if (Transcript.Regions[i].MarkToDeletion)
-                    Transcript.Regions.RemoveAt(i);
-            }
 
+            for (int i = transcript.Regions.Count - 1; i >= 0; i--)
+            {
+                if (transcript.Regions[i].MarkToDeletion)
+                {
+                    transcript.Regions.RemoveAt(i);
+                }
+            }
         }
 
-
-        public void DeleteRegionsOtherThan(string RegionalTagValue)
+        public void DeleteRegionsOtherThan(string regionalTagValue)
         {
-            TrTranscript Transcript = Transcripts[0];
-            foreach (TrRegion TR in Transcript.Regions)
+            TrTranscript transcript = Transcripts[0];
+            foreach (TrRegion textRegion in transcript.Regions)
             {
                 // if (TR.HasStructuralTag && TR.StructuralTagValue != RegionalTagValue)
-
-                if (TR.StructuralTagValue != RegionalTagValue)
+                if (textRegion.StructuralTagValue != regionalTagValue)
                 {
-                    TR.MarkToDeletion = true;
-                    Debug.WriteLine($"Page# {PageNr}, Region# {TR.Number}: Marked to deletion (struct. tag = {TR.StructuralTagValue}, preserve = {RegionalTagValue})");
+                    textRegion.MarkToDeletion = true;
+                    Debug.WriteLine($"Page# {PageNr}, Region# {textRegion.Number}: Marked to deletion (struct. tag = {textRegion.StructuralTagValue}, preserve = {regionalTagValue})");
                 }
             }
-            for (int i = Transcript.Regions.Count - 1; i >= 0; i--)
-            {
-                if (Transcript.Regions[i].MarkToDeletion)
-                    Transcript.Regions.RemoveAt(i);
-            }
 
+            for (int i = transcript.Regions.Count - 1; i >= 0; i--)
+            {
+                if (transcript.Regions[i].MarkToDeletion)
+                {
+                    transcript.Regions.RemoveAt(i);
+                }
+            }
         }
 
         public void DeleteEmptyRegions()
@@ -469,20 +514,23 @@ namespace TrClient.Core
             //Debug.WriteLine($"Page # {PageNr}");
             if (HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
-                foreach (TrRegion TR in Transcript.Regions)
+                TrTranscript transcript = Transcripts[0];
+                foreach (TrRegion textRegion in transcript.Regions)
                 {
                     //Debug.WriteLine($"Region# {TR.Number}");
-                    if (!TR.HasLines)
+                    if (!textRegion.HasLines)
                     {
                         //Debug.WriteLine($"Hasn't got lines!");
-                        TR.MarkToDeletion = true;
+                        textRegion.MarkToDeletion = true;
                     }
                 }
-                for (int i = Transcript.Regions.Count - 1; i >= 0; i--)
+
+                for (int i = transcript.Regions.Count - 1; i >= 0; i--)
                 {
-                    if (Transcript.Regions[i].MarkToDeletion)
-                        Transcript.Regions.RemoveAt(i);
+                    if (transcript.Regions[i].MarkToDeletion)
+                    {
+                        transcript.Regions.RemoveAt(i);
+                    }
                 }
             }
         }
@@ -493,136 +541,146 @@ namespace TrClient.Core
             {
                 Transcripts[0].Regions.Sort();
             }
-
         }
 
         public void RenumberRegionsVertically()
         {
             if (HasRegions)
+            {
                 Transcripts[0].Regions.ReNumberVertically();
+            }
         }
 
         public void RenumberRegionsHorizontally()
         {
             if (HasRegions)
+            {
                 Transcripts[0].Regions.ReNumberHorizontally();
+            }
         }
 
-
-
-        public void DeleteLinesWithTag(string StructuralTagValue)
+        public void DeleteLinesWithTag(string structuralTagValue)
         {
             if (HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
+                TrTranscript transcript = Transcripts[0];
 
-                foreach (TrRegion TR in Transcript.Regions)
+                foreach (TrRegion textRegion in transcript.Regions)
                 {
-                    if (TR.HasLines)
+                    if (textRegion.HasLines)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (TL.StructuralTagValue == StructuralTagValue)
+                                if (textLine.StructuralTagValue == structuralTagValue)
                                 {
-                                    TL.MarkToDeletion = true;
+                                    textLine.MarkToDeletion = true;
+
                                     //Debug.WriteLine($"Page# {PageNr}, Region# {TR.Number}: Marked to deletion (struct. tag = {TR.StructuralTagValue}, chosen tag = {StructuralTagValue})");
                                 }
                             }
 
-                            for (int i = (TR as TrRegion_Text).TextLines.Count - 1; i >= 0; i--)
+                            for (int i = (textRegion as TrTextRegion).TextLines.Count - 1; i >= 0; i--)
                             {
-                                if ((TR as TrRegion_Text).TextLines[i].MarkToDeletion)
-                                    (TR as TrRegion_Text).TextLines.RemoveAt(i);
+                                if ((textRegion as TrTextRegion).TextLines[i].MarkToDeletion)
+                                {
+                                    (textRegion as TrTextRegion).TextLines.RemoveAt(i);
+                                }
                             }
-
                         }
-
                     }
                 }
             }
         }
 
-
-        public void DeleteLinesOtherThan(string StructuralTagValue)
+        public void DeleteLinesOtherThan(string structuralTagValue)
         {
             if (HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
+                TrTranscript transcript = Transcripts[0];
 
-                foreach (TrRegion TR in Transcript.Regions)
+                foreach (TrRegion textRegion in transcript.Regions)
                 {
-                    if (TR.HasLines)
+                    if (textRegion.HasLines)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (TL.StructuralTagValue != StructuralTagValue)
+                                if (textLine.StructuralTagValue != structuralTagValue)
                                 {
-                                    TL.MarkToDeletion = true;
+                                    textLine.MarkToDeletion = true;
+
                                     //Debug.WriteLine($"Page# {PageNr}, Region# {TR.Number}: Marked to deletion (struct. tag = {TR.StructuralTagValue}, chosen tag = {StructuralTagValue})");
                                 }
                             }
 
-                            for (int i = (TR as TrRegion_Text).TextLines.Count - 1; i >= 0; i--)
+                            for (int i = (textRegion as TrTextRegion).TextLines.Count - 1; i >= 0; i--)
                             {
-                                if ((TR as TrRegion_Text).TextLines[i].MarkToDeletion)
-                                    (TR as TrRegion_Text).TextLines.RemoveAt(i);
+                                if ((textRegion as TrTextRegion).TextLines[i].MarkToDeletion)
+                                {
+                                    (textRegion as TrTextRegion).TextLines.RemoveAt(i);
+                                }
                             }
-
                         }
-
-
                     }
                 }
             }
         }
 
-
-        public List<string> GetExpandedText(bool Refine, bool ConvertOtrema)
+        public List<string> GetExpandedText(bool refine, bool convertOtrema)
         {
-            List<string> TempList = new List<string>();
-            List<string> RegionList;
+            List<string> tempList = new List<string>();
+            List<string> regionList;
 
-            foreach (TrRegion TR in Transcripts[0].Regions)
+            foreach (TrRegion textRegion in Transcripts[0].Regions)
             {
-                RegionList = TR.GetExpandedText(Refine, ConvertOtrema);
-                foreach (string s in RegionList)
-                    TempList.Add(s);
+                regionList = textRegion.GetExpandedText(refine, convertOtrema);
+                foreach (string s in regionList)
+                {
+                    tempList.Add(s);
+                }
             }
-            return TempList;
+
+            return tempList;
         }
 
-        private TrWords _words = new TrWords();
+        private TrWords words = new TrWords();
+
         public TrWords Words
         {
             get
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    foreach (TrWord W in TR.Words)
-                        _words.Add(W);
+                    foreach (TrWord w in textRegion.Words)
+                    {
+                        words.Add(w);
+                    }
                 }
-                return _words;
+
+                return words;
             }
         }
 
-        private int _numberOfRegions = 0;
+        private int numberOfRegions = 0;
+
         public int NumberOfRegions
         {
             get
             {
                 if (HasRegions)
                 {
-                    _numberOfRegions = Transcripts[0].Regions.Count;
+                    numberOfRegions = Transcripts[0].Regions.Count;
                 }
-                return _numberOfRegions;
+
+                return numberOfRegions;
             }
         }
 
-        private int _numberOfLines = 0;
+        private int numberOfLines = 0;
+
         public int NumberOfLines
         {
             get
@@ -630,235 +688,246 @@ namespace TrClient.Core
                 int temp = 0;
                 if (HasRegions)
                 {
-                    foreach (TrRegion TR in Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in Transcripts[0].Regions)
                     {
-                        temp = temp + TR.NumberOfLines;
+                        temp = temp + textRegion.NumberOfLines;
                     }
                 }
-                _numberOfLines = temp;
-                return _numberOfLines;
+
+                numberOfLines = temp;
+                Debug.Print($"Page {PageNr}: Number of lines = {numberOfLines}");
+                return numberOfLines;
             }
         }
 
         // public int NumberOfTranscribedRegions { get; }
         // public int NumberOfTranscribedLines { get; }
-
-
-
         public TrTextLines GetLines()
         {
-            TrTextLines TempList = new TrTextLines();
+            TrTextLines tempList = new TrTextLines();
 
             if (HasRegions)
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            TempList.Add(TL);
-                            TL.ParentRegion = (TR as TrRegion_Text);
+                            tempList.Add(textLine);
+                            textLine.ParentRegion = textRegion as TrTextRegion;
                         }
-
                     }
-
                 }
-
             }
-            return TempList;
+
+            return tempList;
         }
-
-
 
         public TrParagraphs GetParagraphs()
         {
-            TrParagraphs TempList = new TrParagraphs();
+            TrParagraphs tempList = new TrParagraphs();
             Debug.WriteLine($"Page:GetP - page: {PageNr}");
 
             if (HasRegions)
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        Debug.WriteLine($"Page:GetP - region {TR.Number}");
-                        TrParagraphs TRPS = (TR as TrRegion_Text).GetParagraphs();
-                        if (TRPS != null)
+                        Debug.WriteLine($"Page:GetP - region {textRegion.Number}");
+                        TrParagraphs tRPS = (textRegion as TrTextRegion).GetParagraphs();
+                        if (tRPS != null)
                         {
-                            foreach (TrParagraph TRP in TRPS)
+                            foreach (TrParagraph tRP in tRPS)
                             {
-                                Debug.WriteLine($"Page:GetP - paragraph {TRP.Number}");
-                                TempList.Add(TRP);
-                                TRP.ParentRegion = (TrRegion_Text)TR;
-                                Debug.WriteLine($"Page:GetP - name      {TRP.Name}");
-                                Debug.WriteLine($"Page:GetP - content   {TRP.Content}");
-
+                                Debug.WriteLine($"Page:GetP - paragraph {tRP.Number}");
+                                tempList.Add(tRP);
+                                tRP.ParentRegion = (TrTextRegion)textRegion;
+                                Debug.WriteLine($"Page:GetP - name      {tRP.Name}");
+                                Debug.WriteLine($"Page:GetP - content   {tRP.Content}");
                             }
                         }
-
                     }
                 }
             }
-            return TempList;
+
+            return tempList;
         }
 
         public bool CreateTopLevelRegion()
         {
             if (!HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
+                TrTranscript transcript = Transcripts[0];
+                TrRegions newRegions = new TrRegions(true);
+                TrTextRegion newRegion = new TrTextRegion(0, 0, GetTopLevelCoords(), newRegions);
+                newRegions.Add(newRegion);
+                transcript.Regions = newRegions;
 
-                TrRegion_Text NewRegion = new TrRegion_Text(0, 0, GetTopLevelCoords());
-                TrRegions NewRegions = new TrRegions(true);
-                NewRegions.Add(NewRegion);
-                Transcript.Regions = NewRegions;
-
-                Transcript.HasChanged = true;
+                transcript.HasChanged = true;
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
 
         public void MergeAllRegionsToTopLevelRegion()
         {
             if (HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
-                TrRegion_Text NewRegion = new TrRegion_Text(0, 0, GetTopLevelCoords());
+                TrTranscript transcript = Transcripts[0];
+                TrTextRegion newRegion = new TrTextRegion(0, 0, GetTopLevelCoords(), transcript.Regions);
 
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            NewRegion.TextLines.Add(TL);
+                            newRegion.TextLines.Add(textLine);
                         }
-                        TR.MarkToDeletion = true;
+
+                        textRegion.MarkToDeletion = true;
                     }
                     else
                     {
                         Debug.WriteLine($"ERROR: Non-Text Region on page {PageNr}");
                     }
-
                 }
 
-                AppendRegion(NewRegion);
+                AppendRegion(newRegion);
 
-                for (int i = Transcript.Regions.Count - 1; i >= 0; i--)
+                for (int i = transcript.Regions.Count - 1; i >= 0; i--)
                 {
-                    if (Transcript.Regions[i].MarkToDeletion)
-                        Transcript.Regions.RemoveAt(i);
+                    if (transcript.Regions[i].MarkToDeletion)
+                    {
+                        transcript.Regions.RemoveAt(i);
+                    }
                 }
 
-                Transcript.HasChanged = true;
+                transcript.HasChanged = true;
             }
         }
 
-        public void AppendRegion(TrRegion SourceRegion)
+        public void AppendRegion(TrRegion sourceRegion)
         {
             //Debug.WriteLine($"TrPage:Append...");
+            TrTranscript transcript = Transcripts[0];
 
-            TrTranscript Transcript = Transcripts[0];
             //Debug.WriteLine($"Actual region count before: {Transcript.Regions.Count}");
-
             if (!HasRegions)
             {
-                TrRegions NewRegions = new TrRegions(true);
-                Transcript.Regions = NewRegions;
+                TrRegions newRegions = new TrRegions(true);
+                transcript.Regions = newRegions;
             }
 
             // int NewRegionOrder = Transcript.Regions.Count;
-
-            Transcript.Regions.Add(SourceRegion);
+            transcript.Regions.Add(sourceRegion);
 
             //Debug.WriteLine($"Actual region count after: {Transcript.Regions.Count}");
             HasChanged = true;
         }
 
-        public int AddHorizontalRegion(int UpperPercent, int LowerPercent, int UpperPadding, int LowerPadding)
+        public int AddHorizontalRegion(int upperPercent, int lowerPercent, int upperPadding, int lowerPadding)
         {
-            TrTranscript Transcript = Transcripts[0];
+            TrTranscript transcript = Transcripts[0];
 
             if (!HasRegions)
             {
-                TrRegions NewRegions = new TrRegions(true);
-                Transcript.Regions = NewRegions;
+                TrRegions newRegions = new TrRegions(true);
+                transcript.Regions = newRegions;
             }
 
-            int NewRegionOrder = Transcript.Regions.Count;
-            float Orientation = 0;
-            TrRegion_Text NewRegion = new TrRegion_Text(NewRegionOrder, Orientation,
-                GetCoordsForHorizontalRegion(UpperPercent, LowerPercent, UpperPadding, LowerPadding));
-            Transcript.Regions.Add(NewRegion);
+            int newRegionOrder = transcript.Regions.Count;
+            float orientation = 0;
+            TrTextRegion newRegion = new TrTextRegion(newRegionOrder, orientation,
+                GetCoordsForHorizontalRegion(upperPercent, lowerPercent, upperPadding, lowerPadding), transcript.Regions);
+            transcript.Regions.Add(newRegion);
 
-            Transcript.HasChanged = true;
-            return NewRegion.Number;
+            transcript.HasChanged = true;
+            return newRegion.Number;
         }
 
-        public void DeleteShortBaseLines(TrDialogTransferSettings Settings, TrLog Log)
+        public void DeleteShortBaseLines(TrDialogTransferSettings settings, TrLog log)
         {
-            bool ProcessThis = true;
-            bool PageIsOK = true;
-            string ErrorMessage;
+            bool processThis = true;
+            bool pageIsOK = true;
+            string errorMessage;
 
             if (HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
-                foreach (TrRegion Region in Transcript.Regions)
+                TrTranscript transcript = Transcripts[0];
+                foreach (TrRegion region in transcript.Regions)
                 {
-                    if (Settings.AllRegions)
-                        ProcessThis = true;
-                    else if (Region.Number >= Settings.RegionsFrom && Region.Number <= Settings.RegionsTo)
-                        ProcessThis = true;
+                    if (settings.AllRegions)
+                    {
+                        processThis = true;
+                    }
+                    else if (region.Number >= settings.RegionsFrom && region.Number <= settings.RegionsTo)
+                    {
+                        processThis = true;
+                    }
                     else
-                        ProcessThis = false;
+                    {
+                        processThis = false;
+                    }
 
-                    if (ProcessThis)
-                        PageIsOK = PageIsOK && Region.DeleteShortBaselines(Settings.ShortLimit, Log);
+                    if (processThis)
+                    {
+                        pageIsOK = pageIsOK && region.DeleteShortBaselines(settings.ShortLimit, log);
+                    }
                 }
-                if (PageIsOK)
+
+                if (pageIsOK)
                 {
-                    ErrorMessage = "Page is OK.";
-                    Log.Add(this, ErrorMessage);
+                    errorMessage = "Page is OK.";
+                    log.Add(this, errorMessage);
                 }
             }
             else
             {
-                ErrorMessage = "Page has no regions.";
-                Log.Add(this, ErrorMessage);
+                errorMessage = "Page has no regions.";
+                log.Add(this, errorMessage);
             }
         }
 
-        public void ExtendBaseLines(TrDialogTransferSettings Settings, TrLog Log)
+        public void ExtendBaseLines(TrDialogTransferSettings settings, TrLog log)
         {
             // Debug.WriteLine($"TrPage : ExtendBaseLines");
-
-            bool ProcessThis = true;
-            string ErrorMessage;
+            bool processThis = true;
+            string errorMessage;
 
             if (HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
-                foreach (TrRegion Region in Transcript.Regions)
+                TrTranscript transcript = Transcripts[0];
+                foreach (TrRegion region in transcript.Regions)
                 {
-                    if (Settings.AllRegions)
-                        ProcessThis = true;
-                    else if (Region.Number >= Settings.RegionsFrom && Region.Number <= Settings.RegionsTo)
-                        ProcessThis = true;
+                    if (settings.AllRegions)
+                    {
+                        processThis = true;
+                    }
+                    else if (region.Number >= settings.RegionsFrom && region.Number <= settings.RegionsTo)
+                    {
+                        processThis = true;
+                    }
                     else
-                        ProcessThis = false;
+                    {
+                        processThis = false;
+                    }
 
-                    if (ProcessThis)
-                        Region.ExtendBaseLines(Settings, Log);
+                    if (processThis)
+                    {
+                        region.ExtendBaseLines(settings, log);
+                    }
                 }
             }
             else
             {
-                ErrorMessage = "Page has no regions.";
-                Log.Add(this, ErrorMessage);
+                errorMessage = "Page has no regions.";
+                log.Add(this, errorMessage);
             }
         }
 
@@ -886,118 +955,122 @@ namespace TrClient.Core
         //        Log.Add(this, ErrorMessage);
         //    }
         //}
-
         public void SimplifyBoundingBoxes()
         {
             if (HasRegions)
             {
-                TrTranscript Transcript = Transcripts[0];
-                foreach (TrRegion Region in Transcript.Regions)
-                    Region.SimplifyBoundingBoxes();
-            }
-        }
-
-        public void SimplifyBoundingBoxes(int MinimumHeight, int MaximumHeight)
-        {
-            if (HasRegions)
-            {
-                TrTranscript Transcript = Transcripts[0];
-                foreach (TrRegion Region in Transcript.Regions)
-                    Region.SimplifyBoundingBoxes(MinimumHeight, MaximumHeight);
-            }
-        }
-
-        
-
-        public void Move(int Horizontally, int Vertically)
-        {
-            if (HasRegions)
-            {
-                TrTranscript Transcript = Transcripts[0];
-                foreach (TrRegion Region in Transcript.Regions)
+                TrTranscript transcript = Transcripts[0];
+                foreach (TrRegion region in transcript.Regions)
                 {
-                    Region.Move(Horizontally, Vertically);
+                    region.SimplifyBoundingBoxes();
                 }
             }
         }
 
+        public void SimplifyBoundingBoxes(int minimumHeight, int maximumHeight)
+        {
+            if (HasRegions)
+            {
+                TrTranscript transcript = Transcripts[0];
+                foreach (TrRegion region in transcript.Regions)
+                {
+                    region.SimplifyBoundingBoxes(minimumHeight, maximumHeight);
+                }
+            }
+        }
 
+        public void Move(int horizontally, int vertically)
+        {
+            if (HasRegions)
+            {
+                TrTranscript transcript = Transcripts[0];
+                foreach (TrRegion region in transcript.Regions)
+                {
+                    region.Move(horizontally, vertically);
+                }
+            }
+        }
 
         private string GetTopLevelCoords()
         {
-            TrCoord UpperLeft = new TrCoord(0, 0);
-            TrCoord UpperRight = new TrCoord(Width, 0);
-            TrCoord LowerRight = new TrCoord(Width, Height);
-            TrCoord LowerLeft = new TrCoord(0, Height);
+            TrCoord upperLeft = new TrCoord(0, 0);
+            TrCoord upperRight = new TrCoord(Width, 0);
+            TrCoord lowerRight = new TrCoord(Width, Height);
+            TrCoord lowerLeft = new TrCoord(0, Height);
 
-            TrCoords CS = new TrCoords();
-            CS.Add(UpperLeft);
-            CS.Add(UpperRight);
-            CS.Add(LowerRight);
-            CS.Add(LowerLeft);
-         
-            return CS.ToString();
+            TrCoords cS = new TrCoords();
+            cS.Add(upperLeft);
+            cS.Add(upperRight);
+            cS.Add(lowerRight);
+            cS.Add(lowerLeft);
+
+            return cS.ToString();
         }
 
-        private string GetCoordsForHorizontalRegion(int UpperPercent, int LowerPercent, int UpperPadding, int LowerPadding)
+        private string GetCoordsForHorizontalRegion(int upperPercent, int lowerPercent, int upperPadding, int lowerPadding)
         {
-            int UpperBoundary;
-            int LowerBoundary;
+            int upperBoundary;
+            int lowerBoundary;
 
-            if (UpperPercent == 0)
-                UpperBoundary = 0;
+            if (upperPercent == 0)
+            {
+                upperBoundary = 0;
+            }
             else
-                UpperBoundary = (Height * UpperPercent / 100);
+            {
+                upperBoundary = Height * upperPercent / 100;
+            }
 
-            LowerBoundary = (Height * LowerPercent / 100);
+            lowerBoundary = Height * lowerPercent / 100;
 
-            UpperBoundary = UpperBoundary + UpperPadding;
-            LowerBoundary = LowerBoundary - LowerPadding;
+            upperBoundary = upperBoundary + upperPadding;
+            lowerBoundary = lowerBoundary - lowerPadding;
 
-            TrCoord UpperLeft = new TrCoord(0, UpperBoundary);
-            TrCoord UpperRight = new TrCoord(Width, UpperBoundary);
-            TrCoord LowerRight = new TrCoord(Width, LowerBoundary);
-            TrCoord LowerLeft = new TrCoord(0, LowerBoundary);
+            TrCoord upperLeft = new TrCoord(0, upperBoundary);
+            TrCoord upperRight = new TrCoord(Width, upperBoundary);
+            TrCoord lowerRight = new TrCoord(Width, lowerBoundary);
+            TrCoord lowerLeft = new TrCoord(0, lowerBoundary);
 
-            TrCoords CS = new TrCoords();
-            CS.Add(UpperLeft);
-            CS.Add(UpperRight);
-            CS.Add(LowerRight);
-            CS.Add(LowerLeft);
+            TrCoords cS = new TrCoords();
+            cS.Add(upperLeft);
+            cS.Add(upperRight);
+            cS.Add(lowerRight);
+            cS.Add(lowerLeft);
 
-            return CS.ToString();
+            return cS.ToString();
         }
 
         public void TagEmptyTextLines()
         {
             if (HasRegions)
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            if (TL.IsEmpty)
-                                TL.AddStructuralTag("Empty", true);
+                            if (textLine.IsEmpty)
+                            {
+                                textLine.AddStructuralTag("Empty", true);
+                            }
                         }
                     }
                 }
             }
         }
 
-
         public void WrapSuperAndSubscriptWithSpaces()
         {
             if (HasRegions)
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            TL.WrapSuperAndSubscriptWithSpaces();
+                            textLine.WrapSuperAndSubscriptWithSpaces();
                         }
                     }
                 }
@@ -1008,14 +1081,16 @@ namespace TrClient.Core
         {
             if (HasRegions)
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            if (TL.HasEmptyAbbrevTag)
-                                TL.AddStructuralTag("EmptyAbbrev", true);
+                            if (textLine.HasEmptyAbbrevTag)
+                            {
+                                textLine.AddStructuralTag("EmptyAbbrev", true);
+                            }
                         }
                     }
                 }
@@ -1026,81 +1101,78 @@ namespace TrClient.Core
         {
             // sætter Date og Acc-tags på hhv region 1 og 2, hvis der er 3 eller flere regioner
             // hvis der kun er een eller to, sker der ikke noget
-            string TagValue = "";
+            string tagValue = string.Empty;
 
             if (HasRegions)
             {
                 if (Transcripts[0].Regions.Count >= 3)
                 {
-                    foreach (TrRegion TR in Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            if (TR.Number == 1)
-                                TagValue = "Date";
-                            else if (TR.Number == 2)
-                                TagValue = "Acc";
-
-                            if (TR.Number < 3)
+                            if (textRegion.Number == 1)
                             {
-                                foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                                tagValue = "Date";
+                            }
+                            else if (textRegion.Number == 2)
+                            {
+                                tagValue = "Acc";
+                            }
+
+                            if (textRegion.Number < 3)
+                            {
+                                foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                                 {
                                     // det tjekkes, om TextLine primært består af cifre - og kun da sættes tagget
                                     // desuden tjekkes, om antallet af numre er hhv. 1 eller 2, afh. af tagvalue
-
-                                    if (clsLanguageLibrary.DigitCount(TL.TextEquiv) > clsLanguageLibrary.LetterCount(TL.TextEquiv))
+                                    if (ClsLanguageLibrary.DigitCount(textLine.TextEquiv) > ClsLanguageLibrary.LetterCount(textLine.TextEquiv))
                                     {
-                                        if ((TagValue == "Date" && TrLibrary.UniqueNumbersCount(TL.TextEquiv) >= 2)
-                                            || (TagValue == "Acc" && TrLibrary.UniqueNumbersCount(TL.TextEquiv) == 1))
-                                            TL.AddStructuralTag(TagValue, false);
+                                        if ((tagValue == "Date" && TrLibrary.UniqueNumbersCount(textLine.TextEquiv) >= 2)
+                                            || (tagValue == "Acc" && TrLibrary.UniqueNumbersCount(textLine.TextEquiv) == 1))
+                                        {
+                                            textLine.AddStructuralTag(tagValue, false);
+                                        }
                                     }
                                 }
                             }
-
                         }
-
                     }
                 }
                 else
+                {
                     Debug.WriteLine($"{ParentDocument.ParentCollection} / {ParentDocument} / s. {PageNr}: under 3 regioner!");
-
+                }
             }
-
         }
 
         public void AutoTagFloorNumberSuperScript()
         {
             if (HasRegions)
             {
-                int Offset = 0;
-                int Length = 0;
-
-                Regex FloorNumbers = new Regex(@"\b(?<=\s\d{1,3}\.?\s?[A-Z]?\.?\s?)(\d|[IV]+)\.?$");
+                Regex floorNumbers = new Regex(@"\b(?<=\s\d{1,3}\.?\s?[A-Z]?\.?\s?)(\d|[IV]+)\.?$");
 
                 // Debug.Print($"Page {PageNr} -------------------------------------------------");
-
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            MatchCollection FloorNumberMatches = FloorNumbers.Matches(TL.TextEquiv);
+                            MatchCollection floorNumberMatches = floorNumbers.Matches(textLine.TextEquiv);
 
-                            if (FloorNumberMatches.Count > 0)
+                            if (floorNumberMatches.Count > 0)
                             {
-                                Debug.Print($"Floornumber fundet: page {PageNr}, line {TL.Number}, text: _{TL.TextEquiv}_ - floornumber = {FloorNumberMatches[0].Value}");
+                                Debug.Print($"Floornumber fundet: page {PageNr}, line {textLine.Number}, text: _{textLine.TextEquiv}_ - floornumber = {floorNumberMatches[0].Value}");
 
-                                foreach (Match M in FloorNumberMatches)
+                                foreach (Match m in floorNumberMatches)
                                 {
-                                    TL.AddStyleTag(M.Index, M.Value.Length, "superscript");
+                                    textLine.AddStyleTag(m.Index, m.Value.Length, "superscript");
                                 }
-
                             }
                         }
                     }
                 }
-
             }
         }
 
@@ -1108,55 +1180,53 @@ namespace TrClient.Core
         {
             if (HasRegions)
             {
-                int Offset = 0;
-                int Length = 0;
+                Regex romanNumbers = new Regex(@"\b[IVXLCDM]+\b");
 
-                Regex RomanNumbers = new Regex(@"\b[IVXLCDM]+\b");
                 // https://stackoverflow.com/questions/39561492/c-sharp-regex-for-match-romanian-number-in-text
 
                 // Debug.Print($"Page {PageNr} -------------------------------------------------");
-
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            MatchCollection RomanNumberMatches = RomanNumbers.Matches(TL.TextEquiv);
+                            MatchCollection romanNumberMatches = romanNumbers.Matches(textLine.TextEquiv);
 
-                            if (RomanNumberMatches.Count > 0)
+                            if (romanNumberMatches.Count > 0)
                             {
-                                foreach (Match M in RomanNumberMatches)
+                                foreach (Match m in romanNumberMatches)
                                 {
-                                    bool SetTag = false;
+                                    bool setTag = false;
 
                                     // så skal vi lige tjekke, om det i virkeligheden er et initial...
-                                    if (M.Value.Length == 1)
+                                    if (m.Value.Length == 1)
                                     {
-                                        if (M.Index < TL.Length - 1)
+                                        if (m.Index < textLine.Length - 1)
                                         {
                                             // hvis der IKKE er et punktum efter, er det ok
-                                            if (TL.TextEquiv.Substring(M.Index + 1, 1) != ".")
-                                                SetTag = true;
+                                            if (textLine.TextEquiv.Substring(m.Index + 1, 1) != ".")
+                                            {
+                                                setTag = true;
+                                            }
                                         }
                                         else
                                         {
                                             // fundet på sidste plads, uden punktum efter: alt OK
-                                            SetTag = true;
+                                            setTag = true;
                                         }
                                     }
                                     else
                                     {
-                                        SetTag = true;
+                                        setTag = true;
                                     }
 
-                                    if (SetTag)
+                                    if (setTag)
                                     {
                                         // Debug.Print($"Roman numbers fundet: page {PageNr}, line {TL.Number}, text: _{TL.TextEquiv}_");
-                                        TL.AddRomanNumeralTag(M.Index, M.Value.Length, M.Value);
+                                        textLine.AddRomanNumeralTag(m.Index, m.Value.Length, m.Value);
                                     }
                                 }
-
                             }
                         }
                     }
@@ -1164,146 +1234,159 @@ namespace TrClient.Core
             }
         }
 
-
         public void AutoAbbrevTagRepetitions()
         {
             if (HasRegions)
             {
-                int Offset = 0;
-                int Length = 0;
+                int offset = 0;
+                int length = 0;
 
-                Regex RepeatSigns = new Regex(@"(\s*(""|do\.)\s*)+");       // tidl.: med bindestreg - hvilket går helt galt! (@"(\s*(""|-|do\.)\s*)+")
-                Regex NonRepeatSigns = new Regex(@"[^\s""(do\.]");          // tidl.: do.             (@"[^\s""-(do\.]")
+                Regex repeatSigns = new Regex(@"(\s*(""|do\.)\s*)+");       // tidl.: med bindestreg - hvilket går helt galt! (@"(\s*(""|-|do\.)\s*)+")
+                Regex nonRepeatSigns = new Regex(@"[^\s""(do\.]");          // tidl.: do.             (@"[^\s""-(do\.]")
 
                 // Debug.Print($"Page {PageNr} -------------------------------------------------");
-
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            if (TL.Number > 1)
+                            if (textLine.Number > 1)
                             {
-                                string RepeatSign = "";
-                                int RepeatSignPos;
+                                string repeatSign = string.Empty;
+                                int repeatSignPos;
 
-                                MatchCollection RepeatSignMatches = RepeatSigns.Matches(TL.TextEquiv);
-                                MatchCollection NonRepeatSignMatches = NonRepeatSigns.Matches(TL.TextEquiv);
+                                MatchCollection repeatSignMatches = repeatSigns.Matches(textLine.TextEquiv);
+                                MatchCollection nonRepeatSignMatches = nonRepeatSigns.Matches(textLine.TextEquiv);
 
-                                if (RepeatSignMatches.Count > 0)
+                                if (repeatSignMatches.Count > 0)
                                 {
                                     // Debug.Print($"Repeatsign fundet: page {PageNr}, line {TL.Number}, text: _{TL.TextEquiv}_");
                                     // string TempLine = TL.TextEquiv.Trim();
-
-                                    TrTextLine LineAbove = TL.GetTextLineAbove();
-                                    if (LineAbove != null)
+                                    TrTextLine lineAbove = textLine.GetTextLineAbove();
+                                    if (lineAbove != null)
                                     {
-                                        string CurrentContent = TL.ExpandedText;
-                                        string ContentAbove = LineAbove.ExpandedText;
-                                        
-                                        var WordsCurrentArray = TL.TextEquiv.Trim().Split(' ').ToArray();
-                                        int WordsCurrentCount = WordsCurrentArray.Length;
+                                        string currentContent = textLine.ExpandedText;
+                                        string contentAbove = lineAbove.ExpandedText;
+
+                                        var wordsCurrentArray = textLine.TextEquiv.Trim().Split(' ').ToArray();
+                                        int wordsCurrentCount = wordsCurrentArray.Length;
 
                                         //var WordsCurrentTempArray = TempLine.Trim().Split(' ').ToArray();
                                         //int WordsCurrentTempCount = WordsCurrentTempArray.Length;
-
-                                        var WordsAboveArray = ContentAbove.Trim().Split(' ').ToArray();
-                                        int WordsAboveCount = WordsAboveArray.Length;
+                                        var wordsAboveArray = contentAbove.Trim().Split(' ').ToArray();
+                                        int wordsAboveCount = wordsAboveArray.Length;
 
                                         //foreach (Match M in RepeatSignMatches)
                                         //    TempLine = TempLine.Replace(M.Value.Trim(), "*");
-
-                                        string Expansion = "";
+                                        string expansion = string.Empty;
 
                                         // vi prøver først med eet match - det er nemmere
                                         // (og betyder, at der godt kan være flere repeatsigns, men de står SAMMEN - ikke på hver sin side af et rigtigt ord!)
 
                                         //  Debug.Print($"Antal Repeatsign fundet: {RepeatSignMatches.Count}, antal non-repeat: {NonRepeatSignMatches.Count}");
-
-                                        if (RepeatSignMatches.Count > 0)
+                                        if (repeatSignMatches.Count > 0)
                                         {
-                                            foreach (Match M in RepeatSignMatches)
+                                            foreach (Match m in repeatSignMatches)
                                             {
                                                 // hvilken type repeat? " - eller do.?
-                                                if (M.Value.Contains('"'))
-                                                    RepeatSign = @"""";
-                                                else if (M.Value.Contains("do."))
-                                                    RepeatSign = "do.";
-                                                RepeatSignPos = M.Value.IndexOf(RepeatSign);
+                                                if (m.Value.Contains('"'))
+                                                {
+                                                    repeatSign = @"""";
+                                                }
+                                                else if (m.Value.Contains("do."))
+                                                {
+                                                    repeatSign = "do.";
+                                                }
+
+                                                repeatSignPos = m.Value.IndexOf(repeatSign);
 
                                                 // hvis M.Value begynder med et \s skal der kompenseres for:
-                                                if (M.Value.StartsWith(" "))
-                                                    Offset = M.Index + RepeatSignPos;
+                                                if (m.Value.StartsWith(" "))
+                                                {
+                                                    offset = m.Index + repeatSignPos;
+                                                }
                                                 else
-                                                    Offset = M.Index;
-                                                Length = M.Value.Trim().Length;
+                                                {
+                                                    offset = m.Index;
+                                                }
+
+                                                length = m.Value.Trim().Length;
 
                                                 // kun hvis der er EET repeatsign, sættes indhold i tagget - ellers tomme tags!
-                                                if (RepeatSignMatches.Count == 1)
+                                                if (repeatSignMatches.Count == 1)
                                                 {
                                                     // Nu kommer så problemet; er hele eller dele af teksten en gentagelse?
 
                                                     // 1. Hvis aktuel linie udelukkende består af gentagelsestegn, er det enkelt.
-                                                    if (NonRepeatSignMatches.Count == 0)
+                                                    if (nonRepeatSignMatches.Count == 0)
                                                     {
-                                                        Expansion = ContentAbove;
+                                                        expansion = contentAbove;
+
                                                         // Debug.Print($"NRSM.C = 0: Expansion: {Expansion}");
                                                     }
+
                                                     // 2. Ellers: Hvis der er lige mange ord på denne linie og linien over, er det også enkelt.
-                                                    else if (WordsAboveCount == WordsCurrentCount)
+                                                    else if (wordsAboveCount == wordsCurrentCount)
                                                     {
-                                                        if (WordsAboveCount == 1)
+                                                        if (wordsAboveCount == 1)
                                                         {
-                                                            Expansion = ContentAbove;
+                                                            expansion = contentAbove;
+
                                                             // Debug.Print($"WAC = WCC, WAC = 1: Expansion: {Expansion}");
                                                         }
                                                         else // if (WordsAboveCount == 2)
                                                         {
                                                             // så gennemløber vi begge arrays
-                                                            for (int i = 0; i < WordsCurrentCount; i++)
+                                                            for (int i = 0; i < wordsCurrentCount; i++)
                                                             {
-                                                                if (clsLanguageLibrary.StripPunctuation(WordsCurrentArray[i]) == RepeatSign)
+                                                                if (ClsLanguageLibrary.StripPunctuation(wordsCurrentArray[i]) == repeatSign)
                                                                 {
-                                                                    Expansion = Expansion + WordsAboveArray[i] + " ";
+                                                                    expansion = expansion + wordsAboveArray[i] + " ";
                                                                 }
                                                             }
-                                                            Expansion = Expansion.Trim();
+
+                                                            expansion = expansion.Trim();
+
                                                             // Debug.Print($"WAC = WCC, WAC = 2: Expansion: {Expansion}");
                                                         }
                                                     }
                                                     else
+
                                                     // der er et ulige antal ord!
                                                     {
                                                         // Debug.Print($"WAC <> WCC: Expansion: {Expansion}");
-                                                        Expansion = "";
+                                                        expansion = string.Empty;
                                                     }
 
-                                                    if (!TL.HasAbbrevTag)
+                                                    if (!textLine.HasAbbrevTag)
                                                     {
-                                                        TL.AddAbbrevTag(Offset, Length, Expansion);
+                                                        textLine.AddAbbrevTag(offset, length, expansion);
                                                     }
+
                                                     //else
                                                     //    Debug.Print($"TL had already abbrev-tag: none added.");
                                                 }
                                                 else
+
                                                 // der er matches på BEGGE sider af et ord sætter tomme tags
                                                 {
                                                     // Debug.Print("Sætter tomt abbrev-tag.");
-                                                    TL.AddAbbrevTag(Offset, Length, "");
+                                                    textLine.AddAbbrevTag(offset, length, string.Empty);
                                                 }
-
                                             }
                                         }
                                     }
                                     else
+
                                     // kunne ikke finde en linie ovenover
                                     {
-                                        if (!TL.HasAbbrevTag)
+                                        if (!textLine.HasAbbrevTag)
                                         {
                                             // Debug.Print("Sætter tomt abbrev-tag.");
-                                            TL.AddAbbrevTag(Offset, Length, "");
+                                            textLine.AddAbbrevTag(offset, length, string.Empty);
                                         }
+
                                         // else
                                         // Debug.Print($"TL had already abbrev-tag: none added.");
                                     }
@@ -1320,59 +1403,56 @@ namespace TrClient.Core
             }
         }
 
-        public void AutoAbbrevTagNumericIntervals(string StructuralTagName)
+        public void AutoAbbrevTagNumericIntervals(string structuralTagName)
         {
             if (HasRegions)
             {
                 // Debug.Print($"Page {PageNr} -------------------------------------------------");
+                Regex numericInterval = new Regex(@"\d+(\s*-\s*\d+)*");
 
-                Regex NumericInterval = new Regex(@"\d+(\s*-\s*\d+)*");          
-
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            if (TL.HasSpecificStructuralTag(StructuralTagName))
+                            if (textLine.HasSpecificStructuralTag(structuralTagName))
                             {
-                                MatchCollection NumericIntervalMatches = NumericInterval.Matches(TL.TextEquiv);
-                                if (NumericIntervalMatches.Count > 0)
+                                MatchCollection numericIntervalMatches = numericInterval.Matches(textLine.TextEquiv);
+                                if (numericIntervalMatches.Count > 0)
                                 {
-                                    StringBuilder MatchString = new StringBuilder();
-                                    foreach (Match M in NumericIntervalMatches)
+                                    StringBuilder matchString = new StringBuilder();
+                                    foreach (Match m in numericIntervalMatches)
                                     {
-                                        MatchString.Append(M.Value);
-                                        MatchString.Append(" ");
+                                        matchString.Append(m.Value);
+                                        matchString.Append(" ");
                                     }
-                                    if (TrLibrary.UniqueNumbersCount(MatchString.ToString()) > 1)
+
+                                    if (TrLibrary.UniqueNumbersCount(matchString.ToString()) > 1)
                                     {
                                         // PROBLEM: Adresser som fx "Gl. Torv 10-12" bliver medtaget - og det er sjældent meningen
                                         // Derfor sættes et minimum: det første tal skal være over 1000!
-
-                                        int FirstNumber = TrLibrary.GetNumbers(MatchString.ToString())[0];
-                                        if (FirstNumber >= 1000)
+                                        int firstNumber = TrLibrary.GetNumbers(matchString.ToString())[0];
+                                        if (firstNumber >= 1000)
                                         {
                                             // vi tester lige, om der kommer snask retur - "n/a" kan ikke bruges
-                                            string NewString = TrLibrary.ExpandStringWithNumericInterval(MatchString.ToString());
-                                            if (NewString != "n/a")
+                                            string newString = TrLibrary.ExpandStringWithNumericInterval(matchString.ToString());
+                                            if (newString != "n/a")
                                             {
-                                                TL.AddAbbrevTag(NumericIntervalMatches[0].Index, NumericIntervalMatches[0].Value.Length, NewString);
-                                                Debug.Print($"Page {TL.ParentPageNr.ToString("000")}, Line {TL.Number.ToString("000")}: Interval {TL.TextEquiv} expanded to {NewString}");
-
+                                                textLine.AddAbbrevTag(numericIntervalMatches[0].Index, numericIntervalMatches[0].Value.Length, newString);
+                                                Debug.Print($"Page {textLine.ParentPageNr.ToString("000")}, Line {textLine.Number.ToString("000")}: Interval {textLine.TextEquiv} expanded to {newString}");
                                             }
                                             else
-                                                Debug.Print($"Page {TL.ParentPageNr.ToString("000")}, Line {TL.Number.ToString("000")}: No expansion! Rubbish: {TL.TextEquiv}");
-
+                                            {
+                                                Debug.Print($"Page {textLine.ParentPageNr.ToString("000")}, Line {textLine.Number.ToString("000")}: No expansion! Rubbish: {textLine.TextEquiv}");
+                                            }
                                         }
                                         else
                                         {
-                                            Debug.Print($"Page {TL.ParentPageNr.ToString("000")}, Line {TL.Number.ToString("000")}: No expansion! FirstNumber: {FirstNumber}");
+                                            Debug.Print($"Page {textLine.ParentPageNr.ToString("000")}, Line {textLine.Number.ToString("000")}: No expansion! FirstNumber: {firstNumber}");
                                         }
 
-
                                         // Debug.Print($"       Expansion: {TrLibrary.ExpandStringWithNumericInterval(MatchString.ToString())}");
-
                                     }
                                 }
                             }
@@ -1380,41 +1460,38 @@ namespace TrClient.Core
                     }
                 }
             }
-
         }
 
         public void AutoAbbrevTagPlaceNames()
         {
             if (HasRegions)
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
                             // Ender på g
-                            Regex PlaceName = new Regex(@"\p{Lu}\p{Ll}+[g][\.\:]?");
+                            Regex placeName = new Regex(@"\p{Lu}\p{Ll}+[g][\.\:]?");
 
-                            MatchCollection PlaceNameMatches = PlaceName.Matches(TL.TextEquiv);
-                            if (PlaceNameMatches.Count > 0)
+                            MatchCollection placeNameMatches = placeName.Matches(textLine.TextEquiv);
+                            if (placeNameMatches.Count > 0)
                             {
-                                int Position = PlaceNameMatches[0].Value.LastIndexOf('g');
-                                string Expansion = PlaceNameMatches[0].Value.Substring(0, Position) + "gade";
+                                int position = placeNameMatches[0].Value.LastIndexOf('g');
+                                string expansion = placeNameMatches[0].Value.Substring(0, position) + "gade";
 
                                 //TL.AddAbbrevTag(PlaceNameMatches[0].Index, PlaceNameMatches[0].Value.Length, Expansion);
-                                Debug.Print($"Page {TL.ParentPageNr.ToString("000")}, Line {TL.Number.ToString("000")}: {PlaceNameMatches[0].Value} expanded to {Expansion}");
+                                Debug.Print($"Page {textLine.ParentPageNr.ToString("000")}, Line {textLine.Number.ToString("000")}: {placeNameMatches[0].Value} expanded to {expansion}");
                             }
                         }
                     }
                 }
             }
-
         }
 
         public void Elfelt_AutoTag()
         {
-            
         }
 
         public void KOBACC_ExpandText()
@@ -1422,62 +1499,52 @@ namespace TrClient.Core
             // ADVARSEL: "Ødelægger" teksten - gør det KUN på en kopi!!!
             if (HasRegions)
             {
-                foreach (TrRegion TR in Transcripts[0].Regions)
+                foreach (TrRegion textRegion in Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            if (TL.TextEquiv != "")                             // det går galt på en tom streng
+                            if (textLine.TextEquiv != string.Empty)                             // det går galt på en tom streng
                             {
-                                if (TL.HasSpecificStructuralTag("Date"))
+                                if (textLine.HasSpecificStructuralTag("Date"))
                                 {
-                                    if (TL.TextEquiv.Substring(0, 1) != "[")     // så den ikke gør det igen!!
+                                    if (textLine.TextEquiv.Substring(0, 1) != "[")     // så den ikke gør det igen!!
                                     {
-                                        string ExpandedDate = TrLibrary.GetDate(TL.TextEquiv, ParentDocument.KOBACC_GetYear());
-                                        Debug.WriteLine(ExpandedDate);
-                                        if (ExpandedDate != "n/a")
+                                        string expandedDate = TrLibrary.GetDate(textLine.TextEquiv, ParentDocument.KOBACC_GetYear());
+                                        Debug.WriteLine(expandedDate);
+                                        if (expandedDate != "n/a")
                                         {
-                                            TL.TextEquiv = ExpandedDate;
-                                            TL.HasChanged = true;
+                                            textLine.TextEquiv = expandedDate;
+                                            textLine.HasChanged = true;
                                         }
                                     }
                                 }
-                                else if (TL.HasSpecificStructuralTag("Acc"))
+                                else if (textLine.HasSpecificStructuralTag("Acc"))
                                 {
-                                    if (TL.TextEquiv.Substring(0, 1) != "[")     // så den ikke gør det igen!!
+                                    if (textLine.TextEquiv.Substring(0, 1) != "[")     // så den ikke gør det igen!!
                                     {
-                                        string ExpandedAcc = TrLibrary.GetAccNo(TL.TextEquiv, ParentDocument.KOBACC_GetYear());
-                                        Debug.WriteLine(ExpandedAcc);
-                                        if (ExpandedAcc != "n/a")
+                                        string expandedAcc = TrLibrary.GetAccNo(textLine.TextEquiv, ParentDocument.KOBACC_GetYear());
+                                        Debug.WriteLine(expandedAcc);
+                                        if (expandedAcc != "n/a")
                                         {
-                                            TL.TextEquiv = ExpandedAcc;
-                                            TL.HasChanged = true;
+                                            textLine.TextEquiv = expandedAcc;
+                                            textLine.HasChanged = true;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    
-                                    Debug.WriteLine(TL.ExpandedText);
-                                    TL.DeleteSicAndAbbrevTags();
-                                    TL.TextEquiv = TL.ExpandedText;
-                                    TL.HasChanged = true;
+                                    Debug.WriteLine(textLine.ExpandedText);
+                                    textLine.DeleteSicAndAbbrevTags();
+                                    textLine.TextEquiv = textLine.ExpandedText;
+                                    textLine.HasChanged = true;
                                 }
-
                             }
                         }
-
                     }
-
                 }
-
             }
-
         }
-
-
-
-
     }
 }

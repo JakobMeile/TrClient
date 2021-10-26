@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using DanishNLP;
-
+﻿// <copyright file="clsLanguageLibrary.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace DanishNLP
 {
-    public static class clsLanguageLibrary
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    public static class ClsLanguageLibrary
     {
-        private static string MonthNames = "januar;februar;marts;april;maj;juni;juli;august;september;oktober;november;december;january;february;march;may;june;july;october";
-        private static List<string> MonthNameList = MonthNames.Split(';').ToList();
+        private static string monthNames = "januar;februar;marts;april;maj;juni;juli;august;september;oktober;november;december;january;february;march;may;june;july;october";
+        private static List<string> monthNameList = monthNames.Split(';').ToList();
 
         // NB: Husk også at tilføje nye forkortelser i function nedenunder!
-        private static string MonthAbbreviations = 
+        private static string monthAbbreviations =
             "jan;janu;janaur;" +
             "feb;febr;febru;" +
             "mar;apr;mai;jun;jul;aug;" +
@@ -24,70 +23,71 @@ namespace DanishNLP
             "nov;nvbr;novem;novbr;novemb;novembr;novmb;" +
             "dec;dcbr;debr;decbr;decem;decemb;decembr";
 
-        private static List<string> MonthAbbreviationsList = MonthAbbreviations.Split(';').ToList();
+        private static List<string> monthAbbreviationsList = monthAbbreviations.Split(';').ToList();
 
-        public static string GetMonthName(int Number)
+        public static string GetMonthName(int number)
         {
-            string Temp = "";
+            string temp = string.Empty;
 
-            switch (Number)
+            switch (number)
             {
                 case 1:
-                    Temp = "januar";
+                    temp = "januar";
                     break;
                 case 2:
-                    Temp = "februar";
+                    temp = "februar";
                     break;
                 case 3:
-                    Temp = "marts";
+                    temp = "marts";
                     break;
                 case 4:
-                    Temp = "april";
+                    temp = "april";
                     break;
                 case 5:
-                    Temp = "maj";
+                    temp = "maj";
                     break;
                 case 6:
-                    Temp = "juni";
+                    temp = "juni";
                     break;
                 case 7:
-                    Temp = "juli";
+                    temp = "juli";
                     break;
                 case 8:
-                    Temp = "august";
+                    temp = "august";
                     break;
                 case 9:
-                    Temp = "september";
+                    temp = "september";
                     break;
                 case 10:
-                    Temp = "oktober";
+                    temp = "oktober";
                     break;
                 case 11:
-                    Temp = "november";
+                    temp = "november";
                     break;
                 case 12:
-                    Temp = "december";
+                    temp = "december";
                     break;
                 default:
-                    Temp = "n/a";
+                    temp = "n/a";
                     break;
             }
-            return Temp;
+
+            return temp;
         }
 
-        public static int GetMonthNumber(string Source)
+        public static int GetMonthNumber(string source)
         {
-            int Test = 0;
-            string Stripped = StripAll(Source.ToLower());
+            int test = 0;
+            string stripped = StripAll(source.ToLower());
 
-            switch (Stripped)
+            switch (stripped)
             {
                 case "januar":
                 case "january":
                 case "jan":
                 case "janu":
                 case "janaur":
-                    Test = 1;
+                    test = 1;
                     break;
 
                 case "februar":
@@ -95,45 +95,44 @@ namespace DanishNLP
                 case "feb":
                 case "febr":
                 case "febru":
-                    Test = 2;
+                    test = 2;
                     break;
 
                 case "marts":
                 case "march":
                 case "mar":
-                    Test = 3;
+                    test = 3;
                     break;
 
                 case "april":
                 case "apr":
-                    Test = 4;
+                    test = 4;
                     break;
 
                 case "maj":
                 case "mai":
                 case "may":
-                    Test = 5;
+                    test = 5;
                     break;
 
                 case "juni":
                 case "june":
                 case "jun":
-                    Test = 6;
+                    test = 6;
                     break;
 
                 case "juli":
                 case "july":
                 case "jul":
-                    Test = 7;
+                    test = 7;
                     break;
 
                 case "august":
                 case "aug":
-                    Test = 8;
+                    test = 8;
                     break;
 
                 // "sep;sepb;sept;septb;septe;septr;septbr;septem;septmb;septemb;" +
-
                 case "september":
                 case "sep":
                 case "sepb":
@@ -145,11 +144,10 @@ namespace DanishNLP
                 case "septem":
                 case "septmb":
                 case "septemb":
-                    Test = 9;
+                    test = 9;
                     break;
 
                 //  "oct;octb;octbr;okt;oktb;oktbr;oktob;" +
-
                 case "oktober":
                 case "october":
                 case "oct":
@@ -159,11 +157,10 @@ namespace DanishNLP
                 case "oktb":
                 case "oktbr":
                 case "oktob":
-                    Test = 10;
+                    test = 10;
                     break;
 
                 //  "nov;nvbr;novem;novbr;novemb;novembr;novmb;" +
-
                 case "november":
                 case "nov":
                 case "nvbr":
@@ -172,11 +169,10 @@ namespace DanishNLP
                 case "novmb":
                 case "novemb":
                 case "novembr":
-                    Test = 11;
+                    test = 11;
                     break;
 
                 //  "dec;dcbr;debr;decbr;decem;decemb;decembr";
-
                 case "december":
                 case "dec":
                 case "dcbr":
@@ -185,60 +181,74 @@ namespace DanishNLP
                 case "decem":
                 case "decemb":
                 case "decembr":
-                    Test = 12;
+                    test = 12;
                     break;
             }
-            return Test;
+
+            return test;
         }
 
-
-        public static string StripAll(string Source)
+        public static string StripAll(string source)
         {
-            string Temp = "";
-            int FirstPos = 0;
-            int LastPos = Source.Length - 1;
-            int NumberOfLetters = LetterCount(Source);
-            int NumberOfDigits = DigitCount(Source);
-            int NumberOfAlphaNumeric = NumberOfLetters + NumberOfDigits;
-            
-            if (Source.Length > 0 && NumberOfAlphaNumeric > 0)
+            string temp = string.Empty;
+            int firstPos = 0;
+            int lastPos = source.Length - 1;
+            int numberOfLetters = LetterCount(source);
+            int numberOfDigits = DigitCount(source);
+            int numberOfAlphaNumeric = numberOfLetters + numberOfDigits;
+
+            if (source.Length > 0 && numberOfAlphaNumeric > 0)
             {
-                while (!char.IsLetterOrDigit(Source[FirstPos]))
-                    FirstPos++;
+                while (!char.IsLetterOrDigit(source[firstPos]))
+                {
+                    firstPos++;
+                }
 
-                while (!char.IsLetterOrDigit(Source[LastPos]))
-                    LastPos--;
+                while (!char.IsLetterOrDigit(source[lastPos]))
+                {
+                    lastPos--;
+                }
 
-                int NewLength = LastPos - FirstPos + 1;
-                if (NewLength > 0)
-                    Temp = Source.Substring(FirstPos, NewLength);
+                int newLength = lastPos - firstPos + 1;
+                if (newLength > 0)
+                {
+                    temp = source.Substring(firstPos, newLength);
+                }
             }
+
             //if (Source != Temp)
             //    Debug.WriteLine($"StripAll: Stripping from {Source} to {Temp}");
-            return Temp;
+            return temp;
         }
 
-        public static string StripPunctuation(string Source)
+        public static string StripPunctuation(string source)
         {
-            string PunctuationMarks = " .,:;!?";
-            string Temp = Source;
+            string punctuationMarks = " .,:;!?";
+            string temp = source;
 
-            if (Temp != null)
-                if (Temp.Length >= 2)
+            if (temp != null)
+            {
+                if (temp.Length >= 2)
                 {
-                    string LastLetter = Temp.Last().ToString();
-                    int LastPos = PunctuationMarks.IndexOf(LastLetter);
-                    if (LastPos >= 0)
-                        Temp = Temp.Substring(0, Temp.Length - 1);
+                    string lastLetter = temp.Last().ToString();
+                    int lastPos = punctuationMarks.IndexOf(lastLetter);
+                    if (lastPos >= 0)
+                    {
+                        temp = temp.Substring(0, temp.Length - 1);
+                    }
 
-                    string FirstLetter = Temp.First().ToString();
-                    int FirstPos = PunctuationMarks.IndexOf(FirstLetter);
-                    if (FirstPos >= 0)
-                        Temp = Temp.Substring(1);
+                    string firstLetter = temp.First().ToString();
+                    int firstPos = punctuationMarks.IndexOf(firstLetter);
+                    if (firstPos >= 0)
+                    {
+                        temp = temp.Substring(1);
+                    }
                 }
+            }
+
             //if (Source != Temp)
             //    Debug.WriteLine($"StripPunctuation: Stripping from {Source} to {Temp}");
-            return Temp;
+            return temp;
         }
 
         //public static string StripSpecificEndingChars(string Source, string CharsToStrip)
@@ -260,646 +270,726 @@ namespace DanishNLP
 
         //    return Temp;
         //}
-
-
-        public static string StripQuotationMarks(string Source)
+        public static string StripQuotationMarks(string source)
         {
-            string QuotationMarks = "«‹»›„“‟”’‚‘‛";
-            string Temp = Source;
+            string quotationMarks = "«‹»›„“‟”’‚‘‛";
+            string temp = source;
 
-            if (Temp != null)
-                if (Temp.Length >= 2)
+            if (temp != null)
+            {
+                if (temp.Length >= 2)
                 {
-                    string LastLetter = Temp.Last().ToString();
-                    int LastPos = QuotationMarks.IndexOf(LastLetter);
-                    if (LastPos >= 0)
-                        Temp = Temp.Substring(0, Temp.Length - 1);
+                    string lastLetter = temp.Last().ToString();
+                    int lastPos = quotationMarks.IndexOf(lastLetter);
+                    if (lastPos >= 0)
+                    {
+                        temp = temp.Substring(0, temp.Length - 1);
+                    }
 
-                    string FirstLetter = Temp.First().ToString();
-                    int FirstPos = QuotationMarks.IndexOf(FirstLetter);
-                    if (FirstPos >= 0)
-                        Temp = Temp.Substring(1);
+                    string firstLetter = temp.First().ToString();
+                    int firstPos = quotationMarks.IndexOf(firstLetter);
+                    if (firstPos >= 0)
+                    {
+                        temp = temp.Substring(1);
+                    }
                 }
+            }
+
             //if (Source != Temp)
             //    Debug.WriteLine($"StripQuotation: Stripping from {Source} to {Temp}");
-            return Temp;
+            return temp;
         }
 
-        public static bool EndsQuotation(string Source)
+        public static bool EndsQuotation(string source)
         {
-            string QuotationMarks = "«»„“‟”";
-            char CurrentMark;
-            bool Found = false;
-            int MidPosition = Source.Length / 2;
+            string quotationMarks = "«»„“‟”";
+            char currentMark;
+            bool found = false;
+            int midPosition = source.Length / 2;
 
-            if (Source != null)
+            if (source != null)
             {
-                for (int i = 0; i <= QuotationMarks.Length - 1; i++)
+                for (int i = 0; i <= quotationMarks.Length - 1; i++)
                 {
-                    CurrentMark = QuotationMarks[i];
-                    Found = Found || Source.IndexOf(CurrentMark) >= MidPosition;
+                    currentMark = quotationMarks[i];
+                    found = found || source.IndexOf(currentMark) >= midPosition;
                 }
             }
-            return Found;
+
+            return found;
         }
 
-        public static bool StartsQuotation(string Source)
+        public static bool StartsQuotation(string source)
         {
-            string QuotationMarks = "«»„“‟”";
-            char CurrentMark;
-            bool Found = false;
-            int MidPosition = Source.Length / 2;
+            string quotationMarks = "«»„“‟”";
+            char currentMark;
+            bool found = false;
+            int midPosition = source.Length / 2;
 
-            if (Source != null)
+            if (source != null)
             {
-                for (int i = 0; i <= QuotationMarks.Length - 1; i++)
+                for (int i = 0; i <= quotationMarks.Length - 1; i++)
                 {
-                    CurrentMark = QuotationMarks[i];
-                    Found = Found || (Source.IndexOf(CurrentMark) > -1 && Source.IndexOf(CurrentMark) <= MidPosition);
+                    currentMark = quotationMarks[i];
+                    found = found || (source.IndexOf(currentMark) > -1 && source.IndexOf(currentMark) <= midPosition);
                 }
             }
-            return Found;
+
+            return found;
         }
 
-
-        public static string StripParantheses(string Source)
+        public static string StripParantheses(string source)
         {
-            string Parantheses = "()[]{}";
-            string Temp = Source;
+            string parantheses = "()[]{}";
+            string temp = source;
 
-            if (Temp != null)
-                if (Temp.Length >= 2)
+            if (temp != null)
+            {
+                if (temp.Length >= 2)
                 {
-                    string LastLetter = Temp.Last().ToString();
-                    int LastPos = Parantheses.IndexOf(LastLetter);
-                    if (LastPos >= 0)
-                        Temp = Temp.Substring(0, Temp.Length - 1);
+                    string lastLetter = temp.Last().ToString();
+                    int lastPos = parantheses.IndexOf(lastLetter);
+                    if (lastPos >= 0)
+                    {
+                        temp = temp.Substring(0, temp.Length - 1);
+                    }
 
-                    string FirstLetter = Temp.First().ToString();
-                    int FirstPos = Parantheses.IndexOf(FirstLetter);
-                    if (FirstPos >= 0)
-                        Temp = Temp.Substring(1);
+                    string firstLetter = temp.First().ToString();
+                    int firstPos = parantheses.IndexOf(firstLetter);
+                    if (firstPos >= 0)
+                    {
+                        temp = temp.Substring(1);
+                    }
                 }
+            }
+
             //if (Source != Temp)
             //    Debug.WriteLine($"StripParantheses: Stripping from {Source} to {Temp}");
-            return Temp;
+            return temp;
         }
 
-        
-
-        public static string UnHyphenate(string Source)
+        public static string UnHyphenate(string source)
         {
-            string Hyphen = "-";
-            string Temp = Source;
+            string hyphen = "-";
+            string temp = source;
 
-            if (Temp != null)
-                if (Temp.Length >= 2)
+            if (temp != null)
+            {
+                if (temp.Length >= 2)
                 {
-                    string LastLetter = Temp.Last().ToString();
-                    int LastPos = Hyphen.IndexOf(LastLetter);
-                    if (LastPos >= 0)
-                        Temp = Temp.Substring(0, Temp.Length - 1);
+                    string lastLetter = temp.Last().ToString();
+                    int lastPos = hyphen.IndexOf(lastLetter);
+                    if (lastPos >= 0)
+                    {
+                        temp = temp.Substring(0, temp.Length - 1);
+                    }
                 }
-            return Temp;
+            }
 
+            return temp;
         }
 
-        public static bool EndsSentence(string Source) // skal skrives noget om - så den tager hensyn til abbreviations
+        public static bool EndsSentence(string source) // skal skrives noget om - så den tager hensyn til abbreviations
         {
-            bool CheckEnd = false;
-            string EndMarks = ".:!?";
-            string Temp = Source.Trim();
-            Temp = StripParantheses(Temp);
-            Temp = StripQuotationMarks(Temp);
+            bool checkEnd = false;
+            string endMarks = ".:!?";
+            string temp = source.Trim();
+            temp = StripParantheses(temp);
+            temp = StripQuotationMarks(temp);
 
-            if (Temp.Length > 0)
+            if (temp.Length > 0)
             {
-                char LastChar = Temp[Temp.Length - 1];
-                if (EndMarks.IndexOf(LastChar) != -1)
-                    CheckEnd = true;
+                char lastChar = temp[temp.Length - 1];
+                if (endMarks.IndexOf(lastChar) != -1)
+                {
+                    checkEnd = true;
+                }
             }
-            return CheckEnd;
+
+            return checkEnd;
         }
 
-        public static bool EndsWithPeriodColonExclamationQuestionMark(string Source)
+        public static bool EndsWithPeriodColonExclamationQuestionMark(string source)
         {
-            bool CheckEnd = false;
-            string EndMarks = ".:!?";
-            string Temp = Source.Trim();
-            Temp = StripParantheses(Temp);
-            Temp = StripQuotationMarks(Temp);
+            bool checkEnd = false;
+            string endMarks = ".:!?";
+            string temp = source.Trim();
+            temp = StripParantheses(temp);
+            temp = StripQuotationMarks(temp);
 
-            if (Temp.Length > 0)
+            if (temp.Length > 0)
             {
-                char LastChar = Temp[Temp.Length - 1];
-                if (EndMarks.IndexOf(LastChar) != -1)
-                    CheckEnd = true;
+                char lastChar = temp[temp.Length - 1];
+                if (endMarks.IndexOf(lastChar) != -1)
+                {
+                    checkEnd = true;
+                }
             }
-            return CheckEnd;
+
+            return checkEnd;
         }
 
-        
-        public static bool EndsWithComma(string Source)
+        public static bool EndsWithComma(string source)
         {
-            bool CheckEnd = false;
-            string EndMarks = ",";
-            string Temp = Source.Trim();
-            Temp = StripParantheses(Temp);
-            Temp = StripQuotationMarks(Temp);
+            bool checkEnd = false;
+            string endMarks = ",";
+            string temp = source.Trim();
+            temp = StripParantheses(temp);
+            temp = StripQuotationMarks(temp);
 
-            if (Temp.Length > 0)
+            if (temp.Length > 0)
             {
-                char LastChar = Temp[Temp.Length - 1];
-                if (EndMarks.IndexOf(LastChar) != -1)
-                    CheckEnd = true;
+                char lastChar = temp[temp.Length - 1];
+                if (endMarks.IndexOf(lastChar) != -1)
+                {
+                    checkEnd = true;
+                }
             }
+
             // Debug.WriteLine($"{Source} - ends with comma? {CheckEnd}");
-            return CheckEnd;
+            return checkEnd;
         }
 
-
-        public static bool EndsWithHyphen(string Source)
+        public static bool EndsWithHyphen(string source)
         {
-            bool CheckHyphen = false;
+            bool checkHyphen = false;
 
-            if (Source.Length > 2)
+            if (source.Length > 2)
             {
-                char LastChar = Source[Source.Length - 1];
-                if (LastChar == '-')
-                    CheckHyphen = true;
+                char lastChar = source[source.Length - 1];
+                if (lastChar == '-')
+                {
+                    checkHyphen = true;
+                }
             }
-            return CheckHyphen;
+
+            return checkHyphen;
         }
 
-        public static bool EndsWithAlphaNumeric(string Source)
+        public static bool EndsWithAlphaNumeric(string source)
         {
-            bool CheckAlphaNumeric = false;
+            bool checkAlphaNumeric = false;
 
-            if (Source.Length > 2)
+            if (source.Length > 2)
             {
-                char LastChar = Source[Source.Length - 1];
-                if (char.IsLetterOrDigit(LastChar))
-                    CheckAlphaNumeric = true;
+                char lastChar = source[source.Length - 1];
+                if (char.IsLetterOrDigit(lastChar))
+                {
+                    checkAlphaNumeric = true;
+                }
             }
-            return CheckAlphaNumeric;
+
+            return checkAlphaNumeric;
         }
 
-
-        public static bool StartsWithUpperCase(string Source)
+        public static bool StartsWithUpperCase(string source)
         {
-            string Temp = Source.Trim();
-            Temp = StripParantheses(Temp);
-            Temp = StripQuotationMarks(Temp);
+            string temp = source.Trim();
+            temp = StripParantheses(temp);
+            temp = StripQuotationMarks(temp);
 
-            bool CheckFirst;
+            bool checkFirst;
 
-            if (Temp.Length > 0)
+            if (temp.Length > 0)
             {
-                char FirstChar = Temp[0];
-                CheckFirst = char.IsUpper(FirstChar);
-            }
-            else
-                CheckFirst = false;
-
-            return CheckFirst;
-        }
-        
-        public static bool StartsWithLowerCase(string Source)
-        {
-            string Temp = Source.Trim();
-            Temp = StripParantheses(Temp);
-            Temp = StripQuotationMarks(Temp);
-
-            bool CheckFirst;
-
-            if (Temp.Length > 0)
-            {
-                char FirstChar = Temp[0];
-                CheckFirst = char.IsLower(FirstChar);
+                char firstChar = temp[0];
+                checkFirst = char.IsUpper(firstChar);
             }
             else
-                CheckFirst = false;
+            {
+                checkFirst = false;
+            }
 
-            return CheckFirst;
+            return checkFirst;
         }
 
-        public static bool StartsWithVowel(string Source)
+        public static bool StartsWithLowerCase(string source)
         {
-            string Temp = Source.Trim();
-            Temp = StripParantheses(Temp);
-            Temp = StripQuotationMarks(Temp);
+            string temp = source.Trim();
+            temp = StripParantheses(temp);
+            temp = StripQuotationMarks(temp);
 
-            bool CheckFirst;
+            bool checkFirst;
 
-            if (Temp.Length > 0)
+            if (temp.Length > 0)
             {
-                char FirstChar = Temp[0];
-                CheckFirst = IsVowel(FirstChar);
+                char firstChar = temp[0];
+                checkFirst = char.IsLower(firstChar);
             }
             else
-                CheckFirst = false;
+            {
+                checkFirst = false;
+            }
 
-            return CheckFirst;
+            return checkFirst;
         }
 
-        public static bool StartsWithConsonant(string Source)
+        public static bool StartsWithVowel(string source)
         {
-            string Temp = Source.Trim();
-            Temp = StripParantheses(Temp);
-            Temp = StripQuotationMarks(Temp);
+            string temp = source.Trim();
+            temp = StripParantheses(temp);
+            temp = StripQuotationMarks(temp);
 
-            bool CheckFirst;
+            bool checkFirst;
 
-            if (Temp.Length > 0)
+            if (temp.Length > 0)
             {
-                char FirstChar = Temp[0];
-                CheckFirst = IsConsonant(FirstChar);
+                char firstChar = temp[0];
+                checkFirst = IsVowel(firstChar);
             }
             else
-                CheckFirst = false;
+            {
+                checkFirst = false;
+            }
 
-            return CheckFirst;
+            return checkFirst;
         }
 
+        public static bool StartsWithConsonant(string source)
+        {
+            string temp = source.Trim();
+            temp = StripParantheses(temp);
+            temp = StripQuotationMarks(temp);
 
-        public static bool IsAllUpperCase(string Source)
+            bool checkFirst;
+
+            if (temp.Length > 0)
+            {
+                char firstChar = temp[0];
+                checkFirst = IsConsonant(firstChar);
+            }
+            else
+            {
+                checkFirst = false;
+            }
+
+            return checkFirst;
+        }
+
+        public static bool IsAllUpperCase(string source)
         {
             // NB: whitespace og punctuation tæller med som UPPER!!
+            bool checkUpper = true;
 
-            bool CheckUpper = true;
-
-            if (Source.Length > 0)
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    CheckUpper = CheckUpper && (char.IsUpper(CurrentChar) || char.IsWhiteSpace(CurrentChar) || char.IsPunctuation(CurrentChar));
+                    currentChar = source[i];
+                    checkUpper = checkUpper && (char.IsUpper(currentChar) || char.IsWhiteSpace(currentChar) || char.IsPunctuation(currentChar));
                 }
             }
             else
-                CheckUpper = false;
+            {
+                checkUpper = false;
+            }
 
-            return CheckUpper;
+            return checkUpper;
         }
-        
-        public static bool IsAllLowerCase(string Source)
+
+        public static bool IsAllLowerCase(string source)
         {
             // NB: whitespace og punctuation tæller med som LOWER!!
-            bool CheckLower = true;
+            bool checkLower = true;
 
-            if (Source.Length > 0)
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    CheckLower = CheckLower && (char.IsLower(CurrentChar) || char.IsWhiteSpace(CurrentChar) || char.IsPunctuation(CurrentChar));
+                    currentChar = source[i];
+                    checkLower = checkLower && (char.IsLower(currentChar) || char.IsWhiteSpace(currentChar) || char.IsPunctuation(currentChar));
                 }
             }
             else
-                CheckLower = false;
-
-            return CheckLower;
-        }
-
-        public static bool IsMonthName(string Source)
-        {
-            return MonthNameList.Contains(Source.ToLower());
-        }
-
-        public static bool IsMonthAbbreviation(string Source)
-        {
-            return MonthAbbreviationsList.Contains(Source.ToLower());
-        }
-
-
-        public static bool IsPossibleDate(string Source)
-        {
-            bool CheckChar = true;
-
-            if (Source.Length > 0)
             {
-                // tjekker først, om strengen består af cifre, whitespace og punktuering            
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                checkLower = false;
+            }
+
+            return checkLower;
+        }
+
+        public static bool IsMonthName(string source)
+        {
+            return monthNameList.Contains(source.ToLower());
+        }
+
+        public static bool IsMonthAbbreviation(string source)
+        {
+            return monthAbbreviationsList.Contains(source.ToLower());
+        }
+
+        public static bool IsPossibleDate(string source)
+        {
+            bool checkChar = true;
+
+            if (source.Length > 0)
+            {
+                // tjekker først, om strengen består af cifre, whitespace og punktuering
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    CheckChar = CheckChar && (char.IsNumber(CurrentChar) || char.IsWhiteSpace(CurrentChar) || char.IsPunctuation(CurrentChar) || CurrentChar == '/');
+                    currentChar = source[i];
+                    checkChar = checkChar && (char.IsNumber(currentChar) || char.IsWhiteSpace(currentChar) || char.IsPunctuation(currentChar) || currentChar == '/');
                 }
-                
+
                 // tjekker dernæst, om det er en dato af formen nn. måned yyyy - alternativt blot måned yyyy
-                if (!CheckChar)
+                if (!checkChar)
                 {
-                    CheckChar = true;
-                    List<string> SourceList = Source.Split(' ').ToList();
-                    
-                    foreach (string S in SourceList)
+                    checkChar = true;
+                    List<string> sourceList = source.Split(' ').ToList();
+
+                    foreach (string s in sourceList)
                     {
-                        bool Test = (MonthNameList.Contains(S.ToLower()) || MonthAbbreviationsList.Contains(S.ToLower()) || IsNumeric(S));
-                        CheckChar = CheckChar && Test;
+                        bool test = monthNameList.Contains(s.ToLower()) || monthAbbreviationsList.Contains(s.ToLower()) || IsNumeric(s);
+                        checkChar = checkChar && test;
                     }
                 }
             }
             else
-                CheckChar = false;
+            {
+                checkChar = false;
+            }
 
-            return CheckChar;
+            return checkChar;
         }
 
-        public static bool IsPossiblePlaceName(string Source)
+        public static bool IsPossiblePlaceName(string source)
         {
-            bool Check = true;
+            bool check = true;
 
-
-
-            return Check;
+            return check;
         }
 
-        public static bool IsPossibleAddress(string Source)
+        public static bool IsPossibleAddress(string source)
         {
-            bool Check = true;
+            bool check = true;
 
-
-
-            return Check;
+            return check;
         }
 
-        public static bool IsNumeric(object Expression)
+        public static bool IsNumeric(object expression)
         {
             double retNum;
 
-            bool isNum = Double.TryParse(Convert.ToString(Expression), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out retNum);
+            bool isNum = Double.TryParse(Convert.ToString(expression), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out retNum);
             return isNum;
         }
 
-        public static bool IsOrdinalNumber(string Source)
+        public static bool IsOrdinalNumber(string source)
         {
-            bool OK = true;
-            // først fjernes paranteser, som ofte anvendes ved senere kongenavne, f.eks. Christian (10.)
-            string Temp = clsLanguageLibrary.StripParantheses(Source);
+            bool oK = true;
 
-            if (Temp.Length > 1)
+            // først fjernes paranteser, som ofte anvendes ved senere kongenavne, f.eks. Christian (10.)
+            string temp = ClsLanguageLibrary.StripParantheses(source);
+
+            if (temp.Length > 1)
             {
-                int PeriodPos = Temp.IndexOf('.');
-                if (PeriodPos != -1)
+                int periodPos = temp.IndexOf('.');
+                if (periodPos != -1)
                 {
-                    char CurrentChar;
-                    for (int i = 0; i < PeriodPos; i++)
+                    char currentChar;
+                    for (int i = 0; i < periodPos; i++)
                     {
-                        CurrentChar = Temp[i];
-                        OK = OK && char.IsNumber(CurrentChar);
+                        currentChar = temp[i];
+                        oK = oK && char.IsNumber(currentChar);
                     }
                 }
                 else
-                    OK = false;
+                {
+                    oK = false;
+                }
             }
             else
-                OK = false;
-            return OK;
-        }
-
-
-        public static bool IsVowel(char C)
-        {
-            string Vowels = "aeiouyæøåáéíóúàèìòùäëïöüÿâêîôû";
-            int Position = Vowels.IndexOf(C.ToString().ToLower());
-            bool Result = Position > -1;
-            return Result;
-        }
-
-        public static bool IsAllVowel(string Source)
-        {
-            bool Result = LetterCount(Source) == VowelCount(Source);
-            return Result;
-        }
-
-        public static bool IsConsonant(char C)
-        {
-            string Consonants = "bcdfghjklmnpqrstvwxz";
-            int Position = Consonants.IndexOf(C.ToString().ToLower());
-            bool Result = Position > -1;
-            return Result;
-        }
-
-        public static bool IsAllConsonant(string Source)
-        {
-            bool Result = LetterCount(Source) == ConsonantCount(Source);
-            return Result;
-        }
-
-        public static int LetterCount(string Source)
-        {
-            int Count = 0;
-
-            if (Source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                oK = false;
+            }
+
+            return oK;
+        }
+
+        public static bool IsVowel(char c)
+        {
+            string vowels = "aeiouyæøåáéíóúàèìòùäëïöüÿâêîôû";
+            int position = vowels.IndexOf(c.ToString().ToLower());
+            bool result = position > -1;
+            return result;
+        }
+
+        public static bool IsAllVowel(string source)
+        {
+            bool result = LetterCount(source) == VowelCount(source);
+            return result;
+        }
+
+        public static bool IsConsonant(char c)
+        {
+            string consonants = "bcdfghjklmnpqrstvwxz";
+            int position = consonants.IndexOf(c.ToString().ToLower());
+            bool result = position > -1;
+            return result;
+        }
+
+        public static bool IsAllConsonant(string source)
+        {
+            bool result = LetterCount(source) == ConsonantCount(source);
+            return result;
+        }
+
+        public static int LetterCount(string source)
+        {
+            int count = 0;
+
+            if (source.Length > 0)
+            {
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (char.IsLetter(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (char.IsLetter(currentChar))
+                    {
+                        count++;
+                    }
                 }
             }
-            return Count;
+
+            return count;
         }
 
-        public static int DigitCount(string Source)
+        public static int DigitCount(string source)
         {
-            int Count = 0;
+            int count = 0;
 
-            if (Source.Length > 0)
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (char.IsDigit(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (char.IsDigit(currentChar))
+                    {
+                        count++;
+                    }
                 }
             }
-            return Count;
+
+            return count;
         }
 
-        public static int PunctuationCount(string Source)
+        public static int PunctuationCount(string source)
         {
-            int Count = 0;
-            string Temp = Source.Replace("-", "");
+            int count = 0;
+            string temp = source.Replace("-", string.Empty);
+
             // ja, hyphen fjernes, for ellers slår fx sammensatte adelsnavne ud som forkortelser :)
 
             // bool HasHyphen = Source.IndexOf("-") >= 0;
-
-            if (Temp.Length > 0)
+            if (temp.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Temp.Length; i++)
+                char currentChar;
+                for (int i = 0; i < temp.Length; i++)
                 {
-                    CurrentChar = Temp[i];
-                    if (char.IsPunctuation(CurrentChar))
-                        Count++;
+                    currentChar = temp[i];
+                    if (char.IsPunctuation(currentChar))
+                    {
+                        count++;
+                    }
                 }
             }
+
             //if (Count > 0 && HasHyphen)
             //    Count--;
-
-            return Count;
+            return count;
         }
 
-        public static int PeriodCount(string Source)
+        public static int PeriodCount(string source)
         {
-            int Count = 0;
-            if (Source.Length > 0)
+            int count = 0;
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (CurrentChar == '.')
-                        Count++;
+                    currentChar = source[i];
+                    if (currentChar == '.')
+                    {
+                        count++;
+                    }
                 }
             }
 
-            return Count;
+            return count;
         }
 
-        public static int UpperCaseCount(string Source)
+        public static int UpperCaseCount(string source)
         {
-            int Count = 0;
+            int count = 0;
 
-            if (Source.Length > 0)
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (char.IsUpper(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (char.IsUpper(currentChar))
+                    {
+                        count++;
+                    }
                 }
             }
-            return Count;
+
+            return count;
         }
 
-        public static int LowerCaseCount(string Source)
+        public static int LowerCaseCount(string source)
         {
-            int Count = 0;
+            int count = 0;
 
-            if (Source.Length > 0)
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (char.IsLower(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (char.IsLower(currentChar))
+                    {
+                        count++;
+                    }
                 }
             }
-            return Count;
+
+            return count;
         }
 
-        public static int VowelCount(string Source)
+        public static int VowelCount(string source)
         {
-            int Count = 0;
+            int count = 0;
 
-            if (Source.Length > 0)
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (IsVowel(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (IsVowel(currentChar))
+                    {
+                        count++;
+                    }
                 }
             }
-            return Count;
+
+            return count;
         }
 
-        public static int ConsonantCount(string Source)
+        public static int ConsonantCount(string source)
         {
-            int Count = 0;
+            int count = 0;
 
-            if (Source.Length > 0)
+            if (source.Length > 0)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (IsConsonant(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (IsConsonant(currentChar))
+                    {
+                        count++;
+                    }
                 }
             }
-            return Count;
+
+            return count;
         }
 
-        public static int ConsecutiveConsonantCount(string Source)
+        public static int ConsecutiveConsonantCount(string source)
         {
-            int Count = 0;
-            int Max = 0;
+            int count = 0;
+            int max = 0;
 
-            if (Source.Length > 3)
+            if (source.Length > 3)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (IsConsonant(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (IsConsonant(currentChar))
+                    {
+                        count++;
+                    }
                     else
-                        Count = 0;
+                    {
+                        count = 0;
+                    }
 
-                    if (Count > Max)
-                        Max = Count;
+                    if (count > max)
+                    {
+                        max = count;
+                    }
                 }
             }
-            return Max;
+
+            return max;
         }
 
-        public static int ConsecutiveVowelCount(string Source)
+        public static int ConsecutiveVowelCount(string source)
         {
-            int Count = 0;
-            int Max = 0;
+            int count = 0;
+            int max = 0;
 
-            if (Source.Length > 3)
+            if (source.Length > 3)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (IsVowel(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (IsVowel(currentChar))
+                    {
+                        count++;
+                    }
                     else
-                        Count = 0;
+                    {
+                        count = 0;
+                    }
 
-                    if (Count > Max)
-                        Max = Count;
+                    if (count > max)
+                    {
+                        max = count;
+                    }
                 }
             }
-            return Max;
+
+            return max;
         }
 
-        public static int ConsecutiveDigitCount(string Source)
+        public static int ConsecutiveDigitCount(string source)
         {
-            int Count = 0;
-            int Max = 0;
+            int count = 0;
+            int max = 0;
 
-            if (Source.Length > 3)
+            if (source.Length > 3)
             {
-                char CurrentChar;
-                for (int i = 0; i < Source.Length; i++)
+                char currentChar;
+                for (int i = 0; i < source.Length; i++)
                 {
-                    CurrentChar = Source[i];
-                    if (IsNumeric(CurrentChar))
-                        Count++;
+                    currentChar = source[i];
+                    if (IsNumeric(currentChar))
+                    {
+                        count++;
+                    }
                     else
-                        Count = 0;
+                    {
+                        count = 0;
+                    }
 
-                    if (Count > Max)
-                        Max = Count;
+                    if (count > max)
+                    {
+                        max = count;
+                    }
                 }
             }
-            return Max;
-        }
 
+            return max;
+        }
     }
-
 }

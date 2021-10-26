@@ -1,32 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.IO;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-using System.Globalization;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Text.RegularExpressions;
-
+﻿// <copyright file="TrTranscript.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Net.Http;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows.Media;
+    using System.Xml.Linq;
+    using TrClient.Core.Tags;
+    using TrClient.Libraries;
+
     public class TrTranscript : IComparable, INotifyPropertyChanged
     {
         //public string BaseURL = "https://dbis-thure.uibk.ac.at/f/Get?id=";
@@ -36,32 +25,45 @@ namespace TrClient.Core
         public string PageFileName { get; set; }            // bruges offline
 
         public string ID { get; set; }                      // tsId
+
         public string Key { get; set; }                     // key - sættes efter BaseURL for at få filen
+
         public int PageNr { get; set; }                     // pageNr
+
         public string Status { get; set; }                  // status - fx. NEW eller GT
+
         public string User { get; set; }                    // userName - den ansvarlige user for netop dette transkript
+
         public string Timestamp { get; set; }               // timestamp - noget UTC-std. - må kunne brugs til sortering
 
         public string Creator { get; set; }
+
         public DateTime CreationDate { get; set; }
+
         public DateTime LastChangeDate { get; set; }
+
         public string Type { get; set; }
 
         public string TempCreationDate { get; set; }
+
         public string TempLastChangeDate { get; set; }
 
+        private bool isLoaded = false;
 
-        private bool _isLoaded = false;
         public bool IsLoaded
         {
-            get { return _isLoaded; }
+            get
+            {
+                return isLoaded;
+            }
+
             set
             {
-                if (_isLoaded != value)
+                if (isLoaded != value)
                 {
-                    _isLoaded = value;
+                    isLoaded = value;
                     NotifyPropertyChanged("IsLoaded");
-                    switch (_isLoaded)
+                    switch (isLoaded)
                     {
                         case true:
                             StatusColor = Brushes.LimeGreen;
@@ -74,7 +76,6 @@ namespace TrClient.Core
             }
         }
 
-
         public XDocument TranscriptionDocument;
 
         public TrRegions Regions = new TrRegions();
@@ -82,86 +83,117 @@ namespace TrClient.Core
         public TrTranscripts ParentContainer;
         public TrPage ParentPage;
 
-        private bool _hasChanged = false;
+        private bool hasChanged = false;
+
         public bool HasChanged
         {
-            get { return _hasChanged;  }
+            get
+            {
+                return hasChanged;
+            }
+
             set
             {
-                _hasChanged = value;
-                if (_hasChanged)
+                hasChanged = value;
+                if (hasChanged)
+                {
                     StatusColor = Brushes.Orange;
+                }
+
                 NotifyPropertyChanged("HasChanged");
                 ParentPage.HasChanged = value;
-                if (_hasChanged)
+                if (hasChanged)
+                {
                     ParentPage.ParentDocument.NrOfTranscriptsChanged++;
+                }
                 else
+                {
                     ParentPage.ParentDocument.NrOfTranscriptsChanged--;
+                }
             }
         }
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
-                if (_changesUploaded)
+                changesUploaded = value;
+                if (changesUploaded)
+                {
                     StatusColor = Brushes.DarkViolet;
+                }
+
                 NotifyPropertyChanged("ChangesUploaded");
                 ParentPage.ChangesUploaded = value;
                 Regions.ChangesUploaded = value;
-                if (_changesUploaded)
+                if (changesUploaded)
+                {
                     ParentPage.ParentDocument.NrOfTranscriptsUploaded++;
+                }
                 else
+                {
                     ParentPage.ParentDocument.NrOfTranscriptsUploaded--;
+                }
             }
         }
 
-        private SolidColorBrush _statusColor = Brushes.Red;
+        private SolidColorBrush statusColor = Brushes.Red;
+
         public SolidColorBrush StatusColor
         {
-            get { return _statusColor; }
+            get
+            {
+                return statusColor;
+            }
+
             set
             {
-                if (_statusColor != value)
+                if (statusColor != value)
                 {
-                    _statusColor = value;
+                    statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
         }
 
+        private bool hasRegionalTags = false;
 
-        private bool _hasRegionalTags = false;
         public bool HasRegionalTags
         {
             get
             {
-                foreach (TrRegion TR in Regions)
+                foreach (TrRegion textRegion in Regions)
                 {
-                    _hasRegionalTags = _hasRegionalTags || TR.HasStructuralTag;
+                    hasRegionalTags = hasRegionalTags || textRegion.HasStructuralTag;
                 }
-                return _hasRegionalTags;
+
+                return hasRegionalTags;
             }
         }
 
-        private bool _hasStructuralTags = false;
+        private bool hasStructuralTags = false;
+
         public bool HasStructuralTags
         {
             get
             {
-                foreach (TrRegion TR in Regions)
+                foreach (TrRegion textRegion in Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            _hasStructuralTags = _hasStructuralTags || TL.HasStructuralTag;
+                            hasStructuralTags = hasStructuralTags || textLine.HasStructuralTag;
                         }
                     }
-                    else if (TR.GetType() == typeof(TrRegion_Table))
+                    else if (textRegion.GetType() == typeof(TrTableRegion))
                     {
                         //foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
                         //{
@@ -169,64 +201,73 @@ namespace TrClient.Core
                         //}
                     }
                 }
-                return _hasStructuralTags;
+
+                return hasStructuralTags;
             }
         }
 
-        private bool _hasRegions;
+        private bool hasRegions;
+
         public bool HasRegions
         {
             get
             {
-                _hasRegions = (Regions.Count > 0);
-                return _hasRegions;
+                hasRegions = Regions.Count > 0;
+                return hasRegions;
             }
         }
 
+        private bool hasTables;
 
-        private bool _hasTables;
         public bool HasTables
         {
             get
             {
-                _hasTables = false;
+                hasTables = false;
                 if (HasRegions)
                 {
-                    foreach (TrRegion Region in Regions)
-                        _hasTables = _hasTables || (Region.GetType() == typeof(TrRegion_Table));
+                    foreach (TrRegion region in Regions)
+                    {
+                        hasTables = hasTables || (region.GetType() == typeof(TrTableRegion));
+                    }
                 }
-                return _hasTables;
+
+                return hasTables;
             }
         }
-
 
         public void ConvertTablesToRegions()
         {
             if (HasTables)
             {
                 Debug.WriteLine($"Transcript {ID}: Entering convert tables");
-                TrRegions NewRegions = new TrRegions();
+                TrRegions newRegions = new TrRegions();
 
-                foreach (TrRegion TR in Regions)
+                foreach (TrRegion textRegion in Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Table))
+                    if (textRegion.GetType() == typeof(TrTableRegion))
                     {
                         Debug.WriteLine($"Table found!");
-                        TrRegion_Text NewTextRegion = new TrRegion_Text(TR.ReadingOrder, TR.Orientation, TR.CoordsString);
-                        NewRegions.Add(NewTextRegion);
+                        TrTextRegion newTextRegion = new TrTextRegion(textRegion.ReadingOrder, textRegion.Orientation, textRegion.CoordsString, Regions);
+                        newRegions.Add(newTextRegion);
 
-                        foreach (TrCell Cell in (TR as TrRegion_Table).Cells)
-                            foreach (TrTextLine TL in Cell.TextLines)
-                                NewTextRegion.TextLines.Add(TL);
+                        foreach (TrCell cell in (textRegion as TrTableRegion).Cells)
+                        {
+                            foreach (TrTextLine textLine in cell.TextLines)
+                            {
+                                newTextRegion.TextLines.Add(textLine);
+                            }
+                        }
 
-                        TR.MarkToDeletion = true;
+                        textRegion.MarkToDeletion = true;
                     }
                 }
 
                 // så kopierer vi de nye regioner ind i de gamle
-                foreach (TrRegion NewRegion in NewRegions)
-                    Regions.Add(NewRegion);
-                
+                foreach (TrRegion newRegion in newRegions)
+                {
+                    Regions.Add(newRegion);
+                }
 
                 // og så sletter vi de gamle tabelregioner
                 for (int i = Regions.Count - 1; i >= 0; i--)
@@ -236,21 +277,19 @@ namespace TrClient.Core
                         Debug.WriteLine($"Deleting region nr. {i}");
                         Regions.RemoveAt(i);
                     }
-                        
                 }
-
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
-
 
         // constructor ONLINE
         public TrTranscript(string tID, string tKey, int iPageNr, string tStatus, string tUser, string tTimestamp)
@@ -268,200 +307,195 @@ namespace TrClient.Core
             IsLoaded = false;
         }
 
-        // constructor OFFLINE
-        public TrTranscript(string PageFile)
-        {
-            // bruges kun OFFLINE
-            PageFileName = PageFile;
-            Regions.ParentTranscript = this;
-            IsLoaded = false;
-        }
+        //// constructor OFFLINE
+        //public TrTranscript(string pageFile)
+        //{
+        //    // bruges kun OFFLINE
+        //    PageFileName = pageFile;
+        //    Regions.ParentTranscript = this;
+        //    IsLoaded = false;
+        //}
 
-        public void LoadPageXML()
-        {
-            // BRUGES KUN OFFLINE
-            if (!IsLoaded)
-            {
-                Regions.ParentTranscript = this;
-                // IsLoaded = false;
-                // Debug.WriteLine("Transcript starting to be created!");
+        //public void LoadPageXML()
+        //{
+        //    // BRUGES KUN OFFLINE
+        //    if (!IsLoaded)
+        //    {
+        //        Regions.ParentTranscript = this;
 
-                // Henter transcript ind i et XMLdoc
-                try
-                {
-                    //HttpResponseMessage TranscriptResponseMessage = await CurrentClient.GetAsync(URL);
-                    //string TranscriptResponse = await TranscriptResponseMessage.Content.ReadAsStringAsync();
+        //        // IsLoaded = false;
+        //        // Debug.WriteLine("Transcript starting to be created!");
 
-                    // Debug.WriteLine($"Loading ...: {PageFileName}");
-                    TranscriptionDocument = XDocument.Load(PageFileName);
+        //        // Henter transcript ind i et XMLdoc
+        //        try
+        //        {
+        //            //HttpResponseMessage TranscriptResponseMessage = await CurrentClient.GetAsync(URL);
+        //            //string TranscriptResponse = await TranscriptResponseMessage.Content.ReadAsStringAsync();
 
-                    XNamespace tr = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
+        //            // Debug.WriteLine($"Loading ...: {PageFileName}");
+        //            TranscriptionDocument = XDocument.Load(PageFileName);
 
-                    foreach (var metadata in TranscriptionDocument.Descendants(tr + "Metadata"))
-                    {
-                        string xCreator = metadata.Element(tr + "Creator") == null 
-                                ? String.Empty 
-                                : metadata.Element(tr + "Creator").Value;
-                        string xCreated = metadata.Element(tr + "Created") == null 
-                                ? String.Empty 
-                                : metadata.Element(tr + "Created").Value;
-                        string xLastChange = metadata.Element(tr + "LastChange") == null 
-                                ? String.Empty 
-                                : metadata.Element(tr + "LastChange").Value;
+        //            XNamespace tr = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
 
-                        Creator = xCreator;
-                        TempCreationDate = xCreated;
-                        TempLastChangeDate = xLastChange;
-                        // Debug.WriteLine($"Creator = {Creator}, TempCreationDate = {TempCreationDate}, TempLastChangeDate = {TempLastChangeDate}");
+        //            foreach (var metadata in TranscriptionDocument.Descendants(tr + "Metadata"))
+        //            {
+        //                string xCreator = metadata.Element(tr + "Creator") == null
+        //                        ? String.Empty
+        //                        : metadata.Element(tr + "Creator").Value;
+        //                string xCreated = metadata.Element(tr + "Created") == null
+        //                        ? String.Empty
+        //                        : metadata.Element(tr + "Created").Value;
+        //                string xLastChange = metadata.Element(tr + "LastChange") == null
+        //                        ? String.Empty
+        //                        : metadata.Element(tr + "LastChange").Value;
 
+        //                Creator = xCreator;
+        //                TempCreationDate = xCreated;
+        //                TempLastChangeDate = xLastChange;
 
-                        ID = metadata.Element(tr + "TranskribusMetadata") == null 
-                                ? String.Empty 
-                                : metadata.Element(tr + "TranskribusMetadata").Attribute("pageId").Value;
+        //                // Debug.WriteLine($"Creator = {Creator}, TempCreationDate = {TempCreationDate}, TempLastChangeDate = {TempLastChangeDate}");
+        //                ID = metadata.Element(tr + "TranskribusMetadata") == null
+        //                        ? String.Empty
+        //                        : metadata.Element(tr + "TranskribusMetadata").Attribute("pageId").Value;
 
-                        string xPageNr = metadata.Element(tr + "TranskribusMetadata") == null
-                                ? String.Empty
-                                : metadata.Element(tr + "TranskribusMetadata").Attribute("pageNr").Value;
+        //                string xPageNr = metadata.Element(tr + "TranskribusMetadata") == null
+        //                        ? String.Empty
+        //                        : metadata.Element(tr + "TranskribusMetadata").Attribute("pageNr").Value;
 
-                        PageNr = int.Parse(xPageNr);
+        //                PageNr = int.Parse(xPageNr);
 
-                        Timestamp = metadata.Element(tr + "TranskribusMetadata") == null
-                                ? String.Empty
-                                : metadata.Element(tr + "TranskribusMetadata").Attribute("tsid").Value;
+        //                Timestamp = metadata.Element(tr + "TranskribusMetadata") == null
+        //                        ? String.Empty
+        //                        : metadata.Element(tr + "TranskribusMetadata").Attribute("tsid").Value;
 
-                        Status = metadata.Element(tr + "TranskribusMetadata") == null
-                                ? String.Empty
-                                : metadata.Element(tr + "TranskribusMetadata").Attribute("status").Value;
+        //                Status = metadata.Element(tr + "TranskribusMetadata") == null
+        //                        ? String.Empty
+        //                        : metadata.Element(tr + "TranskribusMetadata").Attribute("status").Value;
 
-                        // Debug.WriteLine($"ID = {ID}, PageNr = {PageNr}, Timestamp = {Timestamp}, Status = {Status}");
+        //                // Debug.WriteLine($"ID = {ID}, PageNr = {PageNr}, Timestamp = {Timestamp}, Status = {Status}");
+        //            }
 
-                    }
+        //            foreach (var page in TranscriptionDocument.Descendants(tr + "Page"))
+        //            {
+        //                Type = page.Attribute("type") == null ? String.Empty : page.Attribute("type").Value;
+        //            }
 
-                    foreach (var page in TranscriptionDocument.Descendants(tr + "Page"))
-                    {
-                        Type = page.Attribute("type") == null ? String.Empty : page.Attribute("type").Value;
-                    }
+        //            foreach (var group in TranscriptionDocument.Descendants(tr + "OrderedGroup"))
+        //            {
+        //                string xRO = group.Element(tr + "OrderedGroup") == null ? "ro_" + TrLibrary.GetNewTimeStamp() : group.Attribute("id").Value;
 
+        //                // Debug.WriteLine($"Order ID {xRO}");
+        //                Regions.OrderedGroupID = xRO;
+        //            }
 
-                    foreach (var group in TranscriptionDocument.Descendants(tr + "OrderedGroup"))
-                    {
-                        string xRO = group.Element(tr + "OrderedGroup") == null ? "ro_" + TrLibrary.GetNewTimeStamp() : group.Attribute("id").Value;
-                        // Debug.WriteLine($"Order ID {xRO}");
-                        Regions.OrderedGroupID = xRO;
-                    }
+        //            foreach (var region in TranscriptionDocument.Descendants(tr + "TextRegion"))
+        //            {
+        //                string regionType = region.Attribute("type") == null ? String.Empty : region.Attribute("type").Value;
+        //                string regionID = region.Attribute("id") == null ? String.Empty : region.Attribute("id").Value;
+        //                string regionTagString = region.Attribute("custom") == null ? String.Empty : region.Attribute("custom").Value;
+        //                float orientation = region.Attribute("orientation") == null ? 0 : float.Parse(region.Attribute("orientation").Value);
+        //                string regionCoords = region.Element(tr + "Coords") == null ? String.Empty : region.Element(tr + "Coords").Attribute("points").Value;
 
+        //                TrTextRegion newTextRegion = new TrTextRegion(regionType, regionID, regionTagString, orientation, regionCoords);
+        //                Regions.Add(newTextRegion);
 
-                    foreach (var region in TranscriptionDocument.Descendants(tr + "TextRegion"))
-                    {
-                        string RegionType = region.Attribute("type") == null ? String.Empty : region.Attribute("type").Value;
-                        string RegionID = region.Attribute("id") == null ? String.Empty : region.Attribute("id").Value;
-                        string RegionTagString = region.Attribute("custom") == null ? String.Empty : region.Attribute("custom").Value;
-                        float Orientation = region.Attribute("orientation") == null ? 0 : float.Parse(region.Attribute("orientation").Value);
-                        string RegionCoords = region.Element(tr + "Coords") == null ? String.Empty : region.Element(tr + "Coords").Attribute("points").Value;
+        //                foreach (var line in region.Descendants(tr + "TextLine"))
+        //                {
+        //                    string lineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
+        //                    string lineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
+        //                    string lineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
+        //                    string baseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
+        //                    string textEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
 
-                        TrRegion_Text NewTextRegion = new TrRegion_Text(RegionType, RegionID, RegionTagString, Orientation, RegionCoords);
-                        Regions.Add(NewTextRegion);
+        //                    // Debug.WriteLine($"{LineID}, {LineTagString}, {LineCoords}, {BaseLineCoords}, {TextEquiv}");
+        //                    TrTextLine newTextLine = new TrTextLine(lineID, lineTagString, lineCoords, baseLineCoords, textEquiv);
+        //                    newTextRegion.TextLines.Add(newTextLine);
+        //                }
+        //            }
 
-                        foreach (var line in region.Descendants(tr + "TextLine"))
-                        {
-                            string LineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
-                            string LineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
-                            string LineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
-                            string BaseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
-                            string TextEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
+        //            foreach (var table in TranscriptionDocument.Descendants(tr + "TableRegion"))
+        //            {
+        //                string regionType = table.Attribute("type") == null ? String.Empty : table.Attribute("type").Value;
+        //                string regionID = table.Attribute("id") == null ? String.Empty : table.Attribute("id").Value;
+        //                string regionTagString = table.Attribute("custom") == null ? String.Empty : table.Attribute("custom").Value;
+        //                float orientation = table.Attribute("orientation") == null ? 0 : float.Parse(table.Attribute("orientation").Value);
+        //                string regionCoords = table.Element(tr + "Coords") == null ? String.Empty : table.Element(tr + "Coords").Attribute("points").Value;
 
-                            // Debug.WriteLine($"{LineID}, {LineTagString}, {LineCoords}, {BaseLineCoords}, {TextEquiv}");
+        //                TrTableRegion newTable = new TrTableRegion(regionType, regionID, regionTagString, orientation, regionCoords);
+        //                Regions.Add(newTable);
 
-                            TrTextLine NewTextLine = new TrTextLine(LineID, LineTagString, LineCoords, BaseLineCoords, TextEquiv);
-                            NewTextRegion.TextLines.Add(NewTextLine);
-                        }
-                    }
+        //                // Debug.WriteLine($"New table at page # {PageNr} !!!");
+        //                foreach (var cell in table.Descendants(tr + "TableCell"))
+        //                {
+        //                    string cellID = cell.Attribute("id") == null ? String.Empty : cell.Attribute("id").Value;
+        //                    string cellRow = cell.Attribute("row") == null ? String.Empty : cell.Attribute("row").Value;
+        //                    string cellCol = cell.Attribute("col") == null ? String.Empty : cell.Attribute("col").Value;
+        //                    string cellCoords = cell.Element(tr + "Coords") == null ? String.Empty : cell.Element(tr + "Coords").Attribute("points").Value;
+        //                    string cellCornerPoints = cell.Element(tr + "CornerPts") == null ? String.Empty : cell.Element(tr + "CornerPts").Value;
 
-                    foreach (var table in TranscriptionDocument.Descendants(tr + "TableRegion"))
-                    {
-                        string RegionType = table.Attribute("type") == null ? String.Empty : table.Attribute("type").Value;
-                        string RegionID = table.Attribute("id") == null ? String.Empty : table.Attribute("id").Value;
-                        string RegionTagString = table.Attribute("custom") == null ? String.Empty : table.Attribute("custom").Value;
-                        float Orientation = table.Attribute("orientation") == null ? 0 : float.Parse(table.Attribute("orientation").Value);
-                        string RegionCoords = table.Element(tr + "Coords") == null ? String.Empty : table.Element(tr + "Coords").Attribute("points").Value;
+        //                    TrCell newTableCell = new TrCell(cellID, cellRow, cellCol, cellCoords, cellCornerPoints);
+        //                    newTable.AddCell(newTableCell);
 
-                        TrRegion_Table NewTable = new TrRegion_Table(RegionType, RegionID, RegionTagString, Orientation, RegionCoords);
-                        Regions.Add(NewTable);
+        //                    Debug.WriteLine($"New cell in table!");
 
-                        // Debug.WriteLine($"New table at page # {PageNr} !!!");
+        //                    foreach (var line in cell.Descendants(tr + "TextLine"))
+        //                    {
+        //                        string lineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
+        //                        string lineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
+        //                        string lineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
+        //                        string baseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
+        //                        string textEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
 
-                        foreach (var cell in table.Descendants(tr + "TableCell"))
-                        {
-                            string CellID = cell.Attribute("id") == null ? String.Empty : cell.Attribute("id").Value;
-                            string CellRow = cell.Attribute("row") == null ? String.Empty : cell.Attribute("row").Value;
-                            string CellCol = cell.Attribute("col") == null ? String.Empty : cell.Attribute("col").Value;
-                            string CellCoords = cell.Element(tr + "Coords") == null ? String.Empty : cell.Element(tr + "Coords").Attribute("points").Value;
-                            string CellCornerPoints = cell.Element(tr + "CornerPts") == null ? String.Empty : cell.Element(tr + "CornerPts").Value;
+        //                        TrTextLine newTextLine = new TrTextLine(lineID, lineTagString, lineCoords, baseLineCoords, textEquiv);
+        //                        newTableCell.TextLines.Add(newTextLine);
 
-                            TrCell NewTableCell = new TrCell(CellID, CellRow, CellCol, CellCoords, CellCornerPoints);
-                            NewTable.AddCell(NewTableCell);
+        //                        Debug.WriteLine($"New textline in cell!");
+        //                    }
+        //                }
+        //            }
 
-                            Debug.WriteLine($"New cell in table!");
+        //            IsLoaded = true;
+        //            ParentPage.IsLoaded = true;
+        //            ParentPage.ParentDocument.NrOfTranscriptsLoaded++;
 
-                            foreach (var line in cell.Descendants(tr + "TextLine"))
-                            {
-                                string LineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
-                                string LineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
-                                string LineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
-                                string BaseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
-                                string TextEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
+        //            // Debug.WriteLine($"Transcript loaded: {ParentPage.ParentDocument.ParentCollection.Name} / {ParentPage.ParentDocument.Title} / {ParentPage.PageNr}");
+        //        }
+        //        catch (TaskCanceledException e)
+        //        {
+        //            // MessageBox.Show("Exception occured!", TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        //            Debug.WriteLine($"Task canceled! Exception message when loading page nr {PageNr.ToString()}: {PageFileName}: {e.Message}");
+        //        }
+        //        catch (OperationCanceledException e)
+        //        {
+        //            Debug.WriteLine($"Operation canceled! Exception message when loading page nr {PageNr.ToString()}: {PageFileName}: {e.Message}");
+        //        }
 
-                                TrTextLine NewTextLine = new TrTextLine(LineID, LineTagString, LineCoords, BaseLineCoords, TextEquiv);
-                                NewTableCell.TextLines.Add(NewTextLine);
+        //        //catch (Exception e)
+        //        //{
+        //        //    Debug.WriteLine($"General error! Exception message when loading page nr {PageNr.ToString()}: {PageFileName}: {e.Message}");
+        //        //}
+        //    }
+        //}
 
-                                Debug.WriteLine($"New textline in cell!");
-                            }
-                        }
-                    }
+        private DateTime dateTimeOfTranscript;
 
-
-                    IsLoaded = true;
-                    ParentPage.IsLoaded = true;
-                    ParentPage.ParentDocument.NrOfTranscriptsLoaded++;
-
-                    // Debug.WriteLine($"Transcript loaded: {ParentPage.ParentDocument.ParentCollection.Name} / {ParentPage.ParentDocument.Title} / {ParentPage.PageNr}");
-
-                }
-                catch (TaskCanceledException e)
-                {
-                    // MessageBox.Show("Exception occured!", TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    Debug.WriteLine($"Task canceled! Exception message when loading page nr {PageNr.ToString()}: {PageFileName}: {e.Message}");
-                }
-                catch (OperationCanceledException e)
-                {
-                    Debug.WriteLine($"Operation canceled! Exception message when loading page nr {PageNr.ToString()}: {PageFileName}: {e.Message}");
-                }
-                //catch (Exception e)
-                //{
-                //    Debug.WriteLine($"General error! Exception message when loading page nr {PageNr.ToString()}: {PageFileName}: {e.Message}");
-                //}
-
-            }
-        }
-
-
-        private DateTime _dateTimeOfTranscript;
         public DateTime DateTimeOfTranscript
         {
             get
             {
-                _dateTimeOfTranscript = TrLibrary.ConvertUnixTimeStamp(Timestamp);
-                return _dateTimeOfTranscript;
+                dateTimeOfTranscript = TrLibrary.ConvertUnixTimeStamp(Timestamp);
+                return dateTimeOfTranscript;
             }
         }
 
-        private string _url;
+        private string url;
+
         private string URL
         {
             get
             {
-                _url = BaseURL + Key;
-                return _url;
+                url = BaseURL + Key;
+                return url;
             }
         }
 
@@ -471,122 +505,127 @@ namespace TrClient.Core
             return Timestamp.CompareTo(transcript.Timestamp);
         }
 
-        public void SetRegionalTagsOnNonTaggedRegions(string TagValue)
+        public void SetRegionalTagsOnNonTaggedRegions(string tagValue)
         {
-            foreach (TrRegion TR in Regions)
+            foreach (TrRegion textRegion in Regions)
             {
-                if (!TR.HasStructuralTag)
+                if (!textRegion.HasStructuralTag)
                 {
-                    TrTag_Structural structTag = new TrTag_Structural(TagValue);
-                    TR.StructuralTag = structTag;
-                    TR.Tags.Add(structTag);
-                    TR.HasChanged = true;
+                    TrTagStructural structTag = new TrTagStructural(tagValue);
+                    textRegion.StructuralTag = structTag;
+                    textRegion.Tags.Add(structTag);
+                    textRegion.HasChanged = true;
                 }
             }
         }
 
-
         public TrTags GetRegionalTags()
         {
-            TrTags TempTags = new TrTags();
+            TrTags tempTags = new TrTags();
 
-            foreach (TrRegion TR in Regions)
+            foreach (TrRegion textRegion in Regions)
             {
-                if (TR.HasStructuralTag)
+                if (textRegion.HasStructuralTag)
                 {
-                    TempTags.Add(TR.StructuralTag);
+                    tempTags.Add(textRegion.StructuralTag);
                 }
             }
-            return TempTags;
+
+            return tempTags;
         }
 
         public TrTags GetStructuralTags()
         {
-            TrTags StructuralTags = new TrTags();
+            TrTags structuralTags = new TrTags();
 
-            foreach (TrRegion TR in Regions)
+            foreach (TrRegion textRegion in Regions)
             {
-                if (TR.GetType() == typeof(TrRegion_Text))
+                if (textRegion.GetType() == typeof(TrTextRegion))
                 {
-                    foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                    foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                     {
-                        foreach (TrTag Tag in TL.Tags)
+                        foreach (TrTag tag in textLine.Tags)
                         {
-                            if (Tag.GetType() == typeof(TrTag_Structural))
+                            if (tag.GetType() == typeof(TrTagStructural))
                             {
-                                StructuralTags.Add(Tag);
-                                Tag.ParentLine = TL;
+                                structuralTags.Add(tag);
+                                tag.ParentLine = textLine;
                             }
                         }
                     }
                 }
-                    
             }
-            return StructuralTags;
+
+            return structuralTags;
         }
 
-        public bool AddStructuralTag(int Region, int Line, string TagName, bool OverWrite)
+        public bool AddStructuralTag(int region, int line, string tagName, bool overWrite)
         {
-            bool TagAdded = false;
+            bool tagAdded = false;
 
-            TrRegion TR = GetRegionByNumber(Region);
-            if (TR != null)
+            TrRegion textRegion = GetRegionByNumber(region);
+            if (textRegion != null)
             {
-                if (TR.GetType() == typeof(TrRegion_Text))
+                if (textRegion.GetType() == typeof(TrTextRegion))
                 {
-                    TrTextLine TL = (TR as TrRegion_Text).GetLineByNumber(Line);
-                    if (TL != null)
+                    TrTextLine textLine = (textRegion as TrTextRegion).GetLineByNumber(line);
+                    if (textLine != null)
                     {
-                        if (!TL.HasStructuralTag)
+                        if (!textLine.HasStructuralTag)
                         {
-                            TL.AddStructuralTag(TagName, OverWrite);
-                            Debug.WriteLine($"Page# {ParentPage.PageNr}: Tag {TagName} tilføjet linie {Region}-{Line}!");
-                            TagAdded = true;
+                            textLine.AddStructuralTag(tagName, overWrite);
+                            Debug.WriteLine($"Page# {ParentPage.PageNr}: Tag {tagName} tilføjet linie {region}-{line}!");
+                            tagAdded = true;
                         }
                         else
-                            Debug.WriteLine($"Page# {ParentPage.PageNr}: Linie {Region}-{Line} har allerede et structural tag!");
+                        {
+                            Debug.WriteLine($"Page# {ParentPage.PageNr}: Linie {region}-{line} har allerede et structural tag!");
+                        }
                     }
                     else
-                        Debug.WriteLine($"Page# {ParentPage.PageNr}: Linie {Region}-{Line} findes ikke!");
-
+                    {
+                        Debug.WriteLine($"Page# {ParentPage.PageNr}: Linie {region}-{line} findes ikke!");
+                    }
                 }
             }
             else
-                Debug.WriteLine($"Page# {ParentPage.PageNr}: Region {Region} findes ikke!");
+            {
+                Debug.WriteLine($"Page# {ParentPage.PageNr}: Region {region} findes ikke!");
+            }
 
-            return TagAdded;
+            return tagAdded;
         }
 
-        public void DeleteStructuralTags(int Region, int Line)
+        public void DeleteStructuralTags(int region, int line)
         {
-            TrRegion TR = GetRegionByNumber(Region);
-            if (TR != null)
+            TrRegion textRegion = GetRegionByNumber(region);
+            if (textRegion != null)
             {
-                if (TR.GetType() == typeof(TrRegion_Text))
+                if (textRegion.GetType() == typeof(TrTextRegion))
                 {
-                    TrTextLine TL = (TR as TrRegion_Text).GetLineByNumber(Line);
-                    if (TL != null)
+                    TrTextLine textLine = (textRegion as TrTextRegion).GetLineByNumber(line);
+                    if (textLine != null)
                     {
-                        if (!TL.HasStructuralTag)
+                        if (!textLine.HasStructuralTag)
                         {
-                            TL.DeleteStructuralTag();
+                            textLine.DeleteStructuralTag();
                         }
                     }
                 }
             }
         }
 
-        public TrRegion GetRegionByNumber(int RegionNumber)
+        public TrRegion GetRegionByNumber(int regionNumber)
         {
             if (Regions != null)
             {
-                if (RegionNumber >= 1 && RegionNumber <= Regions.Count)
+                if (regionNumber >= 1 && regionNumber <= Regions.Count)
                 {
-                    return Regions[RegionNumber - 1];
+                    return Regions[regionNumber - 1];
                 }
                 else
                 {
-                    Debug.WriteLine($"GetRegionByNumber: Region nr. {RegionNumber} eksisterer ikke!");
+                    Debug.WriteLine($"GetRegionByNumber: Region nr. {regionNumber} eksisterer ikke!");
                     return null;
                 }
             }
@@ -597,24 +636,21 @@ namespace TrClient.Core
             }
         }
 
-
-
-        public async Task<bool> LoadTranscript(HttpClient CurrentClient)
+        public async Task<bool> LoadTranscript(HttpClient currentClient)
         {
             // bruges kun ONLINE
             if (!IsLoaded)
             {
-
                 // Henter transcript ind i et XMLdoc
                 try
                 {
-                    HttpResponseMessage TranscriptResponseMessage = await CurrentClient.GetAsync(URL);
-                    string TranscriptResponse = await TranscriptResponseMessage.Content.ReadAsStringAsync();
-                    TranscriptionDocument = XDocument.Parse(TranscriptResponse);
+                    HttpResponseMessage transcriptResponseMessage = await currentClient.GetAsync(URL);
+                    string transcriptResponse = await transcriptResponseMessage.Content.ReadAsStringAsync();
+                    TranscriptionDocument = XDocument.Parse(transcriptResponse);
+
                     // Og gemmer - i udviklingsfasen - xml-filen.
                     //string XMLFileName = TrLibrary.ExportFolder + ParentPage.ParentDocument.Title + "_" + ParentPage.PageNr.ToString("0000") + ".xml";
                     //TranscriptionDocument.Save(XMLFileName);
-
                     XNamespace tr = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
 
                     foreach (var metadata in TranscriptionDocument.Descendants(tr + "Metadata"))
@@ -636,86 +672,82 @@ namespace TrClient.Core
                     foreach (var group in TranscriptionDocument.Descendants(tr + "OrderedGroup"))
                     {
                         string xRO = group.Element(tr + "OrderedGroup") == null ? "ro_" + TrLibrary.GetNewTimeStamp() : group.Attribute("id").Value;
+
                         // Debug.WriteLine($"Order ID {xRO}");
                         Regions.OrderedGroupID = xRO;
                     }
 
-
                     foreach (var region in TranscriptionDocument.Descendants(tr + "TextRegion"))
                     {
-                        string RegionType = region.Attribute("type") == null ? String.Empty : region.Attribute("type").Value;
-                        string RegionID = region.Attribute("id") == null ? String.Empty : region.Attribute("id").Value;
-                        string RegionTagString = region.Attribute("custom") == null ? String.Empty : region.Attribute("custom").Value;
-                        float Orientation = region.Attribute("orientation") == null ? 0 : float.Parse(region.Attribute("orientation").Value);
-                        string RegionCoords = region.Element(tr + "Coords") == null ? String.Empty : region.Element(tr + "Coords").Attribute("points").Value;
+                        string regionType = region.Attribute("type") == null ? String.Empty : region.Attribute("type").Value;
+                        string regionID = region.Attribute("id") == null ? String.Empty : region.Attribute("id").Value;
+                        string regionTagString = region.Attribute("custom") == null ? String.Empty : region.Attribute("custom").Value;
+                        float orientation = region.Attribute("orientation") == null ? 0 : float.Parse(region.Attribute("orientation").Value);
+                        string regionCoords = region.Element(tr + "Coords") == null ? String.Empty : region.Element(tr + "Coords").Attribute("points").Value;
 
-                        TrRegion_Text NewTextRegion = new TrRegion_Text(RegionType, RegionID, RegionTagString, Orientation, RegionCoords);
-                        Regions.Add(NewTextRegion);
+                        TrTextRegion newTextRegion = new TrTextRegion(regionType, regionID, regionTagString, orientation, regionCoords, Regions);
+                        Regions.Add(newTextRegion);
 
                         foreach (var line in region.Descendants(tr + "TextLine"))
                         {
-                            string LineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
-                            string LineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
-                            string LineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
-                            string BaseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
-                            string TextEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
+                            string lineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
+                            string lineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
+                            string lineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
+                            string baseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
+                            string textEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
+
                             //string TextEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : Regex.Unescape(line.Element(tr + "TextEquiv").Value);
                             // REGEX.UNESCAPE forsøg 14.11.2020
-                            TrTextLine NewTextLine = new TrTextLine(LineID, LineTagString, LineCoords, BaseLineCoords, TextEquiv);
-                            NewTextRegion.TextLines.Add(NewTextLine);
+                            TrTextLine newTextLine = new TrTextLine(lineID, lineTagString, lineCoords, baseLineCoords, textEquiv, newTextRegion.TextLines);
+                            newTextRegion.TextLines.Add(newTextLine);
                         }
                     }
 
                     foreach (var table in TranscriptionDocument.Descendants(tr + "TableRegion"))
                     {
-                        string RegionType = table.Attribute("type") == null ? String.Empty : table.Attribute("type").Value;
-                        string RegionID = table.Attribute("id") == null ? String.Empty : table.Attribute("id").Value;
-                        string RegionTagString = table.Attribute("custom") == null ? String.Empty : table.Attribute("custom").Value;
-                        float Orientation = table.Attribute("orientation") == null ? 0 : float.Parse(table.Attribute("orientation").Value);
-                        string RegionCoords = table.Element(tr + "Coords") == null ? String.Empty : table.Element(tr + "Coords").Attribute("points").Value;
+                        string regionType = table.Attribute("type") == null ? String.Empty : table.Attribute("type").Value;
+                        string regionID = table.Attribute("id") == null ? String.Empty : table.Attribute("id").Value;
+                        string regionTagString = table.Attribute("custom") == null ? String.Empty : table.Attribute("custom").Value;
+                        float orientation = table.Attribute("orientation") == null ? 0 : float.Parse(table.Attribute("orientation").Value);
+                        string regionCoords = table.Element(tr + "Coords") == null ? String.Empty : table.Element(tr + "Coords").Attribute("points").Value;
 
-                        TrRegion_Table NewTable = new TrRegion_Table(RegionType, RegionID, RegionTagString, Orientation, RegionCoords);
-                        Regions.Add(NewTable);
+                        TrTableRegion newTable = new TrTableRegion(regionType, regionID, regionTagString, orientation, regionCoords, Regions);
+                        Regions.Add(newTable);
 
                         //Debug.WriteLine($"New table at page # {PageNr} !!!");
-
                         foreach (var cell in table.Descendants(tr + "TableCell"))
                         {
-                            string CellID = cell.Attribute("id") == null ? String.Empty : cell.Attribute("id").Value;
-                            string CellRow = cell.Attribute("row") == null ? String.Empty : cell.Attribute("row").Value;
-                            string CellCol = cell.Attribute("col") == null ? String.Empty : cell.Attribute("col").Value;
-                            string CellCoords = cell.Element(tr + "Coords") == null ? String.Empty : cell.Element(tr + "Coords").Attribute("points").Value;
-                            string CellCornerPoints = cell.Element(tr + "CornerPts") == null ? String.Empty : cell.Element(tr + "CornerPts").Value;
+                            string cellID = cell.Attribute("id") == null ? String.Empty : cell.Attribute("id").Value;
+                            string cellRow = cell.Attribute("row") == null ? String.Empty : cell.Attribute("row").Value;
+                            string cellCol = cell.Attribute("col") == null ? String.Empty : cell.Attribute("col").Value;
+                            string cellCoords = cell.Element(tr + "Coords") == null ? String.Empty : cell.Element(tr + "Coords").Attribute("points").Value;
+                            string cellCornerPoints = cell.Element(tr + "CornerPts") == null ? String.Empty : cell.Element(tr + "CornerPts").Value;
 
-                            TrCell NewTableCell = new TrCell(CellID, CellRow, CellCol, CellCoords, CellCornerPoints);
-                            NewTable.AddCell(NewTableCell);
+                            TrCell newTableCell = new TrCell(cellID, cellRow, cellCol, cellCoords, cellCornerPoints);
+                            newTable.AddCell(newTableCell);
 
                             //Debug.WriteLine($"New cell in table!");
-
                             foreach (var line in cell.Descendants(tr + "TextLine"))
                             {
-                                string LineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
-                                string LineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
-                                string LineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
-                                string BaseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
-                                string TextEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
+                                string lineID = line.Attribute("id") == null ? String.Empty : line.Attribute("id").Value;
+                                string lineTagString = line.Attribute("custom") == null ? String.Empty : line.Attribute("custom").Value;
+                                string lineCoords = line.Element(tr + "Coords") == null ? String.Empty : line.Element(tr + "Coords").Attribute("points").Value;
+                                string baseLineCoords = line.Element(tr + "Baseline") == null ? String.Empty : line.Element(tr + "Baseline").Attribute("points").Value;
+                                string textEquiv = line.Element(tr + "TextEquiv") == null ? String.Empty : line.Element(tr + "TextEquiv").Value;
 
-                                TrTextLine NewTextLine = new TrTextLine(LineID, LineTagString, LineCoords, BaseLineCoords, TextEquiv);
-                                NewTableCell.TextLines.Add(NewTextLine);
+                                TrTextLine newTextLine = new TrTextLine(lineID, lineTagString, lineCoords, baseLineCoords, textEquiv, newTableCell.TextLines);
+                                newTableCell.TextLines.Add(newTextLine);
 
                                 //Debug.WriteLine($"New textline in cell!");
                             }
                         }
                     }
 
-
-
                     IsLoaded = true;
                     ParentPage.IsLoaded = true;
                     ParentPage.ParentDocument.NrOfTranscriptsLoaded++;
 
                     // Debug.WriteLine($"Transcript loaded: {ParentPage.ParentDocument.ParentCollection.Name} / {ParentPage.ParentDocument.Title} / {ParentPage.PageNr}");
-
                 }
                 catch (TaskCanceledException e)
                 {
@@ -730,17 +762,16 @@ namespace TrClient.Core
                 {
                     Debug.WriteLine($"General error! Exception message when loading page nr {PageNr.ToString()}: {e.Message}");
                 }
-
             }
+
             return true;
         }
-
 
         public void Save()
         {
             Debug.WriteLine($"TrTranscript: Saving {PageFileName}");
 
-            XDocument xDoc = this.ToXML();
+            XDocument xDoc = ToXML();
             xDoc.Save(PageFileName);
             HasChanged = false;
             ChangesUploaded = true;
@@ -754,83 +785,87 @@ namespace TrClient.Core
                 Regions.OrderedGroupID = "ro_" + TrLibrary.GetNewTimeStamp();
             }
 
+            // new XComment("Created by Transkribus Client - The Royal Danish Library"),
+            XDocument xTranscript = new XDocument(
+                new XDeclaration("1.0", "UTF-8", "yes"),
+                new XElement(
+                    TrLibrary.Xmlns + "PcGts",
+                    new XAttribute("xmlns", TrLibrary.Xmlns),
+                    new XAttribute(XNamespace.Xmlns + "xsi", TrLibrary.Xsi),
+                    new XAttribute(TrLibrary.Xsi + "schemaLocation", TrLibrary.SchemaLocation)));
 
-            XDocument xTranscript = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"),
-                //new XComment("Created by Transkribus Client - The Royal Danish Library"),
-                new XElement(TrLibrary.xmlns + "PcGts",
-                new XAttribute("xmlns", TrLibrary.xmlns),
-                new XAttribute(XNamespace.Xmlns + "xsi", TrLibrary.xsi),
-                new XAttribute(TrLibrary.xsi + "schemaLocation", TrLibrary.schemaLocation)));
-
-            XElement xMetadata = new XElement(TrLibrary.xmlns + "Metadata",
-                new XElement(TrLibrary.xmlns + "Creator", Creator),
-                new XElement(TrLibrary.xmlns + "Created", TempCreationDate),     
-                new XElement(TrLibrary.xmlns + "LastChange", TempLastChangeDate),
-                new XElement(TrLibrary.xmlns + "TranskribusMetadata", 
+            XElement xMetadata = new XElement(
+                TrLibrary.Xmlns + "Metadata",
+                new XElement(TrLibrary.Xmlns + "Creator", Creator),
+                new XElement(TrLibrary.Xmlns + "Created", TempCreationDate),
+                new XElement(TrLibrary.Xmlns + "LastChange", TempLastChangeDate),
+                new XElement(
+                    TrLibrary.Xmlns + "TranskribusMetadata",
                     new XAttribute("pageId", ID),
                     new XAttribute("pageNr", PageNr),
                     new XAttribute("tsid", Timestamp),
                     new XAttribute("status", Status)));
 
-            XElement xPage = new XElement(TrLibrary.xmlns + "Page",
+            XElement xPage = new XElement(
+                TrLibrary.Xmlns + "Page",
                 new XAttribute("imageFilename", ParentPage.ImageFileName),
                 new XAttribute("imageWidth", ParentPage.Width.ToString()),
                 new XAttribute("imageHeight", ParentPage.Height.ToString()),
                 new XAttribute("type", Type));
 
-            XElement xOrderedGroup = new XElement(TrLibrary.xmlns + "OrderedGroup",
-                    new XAttribute("id", Regions.OrderedGroupID),
-                    new XAttribute("caption", "Regions reading order"));
+            XElement xOrderedGroup = new XElement(
+                TrLibrary.Xmlns + "OrderedGroup",
+                new XAttribute("id", Regions.OrderedGroupID),
+                new XAttribute("caption", "Regions reading order"));
 
-            foreach (TrRegion Region in Regions)
+            foreach (TrRegion region in Regions)
             {
-                XElement xRegionRef = Region.RegionRef;
+                XElement xRegionRef = region.RegionRef;
                 xOrderedGroup.Add(xRegionRef);
             }
 
-            XElement xReadingOrder = new XElement(TrLibrary.xmlns + "ReadingOrder");
-                xReadingOrder.Add(xOrderedGroup);
-                xPage.Add(xReadingOrder);
+            XElement xReadingOrder = new XElement(TrLibrary.Xmlns + "ReadingOrder");
+            xReadingOrder.Add(xOrderedGroup);
+            xPage.Add(xReadingOrder);
 
-            foreach (TrRegion Region in Regions)
+            foreach (TrRegion region in Regions)
             {
-                xPage.Add(Region.ToXML());
+                xPage.Add(region.ToXML());
             }
 
             xTranscript.Root.Add(xMetadata);
             xTranscript.Root.Add(xPage);
-                      
+
             return xTranscript;
         }
 
-
-        public async void Upload(HttpClient CurrentClient)
+        public async void Upload(HttpClient currentClient)
         {
             // POSTing
             UploadURL = UploadURL.Replace("_ColID_", ParentPage.ParentDocument.ParentCollection.ID);
             UploadURL = UploadURL.Replace("_DocID_", ParentPage.ParentDocument.ID);
             UploadURL = UploadURL.Replace("_PageNr_", PageNr.ToString());
-            // Debug.WriteLine(UploadURL);
 
-            var Parameters = new FormUrlEncodedContent(new[]
+            // Debug.WriteLine(UploadURL);
+            var parameters = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("status", "FINAL"),
                     new KeyValuePair<string, string>("overwrite", "FALSE"),
                 });
 
-            var UploadHttpContent = new StringContent(ToXML().ToString(), Encoding.UTF8, "application/xml");
+            var uploadHttpContent = new StringContent(ToXML().ToString(), Encoding.UTF8, "application/xml");
 
             try
             {
-                HttpResponseMessage UploadResponseMessage = await CurrentClient.PostAsync(UploadURL, UploadHttpContent);
-                string UploadResponse = UploadResponseMessage.StatusCode.ToString();
+                HttpResponseMessage uploadResponseMessage = await currentClient.PostAsync(UploadURL, uploadHttpContent);
+                string uploadResponse = uploadResponseMessage.StatusCode.ToString();
 
-                Debug.WriteLine($"Uploading page nr... {PageNr.ToString()} ... {UploadResponse}");
+                Debug.WriteLine($"Uploading page nr... {PageNr.ToString()} ... {uploadResponse}");
+
                 // Debug.WriteLine(UploadResponse);
                 HasChanged = false;
                 ChangesUploaded = true;
                 Debug.Print($"Transcripts changed: {ParentPage.ParentDocument.NrOfTranscriptsChanged} - Transcripts uploaded: {ParentPage.ParentDocument.NrOfTranscriptsUploaded}");
-
             }
             catch (TaskCanceledException e)
             {
@@ -845,7 +880,6 @@ namespace TrClient.Core
             {
                 Debug.WriteLine($"General error! Exception message when uploading page nr {PageNr.ToString()}: {e.Message}");
             }
-
         }
     }
 }

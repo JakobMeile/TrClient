@@ -38,7 +38,9 @@
                 <MenuItem Header="Upload _Collection" Name="MenuItem_UploadCollection" Click="MenuItem_UploadCollection_Click" />-->
                 <MenuItem Header="Upload _Document" Name="MenuItem_UploadDocument" Click="MenuItem_UploadDocument_Click" />
                 <!--<Separator/>
-                --><!--<MenuItem Header="_Open XML-document" />--><!--
+                -->
+                <!--<MenuItem Header="_Open XML-document" />-->
+                <!--
                 <MenuItem Header="_Save Current XML-document" Name="MenuItem_SaveCurrentDocument" Click="MenuItem_SaveCurrentDocument_Click"/>
                 <MenuItem Header="Save All Docs _in Current Collection" Name="MenuItem_SaveCurrentCollection" Click="MenuItem_SaveCurrentCollection_Click" />-->
 
@@ -137,9 +139,13 @@
             </MenuItem>
 
             <!--<MenuItem Header="_KB-test">
-                --><!--<MenuItem Header="_Auto-Tagging" Name="MenuItem_AutoTagging" Click="MenuItem_AutoTagging_Click"  />--><!--
-                --><!--<MenuItem Header="_Expand All Text" Name="MenuItem_ExpandAllText" Click="MenuItem_ExpandAllText_Click" />
-                <MenuItem Header="_Get All AccNos" Name="MenuItem_GetAllAccNos" Click="MenuItem_GetAllAccNos_Click"/>--><!--
+                -->
+            <!--<MenuItem Header="_Auto-Tagging" Name="MenuItem_AutoTagging" Click="MenuItem_AutoTagging_Click"  />-->
+            <!--
+                -->
+            <!--<MenuItem Header="_Expand All Text" Name="MenuItem_ExpandAllText" Click="MenuItem_ExpandAllText_Click" />
+                <MenuItem Header="_Get All AccNos" Name="MenuItem_GetAllAccNos" Click="MenuItem_GetAllAccNos_Click"/>-->
+            <!--
                 <MenuItem Header="Elfelt Record Check" Name="MenuItem_ElfeltRecordCheck" Click="MenuItem_ElfeltRecordCheck_Click"/>
                 <MenuItem Header="Current Test Module" Name="MenuItem_CurrentTestModule" Click="MenuItem_CurrentTestModule_Click"/>
             </MenuItem>
@@ -226,7 +232,7 @@
         <TextBox x:Name="txtTranscriptsCount" Grid.Column="4" Grid.Row="1" HorizontalAlignment="Right" Height="25" Margin="10,5,10,0" Padding="2,4,2,2" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="40" BorderThickness="0"/>-->
 
 
-        <ListBox x:Name="lstCollections" Grid.Column="1" Grid.Row="2" Grid.RowSpan="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstCollections_SelectionChanged" >
+        <ListBox x:Name="lstCollections" Grid.Column="1" Grid.Row="1" Grid.RowSpan="9" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="9.6,29.4,9.8,9.6" VerticalAlignment="Stretch" SelectionChanged="LstCollections_SelectionChanged" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,2">
@@ -249,7 +255,7 @@
         </ListBox>
 
 
-        <ListBox x:Name="lstDocuments" Grid.Column="2" Grid.Row="2" Grid.RowSpan="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstDocuments_SelectionChanged" >
+        <ListBox x:Name="lstDocuments" Grid.Column="2" Grid.Row="1" Grid.RowSpan="9" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10.2,29.4,10.2,9.6" VerticalAlignment="Stretch" SelectionChanged="LstDocuments_SelectionChanged" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,2">
@@ -274,7 +280,7 @@
         </ListBox>
 
 
-        <ListBox x:Name="lstPages" Grid.Column="3" Grid.Row="2" Grid.RowSpan="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" SelectionChanged="LstPages_SelectionChanged" >
+        <ListBox x:Name="lstPages" Grid.Column="3" Grid.Row="1" Grid.RowSpan="9" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="9.8,29.4,9.6,9.6" VerticalAlignment="Stretch" SelectionChanged="LstPages_SelectionChanged" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,2">
@@ -298,7 +304,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel Grid.Column="1" Grid.Row="7" VerticalAlignment="Center">
+        <!--<StackPanel Grid.Column="1" Grid.Row="7" VerticalAlignment="Center">
             <Button x:Name="btnCopyCollection" Content="Copy Collection" Width="120" Height="25" Click="BtnCopyCollection_Click" />
         </StackPanel>
 
@@ -329,7 +335,9 @@
                         <TextBlock Text="/" Grid.Column="2" HorizontalAlignment="Center"/>
                         <TextBlock Text="{Binding NrOfDocs}" Grid.Column="3" HorizontalAlignment="Right"/>
                         <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
-                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+                        -->
+        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+        <!--
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -353,7 +361,9 @@
                         <TextBlock Text="/" Grid.Column="2" HorizontalAlignment="Center"/>
                         <TextBlock Text="{Binding NrOfPages}" Grid.Column="3" HorizontalAlignment="Right"/>
                         <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
-                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+                        -->
+        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="3" />-->
+        <!--
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -378,11 +388,13 @@
                         <TextBlock Text="{Binding ImageFileName}" Grid.Column="3" />
                         <Ellipse Fill="{Binding StatusColor}" Grid.Column="4" Height="8" Width="8"/>
                         <TextBlock Text="{Binding TranscriptCount}" Grid.Column="5" />
-                        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="2" />-->
+                        -->
+        <!--<TextBlock Text="{Binding IsLoaded}" Grid.Column="2" />-->
+        <!--
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-        </ListBox>
+        </ListBox>-->
 
 
         <!--<ListBox x:Name="lstTranscripts" Grid.Column="4" Grid.Row="2" Grid.RowSpan="6" HorizontalAlignment="Stretch" Margin="10,0,10,10" VerticalAlignment="Stretch" />-->

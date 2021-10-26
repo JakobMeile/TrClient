@@ -1,93 +1,89 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrParagraphs.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Text;
+    using TrClient.Core;
+
     public class TrParagraphs : IEnumerable
     {
-        private List<TrParagraph> Paragraphs;
-        public int Count { get => Paragraphs.Count; }
+        private List<TrParagraph> paragraphs;
 
-        public TrRegion_Text ParentRegion;
+        public int Count { get => paragraphs.Count; }
 
-        public void Add(TrParagraph Paragraph)
+        public TrTextRegion ParentRegion;
+
+        public void Add(TrParagraph paragraph)
         {
-            Paragraphs.Add(Paragraph);
-            Paragraph.ParentContainer = this;
-            Paragraph.ParentRegion = this.ParentRegion;
+            paragraphs.Add(paragraph);
+            paragraph.ParentContainer = this;
+            paragraph.ParentRegion = ParentRegion;
         }
 
         public void Clear()
         {
-            Paragraphs.Clear();
+            paragraphs.Clear();
         }
 
         public void Sort()
         {
-            Paragraphs.Sort();
+            paragraphs.Sort();
         }
 
         public void RemoveAt(int i)
         {
-            Paragraphs.RemoveAt(i);
+            paragraphs.RemoveAt(i);
         }
 
         public TrParagraph this[int index]
         {
-            get { return Paragraphs[index]; }
-            set { Paragraphs[index] = value; }
+            get { return paragraphs[index]; }
+            set { paragraphs[index] = value; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Paragraphs).GetEnumerator();
+            return ((IEnumerable)paragraphs).GetEnumerator();
         }
 
         public TrParagraphs()
         {
-            Paragraphs = new List<TrParagraph>();
+            paragraphs = new List<TrParagraph>();
         }
 
         public List<string> GetNames()
         {
             List<string> temp = new List<string>();
 
-            if (Paragraphs != null)
+            if (paragraphs != null)
             {
-                foreach (TrParagraph P in Paragraphs)
-                    temp.Add(P.Name);
+                foreach (TrParagraph p in paragraphs)
+                {
+                    temp.Add(p.Name);
+                }
             }
+
             return temp;
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            if (Paragraphs != null)
+            if (paragraphs != null)
             {
-                foreach (TrParagraph P in Paragraphs)
+                foreach (TrParagraph p in paragraphs)
                 {
-                    sb.Append(P.ToString());
+                    sb.Append(p.ToString());
                     sb.Append(Environment.NewLine);
                 }
             }
+
             return sb.ToString();
         }
-
     }
 }

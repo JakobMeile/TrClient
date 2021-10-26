@@ -1,75 +1,66 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using System.Diagnostics;
-using System.IO;
-using TrClient;
-using System.Windows;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-using TrClient.Dialog;
+﻿// <copyright file="TrLog.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System;
+    using System.IO;
+    using System.Text;
+    using TrClient.Core;
+    using TrClient.Views;
+
     public class TrLog
     {
         public TrLogEvents Events;
 
         public string LogFileCaption { get; set; }
+
         public string LogCollection { get; set; }
+
         public string LogDocument { get; set; }
+
         public string LogFileName { get; set; }
 
-        public void Add(TrTextLine Line, string Message)
+        public void Add(TrTextLine line, string message)
         {
-            TrLogEvent E = new TrLogEvent(Line, Message);
-            Events.Add(E);
+            TrLogEvent e = new TrLogEvent(line, message);
+            Events.Add(e);
         }
 
-        public void Add(TrPage Page, string Message)
+        public void Add(TrPage page, string message)
         {
-            TrLogEvent E = new TrLogEvent(Page, Message);
-            Events.Add(E);
+            TrLogEvent e = new TrLogEvent(page, message);
+            Events.Add(e);
         }
 
         public void AddHeader()
         {
-            TrLogEvent E = new TrLogEvent();
-            E.PageNr = "Page#";
-            E.RegionNr = "Region#";
-            E.LineNr = "Line#";
-            E.Content = "Content:";
-            E.LogMessage = "Message:";
-            Events.Add(E);
+            TrLogEvent e = new TrLogEvent();
+            e.PageNr = "Page#";
+            e.RegionNr = "Region#";
+            e.LineNr = "Line#";
+            e.Content = "Content:";
+            e.LogMessage = "Message:";
+            Events.Add(e);
         }
-
-
 
         //-------------------
-        public void Add(string EventString)
+        public void Add(string eventString)
         {
-            Write(EventString);
+            Write(eventString);
         }
 
-        public void Add(string EventCaption, int Width, string EventMessage)
+        public void Add(string eventCaption, int width, string eventMessage)
         {
-            string EventString = EventCaption.PadRight(Width) + EventMessage;
-            Write(EventString);
+            string eventString = eventCaption.PadRight(width) + eventMessage;
+            Write(eventString);
         }
 
         public void AddCRLF()
         {
-            string EventString = "";
-            Write(EventString);
+            string eventString = string.Empty;
+            Write(eventString);
         }
 
         public void AddLine()
@@ -83,7 +74,7 @@ namespace TrClient.Helpers
             Write(sb.ToString());
         }
 
-        private void Write(string EventString)
+        private void Write(string eventString)
         {
             // LogEvents.Add(EventString);
             // Debug.WriteLine(EventString);
@@ -91,36 +82,38 @@ namespace TrClient.Helpers
 
         public void Show()
         {
-            dlgShowLog LogWindow = new dlgShowLog();
-            LogWindow.lstLogEvents.ItemsSource = Events;
+            ShowLog logWindow = new ShowLog();
+            logWindow.lstLogEvents.ItemsSource = Events;
+
             // LogWindow.Owner = MainWindow.GetWindow(this);
-            LogWindow.Show();
+            logWindow.Show();
         }
 
         public void Save()
         {
-            using (StreamWriter LogFile = new StreamWriter(LogFileName, true))
+            using (StreamWriter logFile = new StreamWriter(LogFileName, true))
             {
-                LogFile.WriteLine("*** " + LogFileCaption + " ***");
-                LogFile.WriteLine("------------------------------------------------------------------------------------------------------------------------");
-                LogFile.WriteLine($"Collection: {LogCollection}");
-                LogFile.WriteLine($"Document:   {LogDocument}");
-                LogFile.WriteLine("------------------------------------------------------------------------------------------------------------------------");
+                logFile.WriteLine("*** " + LogFileCaption + " ***");
+                logFile.WriteLine("------------------------------------------------------------------------------------------------------------------------");
+                logFile.WriteLine($"Collection: {LogCollection}");
+                logFile.WriteLine($"Document:   {LogDocument}");
+                logFile.WriteLine("------------------------------------------------------------------------------------------------------------------------");
 
-                foreach (TrLogEvent E in Events)
+                foreach (TrLogEvent e in Events)
                 {
-                    LogFile.WriteLine(E.ToString());
+                    logFile.WriteLine(e.ToString());
                 }
             }
         }
 
-        public TrLog(string Caption, string ColName, string DocTitle)
+        public TrLog(string caption, string colName, string docTitle)
         {
-            LogFileCaption = Caption;
-            LogCollection = ColName;
-            LogDocument = DocTitle;
-            // TrLibrary.LogFolder + 
-            LogFileName = LogFileCaption.Replace(" ", "") + "_" + ColName + "_" + DocTitle + "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
+            LogFileCaption = caption;
+            LogCollection = colName;
+            LogDocument = docTitle;
+
+            // TrLibrary.LogFolder +
+            LogFileName = LogFileCaption.Replace(" ", string.Empty) + "_" + colName + "_" + docTitle + "_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
 
             Events = new TrLogEvents();
             AddHeader();

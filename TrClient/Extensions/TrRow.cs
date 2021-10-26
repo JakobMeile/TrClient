@@ -1,66 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Xml.Serialization;
-using System.IO;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrRow.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System;
+    using System.ComponentModel;
+    using System.Text;
+    using TrClient.Core;
+
     public class TrRow : IComparable, INotifyPropertyChanged
     {
         public TrRows ParentContainer;
-        public TrRegion_Text ParentRegion;
-        
+        public TrTextRegion ParentRegion;
+
         public int Number { get; set; }
 
         public TrTextLines Cells = new TrTextLines();
 
         public int CellCount
         {
-            get { return Cells.Count;  }
+            get { return Cells.Count; }
         }
 
-
-        // constructor 
-        public TrRow(int RowNumber)
+        // constructor
+        public TrRow(int rowNumber)
         {
-            Number = RowNumber;
+            Number = rowNumber;
         }
-               
-        public void AddCell(TrTextLine C)
+
+        public void AddCell(TrTextLine c)
         {
-            Cells.Add(C);
+            Cells.Add(c);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
 
         public int CompareTo(object obj)
         {
-            var Row = obj as TrTextLine;
-            return Number.CompareTo(Row.Number);
+            var row = obj as TrTextLine;
+            return Number.CompareTo(row.Number);
         }
 
         public override string ToString()
@@ -74,14 +61,13 @@ namespace TrClient.Extensions
             sb.Append(" - ");
             sb.Append("Content: ");
 
-            foreach (TrTextLine C in Cells)
+            foreach (TrTextLine c in Cells)
             {
                 sb.Append(" / ");
-                sb.Append(C.TextEquiv);
+                sb.Append(c.TextEquiv);
             }
+
             return sb.ToString().Trim();
-
         }
-
     }
 }

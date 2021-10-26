@@ -1,73 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Xml.Serialization;
-using System.IO;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-
+﻿// <copyright file="TrParagraph.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System;
+    using System.Text;
+    using TrClient.Core;
+
     public class TrParagraph : IComparable
     {
         public int Number { get; set; }
+
         public string Name { get; set; }
+
         public TrTextLine FirstLine;
 
         public TrParagraphs ParentContainer;
-        public TrRegion_Text ParentRegion;
+        public TrTextRegion ParentRegion;
 
-        private int _parentPageNr;
+        private int parentPageNr;
+
         public int ParentPageNr
         {
             get
             {
-                _parentPageNr = ParentRegion.ParentTranscript.ParentPage.PageNr;
-                return _parentPageNr;
+                parentPageNr = ParentRegion.ParentTranscript.ParentPage.PageNr;
+                return parentPageNr;
             }
         }
 
-        private int _parentRegionNr;
+        private int parentRegionNr;
+
         public int ParentRegionNr
         {
             get
             {
-                _parentRegionNr = ParentRegion.Number;
-                return _parentRegionNr;
+                parentRegionNr = ParentRegion.Number;
+                return parentRegionNr;
             }
         }
 
-        private string _content;
+        private string content;
+
         public string Content
         {
             get
             {
-                _content = ToString();
-                return _content;
+                content = ToString();
+                return content;
             }
         }
 
-        public TrParagraph(int ParagraphNumber, TrTextLine StartLine)
+        public TrParagraph(int paragraphNumber, TrTextLine startLine)
         {
-            Number = ParagraphNumber;
-            FirstLine = StartLine;
+            Number = paragraphNumber;
+            FirstLine = startLine;
             Name = FirstLine.StructuralTagValue;
         }
 
@@ -81,24 +69,34 @@ namespace TrClient.Extensions
         {
             StringBuilder sb = new StringBuilder();
             string temp;
-            TrTextLine CurrentLine = FirstLine;
+            TrTextLine currentLine = FirstLine;
 
             do
             {
-                temp = CurrentLine.ExpandedText;
-                if (CurrentLine.Next != null)
-                    if (CurrentLine.EndsWithHyphen && CurrentLine.Next.StartsWithSmallLetter)
+                temp = currentLine.ExpandedText;
+                if (currentLine.Next != null)
+                {
+                    if (currentLine.EndsWithHyphen && currentLine.Next.StartsWithSmallLetter)
+                    {
                         temp = temp.Substring(0, temp.Length - 1);
+                    }
+                }
+
                 sb.Append(temp);
-                if (!CurrentLine.EndsWithHyphen)
+                if (!currentLine.EndsWithHyphen)
+                {
                     sb.Append(" ");
-                CurrentLine = CurrentLine.Next;
+                }
+
+                currentLine = currentLine.Next;
             }
-            while (CurrentLine != null);
+            while (currentLine != null);
 
             temp = sb.ToString();
             while (temp.IndexOf("  ") != -1)
+            {
                 temp = temp.Replace("  ", " ");
+            }
 
             temp = temp.Replace(" - ", " \u2013 ").Trim();  // en dash
             temp = temp.Replace("- ", "-").Trim();

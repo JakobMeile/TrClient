@@ -1,84 +1,69 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-
+﻿// <copyright file="TrLemmas.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
+    using System.Linq;
+
     public class TrLemmas : IEnumerable, INotifyPropertyChanged, INotifyCollectionChanged
     {
         //private TrObservableCollection<TrLemma> Lemmas = new TrObservableCollection<TrLemma>();
-        
-        private List<TrLemma> Lemmas = new List<TrLemma>();
-        private List<string> ContentOnly = new List<string>();
+        private List<TrLemma> lemmas = new List<TrLemma>();
+        private List<string> contentOnly = new List<string>();
 
-        public int Count { get => Lemmas.Count(); }
-        public int ContentOnlyCount { get => ContentOnly.Count; }
+        public int Count { get => lemmas.Count(); }
+
+        public int ContentOnlyCount { get => contentOnly.Count; }
 
         // Constructor
         public TrLemmas()
         {
-
         }
 
         public void Clear()
         {
-            Lemmas.Clear();
-            ContentOnly.Clear();
+            lemmas.Clear();
+            contentOnly.Clear();
             NotifyPropertyChanged("Count");
         }
 
-        public void AddWord(TrWord NewWord)
+        public void AddWord(TrWord newWord)
         {
             //TrLemma NewLemma = new TrLemma(NewWord);
 
             // fra private add:
             // Lemmas.Add(NewLemma);
             // NotifyPropertyChanged("Count");
-
-            string NewContent = NewWord.Raw;
+            string newContent = newWord.Raw;
 
             // her skal det testes, om lemmaet eksisterer:
             // hvis det gør, skal det eksisterende lemma have den nye reference tilføjet
             // hvis ikke, skal der tilføjes et nyt lemma med den nye reference
 
             // Debug.Write($"AddReference: lemma: {NewContent} page: {OnPage.Number}");
-
-            if (ContentOnly.Contains(NewContent))
+            if (contentOnly.Contains(newContent))
             {
                 // Debug.WriteLine($" - Adding REFERENCE to existing lemma");
-                TrLemma ExistingLemma = GetFromContent(NewContent);
-                ExistingLemma.Occurrences.Add(NewWord);
+                TrLemma existingLemma = GetFromContent(newContent);
+                existingLemma.Occurrences.Add(newWord);
             }
             else
             {
                 // Debug.WriteLine($" - Adding non-existing LEMMA");
-                ContentOnly.Add(NewContent);
+                contentOnly.Add(newContent);
 
-                TrLemma NewLemma = new TrLemma(NewWord);
-                NewLemma.Occurrences.Add(NewWord);
-                Lemmas.Add(NewLemma);
+                TrLemma newLemma = new TrLemma(newWord);
+                newLemma.Occurrences.Add(newWord);
+                lemmas.Add(newLemma);
                 NotifyPropertyChanged("Count");
-                OnCollectionChange(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, NewLemma));
+                OnCollectionChange(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newLemma));
             }
-
         }
-
 
         //public void MergeSimilar()
         //{
@@ -109,7 +94,6 @@ namespace TrClient.Extensions
         //        if (Lemmas[i].MarkToDeletion)
         //            Lemmas.RemoveAt(i);
         //    }
-
 
         //    // dernæst ser vi på, om et lemma følges af det samme, blot med -s på
         //    for (int i = 0; i < Lemmas.Count - 1; i++)
@@ -142,17 +126,17 @@ namespace TrClient.Extensions
         //        ContentOnly.Add(CurrentLemma.Content);
 
         //}
-
         public void SortAfterFrequency()
         {
-            Lemmas.Sort((x, y) => y.OccurrenceCount.CompareTo(x.OccurrenceCount));
-            //OnCollectionChange(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move));
+            lemmas.Sort((x, y) => y.OccurrenceCount.CompareTo(x.OccurrenceCount));
 
+            //OnCollectionChange(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move));
         }
 
         public void SortAlphabetically()
         {
-            Lemmas.Sort();
+            lemmas.Sort();
+
             //OnCollectionChange(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move));
         }
 
@@ -161,7 +145,9 @@ namespace TrClient.Extensions
         protected virtual void OnCollectionChange(NotifyCollectionChangedEventArgs e)
         {
             if (CollectionChanged != null)
+            {
                 CollectionChanged(this, e);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -169,26 +155,26 @@ namespace TrClient.Extensions
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Lemmas).GetEnumerator();
+            return ((IEnumerable)lemmas).GetEnumerator();
         }
 
         public TrLemma this[int index]
         {
-            get { return Lemmas[index]; }
-            set { Lemmas[index] = value; }
+            get { return lemmas[index]; }
+            set { lemmas[index] = value; }
         }
 
-        public TrLemma GetFromContent(string LemmaContent)
+        public TrLemma GetFromContent(string lemmaContent)
         {
-            var obj = Lemmas.Where(o => o.Content == LemmaContent).FirstOrDefault();
+            var obj = lemmas.Where(o => o.Content == lemmaContent).FirstOrDefault();
             return obj;
         }
-
-
     }
 }

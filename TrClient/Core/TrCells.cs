@@ -1,76 +1,63 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrCells.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System.Collections;
+    using System.Collections.Generic;
+
     public class TrCells : IEnumerable
     {
-        private List<TrCell> Cells;
-        public int Count { get => Cells.Count; }
+        private List<TrCell> cells;
 
-        public TrRegion_Table ParentRegion;
+        public int Count { get => cells.Count; }
+
+        public TrTableRegion ParentRegion;
 
         // constructor
         public TrCells()
         {
-            Cells = new List<TrCell>();
+            cells = new List<TrCell>();
         }
 
-        public void Add(TrCell Cell)
+        public void Add(TrCell cell)
         {
-            Cells.Add(Cell);
-            Cell.ParentContainer = this;
-            Cell.ParentRegion = this.ParentRegion;
+            cells.Add(cell);
+            cell.ParentContainer = this;
+            cell.ParentRegion = ParentRegion;
         }
 
-        public void Delete(TrCell Cell)
-        {
-            Cells.Remove(Cell);
-        }
-
+        // bør IKKE hedde DELETE men REMOVE
+        //public void Delete(TrCell Cell)
+        //{
+        //    Cells.Remove(Cell);
+        //}
         public void Clear()
         {
-            Cells.Clear();
+            cells.Clear();
         }
 
         public void Sort()
         {
-            Cells.Sort();
+            cells.Sort();
         }
 
         public void RemoveAt(int i)
         {
-            Cells.RemoveAt(i);
+            cells.RemoveAt(i);
             ParentRegion.HasChanged = true;
         }
 
         public TrCell this[int index]
         {
-            get { return Cells[index]; }
-            set { Cells[index] = value; }
+            get { return cells[index]; }
+            set { cells[index] = value; }
         }
-
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Cells).GetEnumerator();
+            return ((IEnumerable)cells).GetEnumerator();
         }
-
-
     }
 }

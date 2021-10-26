@@ -1,304 +1,349 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Xml;
-using System.Xml.Linq;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-using DanishNLP;
+﻿// <copyright file="TrTextLine.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
-    public enum contentType
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Windows;
+    using System.Windows.Media;
+    using System.Windows.Shapes;
+    using System.Xml.Linq;
+    using TrClient.Core.Tags;
+    using TrClient.Extensions;
+    using TrClient.Helpers;
+    using TrClient.Libraries;
+
+    public enum ContentType
     {
-        undefined = 0,
-        date = 1,
-        accNumber = 2,
-        plain = 3,
-        caption = 100
+        Undefined = 0,
+        Date = 1,
+        AccNumber = 2,
+        Plain = 3,
+        Caption = 100,
     }
 
-    public enum visualOffsetType
+    public enum VisualOffsetType
     {
-        none = 0,
-        smallBoundingBox = 1,
-        largeBoundingBox = 2
+        None = 0,
+        SmallBoundingBox = 1,
+        LargeBoundingBox = 2,
     }
 
     public class TrTextLine : IComparable, INotifyPropertyChanged
     {
         public string ID { get; set; }
+
         public string TagString { get; set; }
+
         public string CoordsString { get; set; }
+
         public string BaseLineCoordsString { get; set; }
+
         public bool MarkToDeletion = false;
+
         public int RowNumber { get; set; }
+
         public int ColumnNumber { get; set; }
 
-        private int _readingOrder;
+        private int readingOrder;
+
         public int ReadingOrder
         {
-            get { return _readingOrder; }
+            get
+            {
+                return readingOrder;
+            }
+
             set
             {
                 if (HasReadingOrderTag)
                 {
                     //Debug.Print($"TrTextLine: set RO: HAS RO-tag: Delete it! Count before: {Tags.Count}");
                     DeleteReadingOrderTag();
+
                     //Debug.Print($"Count after: {Tags.Count}");
                 }
 
-                _readingOrder = value;
-                TrTag_ReadingOrder ROTag = new TrTag_ReadingOrder(_readingOrder);
-                Tags.Add(ROTag);
-                //Debug.Print($"TrTextLine: Added new RO-tag: Count now: {Tags.Count}");
+                readingOrder = value;
+                TrTagReadingOrder rOTag = new TrTagReadingOrder(readingOrder);
+                Tags.Add(rOTag);
             }
         }
 
-        private bool _hasReadingOrderTag;
+        private bool hasReadingOrderTag;
+
         public bool HasReadingOrderTag
         {
             get
             {
-                _hasReadingOrderTag = false;
+                hasReadingOrderTag = false;
 
-                foreach (TrTag T in Tags)
+                foreach (TrTag t in Tags)
                 {
-                    _hasReadingOrderTag = _hasReadingOrderTag || (T.GetType() == typeof(TrTag_ReadingOrder));
+                    hasReadingOrderTag = hasReadingOrderTag || (t.GetType() == typeof(TrTagReadingOrder));
                 }
-                return _hasReadingOrderTag;
 
+                return hasReadingOrderTag;
             }
         }
 
         private void DeleteReadingOrderTag()
         {
-            bool FoundTag = false;
+            bool foundTag = false;
 
             if (HasReadingOrderTag)
             {
-                FoundTag = true;
-                foreach (TrTag T in Tags)
+                foundTag = true;
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_ReadingOrder))
-                        T.MarkToDeletion = true;
+                    if (t.GetType() == typeof(TrTagReadingOrder))
+                    {
+                        t.MarkToDeletion = true;
+                    }
                 }
             }
 
-            if (FoundTag)
+            if (foundTag)
             {
                 for (int i = Tags.Count - 1; i >= 0; i--)
                 {
                     if (Tags[i].MarkToDeletion)
+                    {
                         Tags.RemoveAt(i);
+                    }
                 }
+
                 HasChanged = true;
             }
         }
 
-        private TrTextLine _previous;
+        private TrTextLine previous;
+
         public TrTextLine Previous
         {
             get
             {
                 if (Number == 1)
-                    _previous = null;
+                {
+                    previous = null;
+                }
                 else
+                {
                     try
                     {
-                        _previous = ParentRegion.GetLineByNumber(Number - 1);
-
+                        previous = ParentRegion.GetLineByNumber(Number - 1);
                     }
                     catch (Exception e)
                     {
                         Debug.WriteLine($"Error! Exception message when getting previous in TL {Number.ToString()}: {e.Message}");
-
                     }
-                return _previous;
+                }
+
+                return previous;
             }
+
             set
             {
-                if (_previous != value)
+                if (previous != value)
                 {
-                    _previous = value;
+                    previous = value;
                 }
             }
         }
 
-        private TrTextLine _next;
+        private TrTextLine next;
+
         public TrTextLine Next
         {
             get
             {
                 if (Number == ParentContainer.Count)
-                    _next = null;
+                {
+                    next = null;
+                }
                 else
-                    _next = ParentRegion.GetLineByNumber(Number + 1);
-                return _next;
+                {
+                    next = ParentRegion.GetLineByNumber(Number + 1);
+                }
+
+                return next;
             }
+
             set
             {
-                if (_next != value)
+                if (next != value)
                 {
-                    _next = value;
+                    next = value;
                 }
             }
         }
 
+        private TrWords words = new TrWords();
 
-        private TrWords _words = new TrWords();
         public TrWords Words
         {
             get
             {
-                var WordsArray = TextEquiv.Split(' ').ToArray();
-                int WordsCount = WordsArray.Length;
-                //int PositionPointer = 0;
+                var wordsArray = TextEquiv.Split(' ').ToArray();
+                int wordsCount = wordsArray.Length;
 
-                for (int i = 0; i < WordsCount; i++)
+                //int PositionPointer = 0;
+                for (int i = 0; i < wordsCount; i++)
                 {
-                    if (WordsArray[i].ToString().Trim() != "")
+                    if (wordsArray[i].ToString().Trim() != string.Empty)
                     {
                         // NEJ ikke mere: vi fjerner lige tallene
                         //if (!clsLanguageLibrary.IsNumeric(WordsArray[i]))
                         {
-                            TrWord Word = new TrWord(WordsArray[i].ToString(), this);
-                            _words.Add(Word);
+                            TrWord word = new TrWord(wordsArray[i].ToString(), this);
+                            words.Add(word);
                         }
                     }
                 }
 
-                return _words;
+                return words;
             }
         }
 
+        private int amount = 50; // "delta" for BoundingBoxLarge
 
-        private int Amount = 50; // "delta" for BoundingBoxLarge
+        private Polygon visualLineArea;
 
-        private Polygon _visualLineArea;
         public Polygon VisualLineArea
         {
             get
             {
-                visualOffsetType Offset = visualOffsetType.largeBoundingBox;
-                Polygon Temp = new Polygon();
-                PointCollection LinePoints = new PointCollection();
-                TrCoords NewCoords = new TrCoords(CoordsString);
+                VisualOffsetType offset = VisualOffsetType.LargeBoundingBox;
+                Polygon temp = new Polygon();
+                PointCollection linePoints = new PointCollection();
+                TrCoords newCoords = new TrCoords(CoordsString);
 
-                foreach (TrCoord C in NewCoords)
+                foreach (TrCoord c in newCoords)
                 {
-                    TrCoord TempC;
-                    if (Offset != visualOffsetType.none)
+                    TrCoord tempC;
+                    if (offset != VisualOffsetType.None)
                     {
-                        if (Offset == visualOffsetType.smallBoundingBox)
-                            TempC = C.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetSmall);
+                        if (offset == VisualOffsetType.SmallBoundingBox)
+                        {
+                            tempC = c.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetSmall);
+                        }
                         else
-                            TempC = C.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetLarge);
+                        {
+                            tempC = c.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetLarge);
+                        }
                     }
                     else
-                        TempC = C;
+                    {
+                        tempC = c;
+                    }
 
                     // SCALING
-                    double ScalingFactor = 0.25;
-                    double TempX = (double)TempC.X * ScalingFactor;
-                    double TempY = (double)TempC.Y * ScalingFactor;
+                    double scalingFactor = 0.25;
+                    double tempX = (double)tempC.X * scalingFactor;
+                    double tempY = (double)tempC.Y * scalingFactor;
 
-                    Point CurrentPoint = new Point(TempX, TempY);
-                    LinePoints.Add(CurrentPoint);
+                    Point currentPoint = new Point(tempX, tempY);
+                    linePoints.Add(currentPoint);
                 }
-                Temp.Points = LinePoints;
-                return Temp;
 
+                temp.Points = linePoints;
+                return temp;
             }
         }
 
-        private Polyline _visualBaseLine;
+        private Polyline visualBaseLine;
+
         public Polyline VisualBaseLine
         {
             get
             {
-                visualOffsetType Offset = visualOffsetType.largeBoundingBox;
-                Polyline Temp = new Polyline();
-                PointCollection BaseLinePoints = new PointCollection();
-                TrCoords NewCoords = new TrCoords(BaseLineCoordsString);
+                VisualOffsetType offset = VisualOffsetType.LargeBoundingBox;
+                Polyline temp = new Polyline();
+                PointCollection baseLinePoints = new PointCollection();
+                TrCoords newCoords = new TrCoords(BaseLineCoordsString);
 
-                foreach (TrCoord C in NewCoords)
+                foreach (TrCoord c in newCoords)
                 {
-                    TrCoord TempC;
-                    if (Offset != visualOffsetType.none)
+                    TrCoord tempC;
+                    if (offset != VisualOffsetType.None)
                     {
-                        if (Offset == visualOffsetType.smallBoundingBox)
-                            TempC = C.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetSmall);
+                        if (offset == VisualOffsetType.SmallBoundingBox)
+                        {
+                            tempC = c.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetSmall);
+                        }
                         else
-                            TempC = C.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetLarge);
+                        {
+                            tempC = c.SubtractOffset(LeftBorder, TopBorder, BoundingBoxOffsetLarge);
+                        }
                     }
                     else
-                        TempC = C;
+                    {
+                        tempC = c;
+                    }
 
                     // SCALING
-                    double ScalingFactor = 0.25;
-                    double TempX = (double)TempC.X * ScalingFactor;
-                    double TempY = (double)TempC.Y * ScalingFactor;
+                    double scalingFactor = 0.25;
+                    double tempX = (double)tempC.X * scalingFactor;
+                    double tempY = (double)tempC.Y * scalingFactor;
 
-                    Point CurrentPoint = new Point(TempX, TempY);
-                    BaseLinePoints.Add(CurrentPoint);
+                    Point currentPoint = new Point(tempX, tempY);
+                    baseLinePoints.Add(currentPoint);
                 }
-                Temp.Points = BaseLinePoints;
-                return Temp;
+
+                temp.Points = baseLinePoints;
+                return temp;
             }
         }
 
+        private string textEquiv;
 
-        private string _textEquiv;
         public string TextEquiv
         {
-            get { return _textEquiv; }
+            get
+            {
+                return textEquiv;
+            }
+
             set
             {
-                if (_textEquiv != value)
+                if (textEquiv != value)
                 {
-                    _textEquiv = value;
+                    textEquiv = value;
                     NotifyPropertyChanged("TextEquiv");
                 }
             }
         }
 
+        private bool endsWithHyphen;
 
-
-        private bool _endsWithHyphen;
         public bool EndsWithHyphen
         {
             get
             {
-                _endsWithHyphen = false;
+                endsWithHyphen = false;
                 string temp = GetExpandedText(false, false);
                 if (temp.Length > 2)
                 {
                     char last = temp[temp.Length - 1];
                     if (last == '-' || last == '=')
-                        _endsWithHyphen = true;
+                    {
+                        endsWithHyphen = true;
+                    }
                 }
-                return _endsWithHyphen;
+
+                return endsWithHyphen;
             }
         }
 
-        private bool _startsWithSmallLetter;
+        private bool startsWithSmallLetter;
+
         public bool StartsWithSmallLetter
         {
             get
@@ -307,24 +352,33 @@ namespace TrClient.Core
                 if (temp.Length > 0)
                 {
                     char first = temp[0];
-                    _startsWithSmallLetter = char.IsLower(first);
+                    startsWithSmallLetter = char.IsLower(first);
                 }
                 else
-                    _startsWithSmallLetter = false;
-                return _startsWithSmallLetter;
+                {
+                    startsWithSmallLetter = false;
+                }
+
+                return startsWithSmallLetter;
             }
         }
 
-        private TrTag_Structural _structuralTag;
-        public TrTag_Structural StructuralTag
+        private TrTagStructural structuralTag;
+
+        public TrTagStructural StructuralTag
         {
-            get { return _structuralTag; }
+            get
+            {
+                return structuralTag;
+            }
+
             set
             {
-                if (_structuralTag != value)
+                if (structuralTag != value)
                 {
-                    _structuralTag = value;
+                    structuralTag = value;
                     NotifyPropertyChanged("StructuralTag");
+
                     // StructuralTagValue = value.SubType;
                 }
             }
@@ -334,220 +388,238 @@ namespace TrClient.Core
         {
             if (HasSuperscriptTag || HasSubscriptTag)
             {
-
-                TrTags SuperAndSubscriptTags = new TrTags();
-                foreach (TrTag T in Tags)
+                TrTags superAndSubscriptTags = new TrTags();
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Textual_Style))
-                        if ((T as TrTag_Textual_Style).Superscript || (T as TrTag_Textual_Style).Subscript)
-                            SuperAndSubscriptTags.Add(T);
+                    if (t.GetType() == typeof(TrTagTextualStyle))
+                    {
+                        if ((t as TrTagTextualStyle).Superscript || (t as TrTagTextualStyle).Subscript)
+                        {
+                            superAndSubscriptTags.Add(t);
+                        }
+                    }
                 }
 
-                int SuperAndSubscriptCount = SuperAndSubscriptTags.Count;
+                int superAndSubscriptCount = superAndSubscriptTags.Count;
+
                 //Debug.Print($"Super- and Subscripts: {SuperAndSubscriptCount}");
+                Regex romanNumbers = new Regex(@"\b[IVXLCDM]+\b");
 
-                Regex RomanNumbers = new Regex(@"\b[IVXLCDM]+\b");
-
-                for (int i = 0; i < SuperAndSubscriptCount; i++)
+                for (int i = 0; i < superAndSubscriptCount; i++)
                 {
-                    TrTag S = SuperAndSubscriptTags[i];
-                    int Offset = (S as TrTag_Textual).Offset;
-                    int EndPosition = (S as TrTag_Textual).EndPosition;
-                    int Length = (S as TrTag_Textual).Length;
-                    string TagContent = TextEquiv.Substring(Offset, Length);
+                    TrTag s = superAndSubscriptTags[i];
+                    int offset = (s as TrTagTextual).Offset;
+                    int endPosition = (s as TrTagTextual).EndPosition;
+                    int length = (s as TrTagTextual).Length;
+                    string tagContent = TextEquiv.Substring(offset, length);
 
                     //Debug.Print($"Content: {TagContent}");
                     //Debug.Print($"Offset: {Offset}, Endpos: {EndPosition}");
-
-                    MatchCollection RomanNumberMatches = RomanNumbers.Matches(TagContent);
+                    MatchCollection romanNumberMatches = romanNumbers.Matches(tagContent);
 
                     // det er dog kun, hvis selve tagget er et romertal eller et arabertal, at vi indsætter space
-                    if (RomanNumberMatches.Count > 0 || TrLibrary.IsNumeric(TagContent))
+                    if (romanNumberMatches.Count > 0 || TrLibrary.IsNumeric(tagContent))
                     {
                         // da vi går baglæns, tester vi først endposition og EFTER
-                        if (EndPosition < Length - 1)
+                        if (endPosition < length - 1)
                         {
-
                             // så står superscriptet IKKE helt ude for enden
                             // hvad står der EFTER?
-                            char After = TextEquiv[EndPosition + 1];
+                            char after = TextEquiv[endPosition + 1];
+
                             //Debug.Print($"After: _{After}_");
 
                             // hvis det IKKE er et mellemrum, og hvis det IKKE er et bogstav, indsætter vi et mellemrum
-                            if (!char.IsWhiteSpace(After) && !char.IsLetter(After))
+                            if (!char.IsWhiteSpace(after) && !char.IsLetter(after))
                             {
-                                TextEquiv = TextEquiv.Insert(EndPosition + 1, " ");
-                                Tags.Move(EndPosition + 1, 1, true);
+                                TextEquiv = TextEquiv.Insert(endPosition + 1, " ");
+                                Tags.Move(endPosition + 1, 1, true);
                                 HasChanged = true;
+
                                 //Debug.Print($"Space added!");
                             }
                         }
 
                         // dernæst tester vi INDEN, dvs. via offset
-                        if (Offset > 0)
+                        if (offset > 0)
                         {
                             // hvis ikke begyndelsen af linien
                             // hvad står der før?
-                            char Before = TextEquiv[Offset - 1];
+                            char before = TextEquiv[offset - 1];
+
                             //Debug.Print($"Before: _{Before}_");
 
                             // hvis det IKKE er et mellemrum, og hvis det IKKE er et bogstav, indsætter vi et mellemrum
-                            if (!char.IsWhiteSpace(Before) && !char.IsLetter(Before))
+                            if (!char.IsWhiteSpace(before) && !char.IsLetter(before))
                             {
-                                TextEquiv = TextEquiv.Insert(Offset, " ");
-                                Tags.Move(Offset - 1, 1, true);
+                                TextEquiv = TextEquiv.Insert(offset, " ");
+                                Tags.Move(offset - 1, 1, true);
                                 HasChanged = true;
+
                                 //Debug.Print($"Space added!");
                             }
                         }
                     }
-
                 }
             }
         }
 
-
-        public void Replace(string Find, string ReplaceWith)
+        public void Replace(string find, string replaceWith)
         {
-            int Offset;
-            int Length;
-            int Difference;
-
+            int offset;
+            int length;
+            int difference;
 
             // MEN hvis man ønsker at finde noget, der ender med mellemrum, skal der tages højde for det:
-            if (Find.EndsWith(" "))
+            if (find.EndsWith(" "))
             {
-                Length = Find.Trim().Length;
+                length = find.Trim().Length;
 
                 // i dette tilfælde vil man også tit gerne sætte noget ind med et mellemrum: det skal så ædndres
-                Difference = ReplaceWith.Trim().Length - Find.Trim().Length;
+                difference = replaceWith.Trim().Length - find.Trim().Length;
 
-                string SearchForTrimmed = Regex.Escape(Find.Trim()) + "$";
+                string searchForTrimmed = Regex.Escape(find.Trim()) + "$";
+
                 //Debug.Print($"SearchForTrimmed = _{SearchForTrimmed}_");
-
-                Regex ToFindTrimmed = new Regex(SearchForTrimmed);
-                MatchCollection TrimmedMatches = ToFindTrimmed.Matches(TextEquiv);
-                if (TrimmedMatches.Count > 1)
+                Regex toFindTrimmed = new Regex(searchForTrimmed);
+                MatchCollection trimmedMatches = toFindTrimmed.Matches(TextEquiv);
+                if (trimmedMatches.Count > 1)
                 {
                     // noget er helt galt!
-                    Debug.Print($"FATAL REGEX ERROR: TextEquiv: {TextEquiv}, Mathces: {TrimmedMatches.Count}");
+                    Debug.Print($"FATAL REGEX ERROR: TextEquiv: {TextEquiv}, Mathces: {trimmedMatches.Count}");
                 }
-                else if (TrimmedMatches.Count == 1)
+                else if (trimmedMatches.Count == 1)
                 {
-                    Match End = TrimmedMatches[0];
-                    Offset = End.Index;
+                    Match end = trimmedMatches[0];
+                    offset = end.Index;
 
-                    if (Offset >= 0)
+                    if (offset >= 0)
                     {
-                        TextEquiv = TextEquiv.Remove(Offset, Length);
+                        TextEquiv = TextEquiv.Remove(offset, length);
 
                         // der indsættes en trimmet udgave
-                        TextEquiv = TextEquiv.Insert(Offset, ReplaceWith.Trim());
-                        Tags.Move(Offset, Difference, true);
+                        TextEquiv = TextEquiv.Insert(offset, replaceWith.Trim());
+                        Tags.Move(offset, difference, true);
                         HasChanged = true;
                     }
                 }
             }
 
             // derefter kan vi gøre det hele mere normalt, dvs. inde i strengen
-            Length = Find.Length;
-            Difference = ReplaceWith.Length - Find.Length;
+            length = find.Length;
+            difference = replaceWith.Length - find.Length;
 
-            string SearchForFull = Regex.Escape(Find);
+            string searchForFull = Regex.Escape(find);
+
             //Debug.Print($"SearchForFull = _{SearchForFull}_");
-
-            Regex ToFindFull = new Regex(SearchForFull);
-            MatchCollection FullMatches = ToFindFull.Matches(TextEquiv);
+            Regex toFindFull = new Regex(searchForFull);
+            MatchCollection fullMatches = toFindFull.Matches(TextEquiv);
 
             // så gennemløber vi baglæns
-            for (int i = FullMatches.Count - 1; i >= 0; i--)
+            for (int i = fullMatches.Count - 1; i >= 0; i--)
             {
                 // Debug.WriteLine($"TrTextLine : Replace : Find = {Find }, ReplaceWith = {ReplaceWith }, i = {i}");
+                Match m = fullMatches[i];
+                offset = m.Index;
 
-                Match M = FullMatches[i];
-                Offset = M.Index;
-
-                if (Offset >= 0)
+                if (offset >= 0)
                 {
-                    TextEquiv = TextEquiv.Remove(Offset, Length);
-                    TextEquiv = TextEquiv.Insert(Offset, ReplaceWith);
-                    Tags.Move(Offset, Difference, true);
+                    TextEquiv = TextEquiv.Remove(offset, length);
+                    TextEquiv = TextEquiv.Insert(offset, replaceWith);
+                    Tags.Move(offset, difference, true);
                     HasChanged = true;
                 }
-
             }
-
-
         }
 
-        private int _length = 0;
+        private int length = 0;
+
         public int Length
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _length = TextEquiv.Length;
+                {
+                    length = TextEquiv.Length;
+                }
                 else
-                    _length = 0;
-                return _length;
+                {
+                    length = 0;
+                }
+
+                return length;
             }
         }
 
-        private int _number;
+        private int number;
+
         public int Number
         {
             get
             {
                 // Debug.WriteLine($"TrTextLine : Number: ReadingOrder = {ReadingOrder}");
-
                 if (ParentContainer.IsZeroBased)
-                    _number = ReadingOrder + 1;
+                {
+                    number = ReadingOrder + 1;
+                }
                 else
-                    _number = ReadingOrder;
-                return _number;
+                {
+                    number = ReadingOrder;
+                }
+
+                return number;
             }
         }
 
-        private string _parentDocTitle;
+        private string parentDocTitle;
+
         public string ParentDocTitle
         {
             get
             {
-                _parentDocTitle = ParentRegion.ParentTranscript.ParentPage.ParentDocument.Title;
-                return _parentDocTitle;
+                parentDocTitle = ParentRegion.ParentTranscript.ParentPage.ParentDocument.Title;
+                return parentDocTitle;
             }
         }
 
-        private int _parentPageNr;
+        private int parentPageNr;
+
         public int ParentPageNr
         {
             get
             {
-                _parentPageNr = ParentRegion.ParentTranscript.ParentPage.PageNr;
-                return _parentPageNr;
+                parentPageNr = ParentRegion.ParentTranscript.ParentPage.PageNr;
+                return parentPageNr;
             }
         }
 
-        private int _parentRegionNr;
+        private int parentRegionNr;
+
         public int ParentRegionNr
         {
             get
             {
-                _parentRegionNr = ParentRegion.Number;
-                return _parentRegionNr;
+                parentRegionNr = ParentRegion.Number;
+                return parentRegionNr;
             }
         }
 
-        private bool _isEmpty = false;
+        private bool isEmpty = false;
+
         public bool IsEmpty
         {
             get
             {
                 if (string.IsNullOrEmpty(TextEquiv))
-                    _isEmpty = true;
+                {
+                    isEmpty = true;
+                }
                 else if (string.IsNullOrEmpty(TextEquiv.Trim()))
-                    _isEmpty = true;
-                return _isEmpty;
+                {
+                    isEmpty = true;
+                }
+
+                return isEmpty;
             }
         }
 
@@ -556,19 +628,24 @@ namespace TrClient.Core
         public TrTags Tags = new TrTags();
 
         public TrTextLines ParentContainer;
-        public TrRegion_Text ParentRegion;
+        public TrTextRegion ParentRegion;
 
-        private bool _isLoaded = false;
+        private bool isLoaded = false;
+
         public bool IsLoaded
         {
-            get { return _isLoaded; }
+            get
+            {
+                return isLoaded;
+            }
+
             set
             {
-                if (_isLoaded != value)
+                if (isLoaded != value)
                 {
-                    _isLoaded = value;
+                    isLoaded = value;
                     NotifyPropertyChanged("IsLoaded");
-                    switch (_isLoaded)
+                    switch (isLoaded)
                     {
                         case true:
                             StatusColor = Brushes.LimeGreen;
@@ -581,256 +658,360 @@ namespace TrClient.Core
             }
         }
 
-        private SolidColorBrush _statusColor = Brushes.Red;
+        private SolidColorBrush statusColor = Brushes.Red;
+
         public SolidColorBrush StatusColor
         {
-            get { return _statusColor; }
+            get
+            {
+                return statusColor;
+            }
+
             set
             {
-                if (_statusColor != value)
+                if (statusColor != value)
                 {
-                    _statusColor = value;
+                    statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
         }
 
-        private bool _hasChanged = false;
+        private bool hasChanged = false;
+
         public bool HasChanged
         {
-            get { return _hasChanged; }
+            get
+            {
+                return hasChanged;
+            }
+
             set
             {
-                _hasChanged = value;
-                if (_hasChanged)
+                hasChanged = value;
+                if (hasChanged)
+                {
                     StatusColor = Brushes.Orange;
-                NotifyPropertyChanged("HasChanged");
+                }
 
-                ParentRegion.HasChanged = value;
+                NotifyPropertyChanged("HasChanged");
+                // flg. linie pga en bug
+                if (ParentRegion != null)
+                {
+                    ParentRegion.HasChanged = value;
+                }
             }
         }
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
-                if (_changesUploaded)
+                changesUploaded = value;
+                if (changesUploaded)
+                {
                     StatusColor = Brushes.DarkViolet;
+                }
+
                 NotifyPropertyChanged("ChangesUploaded");
             }
         }
 
-        private Int32Rect _boundingBoxSmall;
+        private Int32Rect boundingBoxSmall;
+
         public Int32Rect BoundingBoxSmall
         {
             get
             {
-                _boundingBoxSmall = new Int32Rect(LeftBorder, TopBorder, BoundingBoxWidth, BoundingBoxHeight);
-                return _boundingBoxSmall;
+                boundingBoxSmall = new Int32Rect(LeftBorder, TopBorder, BoundingBoxWidth, BoundingBoxHeight);
+                return boundingBoxSmall;
             }
         }
 
-        private TrCoord _boundingBoxOffsetSmall;
+        private TrCoord boundingBoxOffsetSmall;
+
         public TrCoord BoundingBoxOffsetSmall
         {
             get
             {
-                TrCoord Temp = new TrCoord(LeftBorder, TopBorder);
-                return Temp;
+                TrCoord temp = new TrCoord(LeftBorder, TopBorder);
+                return temp;
             }
         }
 
-        private TrCoord _boundingBoxOffsetLarge;
+        private TrCoord boundingBoxOffsetLarge;
+
         public TrCoord BoundingBoxOffsetLarge
         {
             get
             {
-                int TempLeft;
-                int TempTop;
+                int tempLeft;
+                int tempTop;
 
-                if (LeftBorder - Amount > 0)
-                    TempLeft = Amount;
+                if (LeftBorder - amount > 0)
+                {
+                    tempLeft = amount;
+                }
                 else
-                    TempLeft = LeftBorder;
+                {
+                    tempLeft = LeftBorder;
+                }
 
-                if (TopBorder - Amount > 0)
-                    TempTop = Amount;
+                if (TopBorder - amount > 0)
+                {
+                    tempTop = amount;
+                }
                 else
-                    TempTop = TopBorder;
+                {
+                    tempTop = TopBorder;
+                }
 
-                TrCoord Temp = new TrCoord(TempLeft, TempTop);
-                return Temp;
+                TrCoord temp = new TrCoord(tempLeft, tempTop);
+                return temp;
             }
         }
 
-        private Int32Rect _boundingBoxLarge;
+        private Int32Rect boundingBoxLarge;
+
         public Int32Rect BoundingBoxLarge
         {
             get
             {
-                int PageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
-                int PageHeight = ParentRegion.ParentTranscript.ParentPage.Height;
+                int pageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
+                int pageHeight = ParentRegion.ParentTranscript.ParentPage.Height;
 
-                int NewLeft = LeftBorder - Amount;
-                if (NewLeft < 0)
-                    NewLeft = 0;
-                int NewTop = TopBorder - Amount;
-                if (NewTop < 0)
-                    NewTop = 0;
-                int NewRight = RightBorder + Amount;
-                if (NewRight > PageWidth)
-                    NewRight = PageWidth;
-                int NewBottom = BottomBorder + Amount;
-                if (NewBottom > PageHeight)
-                    NewBottom = PageHeight;
+                int newLeft = LeftBorder - amount;
+                if (newLeft < 0)
+                {
+                    newLeft = 0;
+                }
 
-                int NewWidth = NewRight - NewLeft;
-                int NewHeight = NewBottom - NewTop;
+                int newTop = TopBorder - amount;
+                if (newTop < 0)
+                {
+                    newTop = 0;
+                }
 
-                _boundingBoxLarge = new Int32Rect(NewLeft, NewTop, NewWidth, NewHeight);
-                return _boundingBoxLarge;
+                int newRight = RightBorder + amount;
+                if (newRight > pageWidth)
+                {
+                    newRight = pageWidth;
+                }
+
+                int newBottom = BottomBorder + amount;
+                if (newBottom > pageHeight)
+                {
+                    newBottom = pageHeight;
+                }
+
+                int newWidth = newRight - newLeft;
+                int newHeight = newBottom - newTop;
+
+                boundingBoxLarge = new Int32Rect(newLeft, newTop, newWidth, newHeight);
+                return boundingBoxLarge;
             }
         }
 
-        private int _leftBorder;
+        private int leftBorder;
+
         public int LeftBorder
         {
             get
             {
                 if (HasCoords && HasBaseLine)
                 {
-                    int BoundingBoxValue = TrLibrary.GetLeftMostXcoord(CoordsString);
-                    int BaseLineValue = TrLibrary.GetLeftMostXcoord(BaseLineCoordsString);
+                    int boundingBoxValue = TrLibrary.GetLeftMostXcoord(CoordsString);
+                    int baseLineValue = TrLibrary.GetLeftMostXcoord(BaseLineCoordsString);
 
-                    if (BoundingBoxValue < BaseLineValue)
-                        _leftBorder = BoundingBoxValue;
+                    if (boundingBoxValue < baseLineValue)
+                    {
+                        leftBorder = boundingBoxValue;
+                    }
                     else
-                        _leftBorder = BaseLineValue;
+                    {
+                        leftBorder = baseLineValue;
+                    }
                 }
                 else
-                    _leftBorder = -1;
+                {
+                    leftBorder = -1;
+                }
 
-                return _leftBorder;
+                return leftBorder;
             }
         }
 
-        private int _rightBorder;
+        private int rightBorder;
+
         public int RightBorder
         {
             get
             {
                 if (HasCoords && HasBaseLine)
                 {
-                    int BoundingBoxValue = TrLibrary.GetRightMostXcoord(CoordsString);
-                    int BaseLineValue = TrLibrary.GetRightMostXcoord(BaseLineCoordsString);
+                    int boundingBoxValue = TrLibrary.GetRightMostXcoord(CoordsString);
+                    int baseLineValue = TrLibrary.GetRightMostXcoord(BaseLineCoordsString);
 
-                    if (BoundingBoxValue > BaseLineValue)
-                        _rightBorder = BoundingBoxValue;
+                    if (boundingBoxValue > baseLineValue)
+                    {
+                        rightBorder = boundingBoxValue;
+                    }
                     else
-                        _rightBorder = BaseLineValue;
+                    {
+                        rightBorder = baseLineValue;
+                    }
                 }
                 else
-                    _rightBorder = -1;
+                {
+                    rightBorder = -1;
+                }
 
-                return _rightBorder;
+                return rightBorder;
             }
         }
 
-        private int _boundingBoxWidth;
+        private int boundingBoxWidth;
+
         public int BoundingBoxWidth
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _boundingBoxWidth = RightBorder - LeftBorder;
+                {
+                    boundingBoxWidth = RightBorder - LeftBorder;
+                }
                 else
-                    _boundingBoxWidth = -1;
-                return _boundingBoxWidth;
+                {
+                    boundingBoxWidth = -1;
+                }
+
+                return boundingBoxWidth;
             }
         }
 
-        private int _width;
+        private int width;
+
         public int Width
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _width = RightBorder - LeftBorder;
+                {
+                    width = RightBorder - LeftBorder;
+                }
                 else
-                    _width = -1;
-                return _width;
+                {
+                    width = -1;
+                }
+
+                return width;
             }
         }
 
-        private int _topBorder;
+        private int topBorder;
+
         public int TopBorder
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _topBorder = TrLibrary.GetTopYcoord(CoordsString);
+                {
+                    topBorder = TrLibrary.GetTopYcoord(CoordsString);
+                }
                 else
-                    _topBorder = -1;
-                return _topBorder;
+                {
+                    topBorder = -1;
+                }
+
+                return topBorder;
             }
         }
 
-        private int _bottomBorder;
+        private int bottomBorder;
+
         public int BottomBorder
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _bottomBorder = TrLibrary.GetBottomYcoord(CoordsString);
+                {
+                    bottomBorder = TrLibrary.GetBottomYcoord(CoordsString);
+                }
                 else
-                    _bottomBorder = -1;
-                return _bottomBorder;
+                {
+                    bottomBorder = -1;
+                }
+
+                return bottomBorder;
             }
         }
 
-        private int _boundingBoxHeight;
+        private int boundingBoxHeight;
+
         public int BoundingBoxHeight
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _boundingBoxHeight = BottomBorder - TopBorder;
+                {
+                    boundingBoxHeight = BottomBorder - TopBorder;
+                }
                 else
-                    _boundingBoxHeight = -1;
-                return _boundingBoxHeight;
+                {
+                    boundingBoxHeight = -1;
+                }
+
+                return boundingBoxHeight;
             }
         }
 
-        private int _height;
+        private int height;
+
         public int Height
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _height = BottomBorder - TopBorder;
+                {
+                    height = BottomBorder - TopBorder;
+                }
                 else
-                    _height = -1;
-                return _height;
+                {
+                    height = -1;
+                }
+
+                return height;
             }
         }
 
-        private int _hPos;
+        private int hPos;
+
         public int Hpos
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _hPos = LeftBorder;
+                {
+                    hPos = LeftBorder;
+                }
                 else
-                    _hPos = -1;
-                return _hPos;
+                {
+                    hPos = -1;
+                }
+
+                return hPos;
             }
         }
 
-        private int _vPos = 0;
+        private int vPos = 0;
+
         public int Vpos
         {
             get
@@ -838,571 +1019,656 @@ namespace TrClient.Core
                 if (HasCoords && HasBaseLine)
                 {
                     // først testes, om Vpos er blevet manuelt sat (dvs. forskellig fra 0); i givet fald returneres den blot; ellers beregnes den først
-                    if (_vPos == 0)
-                        _vPos = TrLibrary.GetAverageYcoord(BaseLineCoordsString);
+                    if (vPos == 0)
+                    {
+                        vPos = TrLibrary.GetAverageYcoord(BaseLineCoordsString);
+                    }
                 }
                 else
-                    _vPos = -1;
-                return _vPos;
+                {
+                    vPos = -1;
+                }
+
+                return vPos;
             }
+
             set
             {
                 // Vpos bør KUN SÆTTES ifm. logisk arrangerering af linierne (kaldes af TrTextLines.RenumberLogically)
-                _vPos = value;
+                vPos = value;
             }
         }
 
-        private int _textSizeFactor;
+        private int textSizeFactor;
+
         public int TextSizeFactor
         {
             get
-            {   if (Length > 0)
-                    _textSizeFactor = Width / (Length);
+            {
+                if (Length > 0)
+                {
+                    textSizeFactor = Width / Length;
+                }
                 else
-                    _textSizeFactor = 0;
-                return _textSizeFactor;
+                {
+                    textSizeFactor = 0;
+                }
+
+                return textSizeFactor;
             }
         }
-
 
         public TrTextLine GetTextLineAbove()
         {
-            int Current = this.Number - 1;
-            TrTextLine LineAbove = null;
+            int current = Number - 1;
+            TrTextLine lineAbove = null;
 
             // Debug.Print($"TrTextLine: GetTextLineAbove: Current = {Current}, TextLineCount: {ParentRegion.TextLines.Count}");
-            int Middle = this.Hpos + (this.HendPos - this.Hpos) / 2;
+            int middle = Hpos + ((HendPos - Hpos) / 2);
 
-            for (int i = Current - 1; i >= 1; i--)
+            for (int i = current - 1; i >= 1; i--)
             {
-                if (Middle > ParentRegion.TextLines[i].Hpos && Middle < ParentRegion.TextLines[i].HendPos)
+                if (middle > ParentRegion.TextLines[i].Hpos && middle < ParentRegion.TextLines[i].HendPos)
                 {
-                    LineAbove = ParentRegion.TextLines[i];
+                    lineAbove = ParentRegion.TextLines[i];
                     break;
                 }
             }
-            return LineAbove;
+
+            return lineAbove;
         }
 
+        private int horizontalOrder;
 
-
-        private int _horizontalOrder;
         public int HorizontalOrder
         {
             get
             {
-                _horizontalOrder = Hpos * 10_000 + Vpos;
-                return _horizontalOrder;
+                horizontalOrder = (Hpos * 10_000) + Vpos;
+                return horizontalOrder;
             }
         }
 
-        private int _verticalOrder;
+        private int verticalOrder;
+
         public int VerticalOrder
         {
             get
             {
-                _verticalOrder = Vpos * 10_000 + Hpos;
-                return _verticalOrder;
+                verticalOrder = (Vpos * 10_000) + Hpos;
+                return verticalOrder;
             }
         }
 
-        private int _logicalOrder;
+        private int logicalOrder;
+
         public int LogicalOrder
         {
             get
             {
-                _logicalOrder = ((Vpos + SortDeltaY) / 100) * 1_000_000 + Hpos + AngleFromOrigo; // 
-                return _logicalOrder;
+                logicalOrder = (((Vpos + SortDeltaY) / 100) * 1_000_000) + Hpos + AngleFromOrigo;
+                return logicalOrder;
             }
         }
 
-        private int _sortDeltaY = 0;
+        private int sortDeltaY = 0;
+
         public int SortDeltaY
         {
             get
             {
-                return _sortDeltaY;
+                return sortDeltaY;
             }
+
             set
             {
-                if (value != _sortDeltaY)
-                    _sortDeltaY = value;
+                if (value != sortDeltaY)
+                {
+                    sortDeltaY = value;
+                }
             }
         }
 
-        private int _angleFromOrigo = 0;
+        private int angleFromOrigo = 0;
+
         public int AngleFromOrigo
         {
             // returnerer vinklen fra sidens øverste venstre hjørne til beg.punkt
-            //
             get
             {
                 if (Vpos > 0)
                 {
-                    double Ratio = (double)Hpos / (double)Vpos;
-                    double Angle = System.Math.Atan(Ratio) * (180 / Math.PI);
-                    _angleFromOrigo = Convert.ToInt32(Angle);
-
+                    double ratio = (double)Hpos / (double)Vpos;
+                    double angle = System.Math.Atan(ratio) * (180 / Math.PI);
+                    angleFromOrigo = Convert.ToInt32(angle);
                 }
-                return _angleFromOrigo;
+
+                return angleFromOrigo;
             }
         }
 
-        private int _hEndPos;
+        private int hEndPos;
+
         public int HendPos
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _hEndPos = RightBorder;
+                {
+                    hEndPos = RightBorder;
+                }
                 else
-                    _hEndPos = -1;
-                return _hEndPos;
+                {
+                    hEndPos = -1;
+                }
+
+                return hEndPos;
             }
         }
 
-        private double _percentualVpos;
+        private double percentualVpos;
+
         public double PercentualVpos
         {
             get
             {
-                int PageHeight = ParentRegion.ParentTranscript.ParentPage.Height;
-                _percentualVpos = (double)Vpos / (double)PageHeight * 100.0;
+                int pageHeight = ParentRegion.ParentTranscript.ParentPage.Height;
+                percentualVpos = (double)Vpos / (double)pageHeight * 100.0;
+
                 // Debug.WriteLine($"Pageheigth = {PageHeight}, Vpos = {Vpos}, PercentualVpos = {_percentualVpos}");
-                return _percentualVpos;
+                return percentualVpos;
             }
         }
 
-        private double _percentualHpos;
+        private double percentualHpos;
+
         public double PercentualHpos
         {
             get
             {
-                int PageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
-                _percentualHpos = (double)Hpos / (double)PageWidth * 100.0;
+                int pageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
+                percentualHpos = (double)Hpos / (double)pageWidth * 100.0;
+
                 // Debug.WriteLine($"Pagewidth = {PageWidth}, Hpos = {Hpos}, PercentualHpos = {_percentualHpos}");
-                return _percentualHpos;
+                return percentualHpos;
             }
         }
 
-        private double _percentualHendPos;
+        private double percentualHendPos;
+
         public double PercentualHendPos
         {
             get
             {
-                int PageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
-                _percentualHendPos = (double)HendPos / (double)PageWidth * 100.0;
-                return _percentualHendPos;
+                int pageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
+                percentualHendPos = (double)HendPos / (double)pageWidth * 100.0;
+                return percentualHendPos;
             }
         }
-               
-        public bool IsOKwithBaseLineFilter(TrBaseLineFilter CurrentFilter)
+
+        public bool IsOKwithBaseLineFilter(TrBaseLineFilter currentFilter)
         {
             bool temp;
 
-            bool PositiveCheck;
-            bool StraightCheck;
-            bool DirectionCheck;
+            bool positiveCheck;
+            bool straightCheck;
+            bool directionCheck;
 
-            PositiveCheck = (IsCoordinatesPositive == CurrentFilter.CoordinatesPositive);
-            StraightCheck = (IsBaseLineStraight == CurrentFilter.BaseLineStraight);
-            DirectionCheck = (IsBaseLineDirectionOK == CurrentFilter.BaseLineDirectionOK);
+            positiveCheck = IsCoordinatesPositive == currentFilter.CoordinatesPositive;
+            straightCheck = IsBaseLineStraight == currentFilter.BaseLineStraight;
+            directionCheck = IsBaseLineDirectionOK == currentFilter.BaseLineDirectionOK;
 
-            temp = PositiveCheck && StraightCheck && DirectionCheck;
+            temp = positiveCheck && straightCheck && directionCheck;
 
             return temp;
         }
 
-
-        public bool MeetsFilterConditions(TrLineFilterSettings CurrentFilter)
+        public bool MeetsFilterConditions(TrLineFilterSettings currentFilter)
         {
             bool temp;
 
             // sætter alt til true - og hvis de enkelte dele rent faktisk skal testes, kan de blive false
-            bool CheckPageNumber = true;
-            bool CheckRegEx = true;
-            bool CheckStructuralTag = true;
-            bool CheckTextSizeFactor = true;
-            bool CheckTextLength = true;
-            bool CheckPosition = true;
+            bool checkPageNumber = true;
+            bool checkRegEx = true;
+            bool checkStructuralTag = true;
+            bool checkTextSizeFactor = true;
+            bool checkTextLength = true;
+            bool checkPosition = true;
 
-            if (CurrentFilter.FilterByPageNumber)
+            if (currentFilter.FilterByPageNumber)
             {
-                CheckPageNumber = (ParentPageNr >= CurrentFilter.StartPage) && (ParentPageNr <= CurrentFilter.EndPage);
+                checkPageNumber = (ParentPageNr >= currentFilter.StartPage) && (ParentPageNr <= currentFilter.EndPage);
             }
 
-            if (CurrentFilter.FilterByRegEx)
+            if (currentFilter.FilterByRegEx)
             {
-                CheckRegEx = MatchesRegex(CurrentFilter.RegExPattern);
-            }
-            
-            if (CurrentFilter.FilterByStructuralTag)
-            {
-                if (CurrentFilter.StructuralTag != "")
-                    CheckStructuralTag = HasSpecificStructuralTag(CurrentFilter.StructuralTag);
+                checkRegEx = MatchesRegex(currentFilter.RegExPattern);
             }
 
-            if (CurrentFilter.FilterByTextSizeFactor)
+            if (currentFilter.FilterByStructuralTag)
             {
-                CheckTextSizeFactor = MatchesTextSize(CurrentFilter);
+                if (currentFilter.StructuralTag != string.Empty)
+                {
+                    checkStructuralTag = HasSpecificStructuralTag(currentFilter.StructuralTag);
+                }
             }
 
-            if (CurrentFilter.FilterByTextLength)
+            if (currentFilter.FilterByTextSizeFactor)
             {
-                CheckTextLength = MatchesTextLength(CurrentFilter);
+                checkTextSizeFactor = MatchesTextSize(currentFilter);
             }
 
-            if (CurrentFilter.FilterByPosition)
+            if (currentFilter.FilterByTextLength)
             {
-                CheckPosition = MatchesWindow(CurrentFilter);
+                checkTextLength = MatchesTextLength(currentFilter);
             }
 
-            temp = CheckPageNumber && CheckRegEx && CheckStructuralTag && CheckTextSizeFactor && CheckTextLength && CheckPosition;
+            if (currentFilter.FilterByPosition)
+            {
+                checkPosition = MatchesWindow(currentFilter);
+            }
+
+            temp = checkPageNumber && checkRegEx && checkStructuralTag && checkTextSizeFactor && checkTextLength && checkPosition;
 
             return temp;
         }
 
-
-
-        public bool MatchesTextSize(TrLineFilterSettings FilterSettings)
+        public bool MatchesTextSize(TrLineFilterSettings filterSettings)
         {
             bool temp;
 
-            bool LowerOK;
-            bool UpperOK;
-            
-            if (FilterSettings.LowerLimitTextSizeFactor == 0)
+            bool lowerOK;
+            bool upperOK;
+
+            if (filterSettings.LowerLimitTextSizeFactor == 0)
             {
-                LowerOK = true;
+                lowerOK = true;
             }
             else
             {
-                LowerOK = TextSizeFactor >= FilterSettings.LowerLimitTextSizeFactor;
+                lowerOK = TextSizeFactor >= filterSettings.LowerLimitTextSizeFactor;
             }
 
-            if (FilterSettings.UpperLimitTextSizeFactor == 0)
+            if (filterSettings.UpperLimitTextSizeFactor == 0)
             {
-                UpperOK = true;
+                upperOK = true;
             }
             else
             {
-                UpperOK = TextSizeFactor <= FilterSettings.UpperLimitTextSizeFactor;
+                upperOK = TextSizeFactor <= filterSettings.UpperLimitTextSizeFactor;
             }
 
-            temp = LowerOK && UpperOK;
+            temp = lowerOK && upperOK;
 
             return temp;
         }
 
-        public bool MatchesTextLength(TrLineFilterSettings FilterSettings)
+        public bool MatchesTextLength(TrLineFilterSettings filterSettings)
         {
             bool temp;
 
-            bool LowerOK;
-            bool UpperOK;
+            bool lowerOK;
+            bool upperOK;
 
-            if (FilterSettings.LowerLimitTextLength == 0)
+            if (filterSettings.LowerLimitTextLength == 0)
             {
-                LowerOK = true;
+                lowerOK = true;
             }
             else
             {
-                LowerOK = Length >= FilterSettings.LowerLimitTextLength;
+                lowerOK = Length >= filterSettings.LowerLimitTextLength;
             }
 
-            if (FilterSettings.UpperLimitTextLength == 0)
+            if (filterSettings.UpperLimitTextLength == 0)
             {
-                UpperOK = true;
+                upperOK = true;
             }
             else
             {
-                UpperOK = Length <= FilterSettings.UpperLimitTextLength;
+                upperOK = Length <= filterSettings.UpperLimitTextLength;
             }
 
-            temp = LowerOK && UpperOK;
+            temp = lowerOK && upperOK;
 
             return temp;
         }
 
-
-        public bool MatchesWindow(TrLineFilterSettings FilterSettings)
+        public bool MatchesWindow(TrLineFilterSettings filterSettings)
         {
             bool temp;
 
-
-            if (FilterSettings.Inside)
+            if (filterSettings.Inside)
             {
-                temp = IsInWindow(FilterSettings);
+                temp = IsInWindow(filterSettings);
             }
             else
             {
-                temp = !IsInWindow(FilterSettings);
+                temp = !IsInWindow(filterSettings);
             }
 
             return temp;
         }
 
-
-        public bool IsInWindow(TrLineFilterSettings FilterSettings)
+        public bool IsInWindow(TrLineFilterSettings filterSettings)
         {
             bool temp;
 
-            bool Vcheck;
-            bool Hcheck;
-            bool HendCheck;
+            bool vcheck;
+            bool hcheck;
+            bool hendCheck;
 
-            Vcheck = (PercentualVpos >= FilterSettings.TopBorder) && (PercentualVpos <= FilterSettings.BottomBorder);
-            Hcheck = (PercentualHpos >= FilterSettings.LeftBorder) && (PercentualHpos <= FilterSettings.RightBorder);
+            vcheck = (PercentualVpos >= filterSettings.TopBorder) && (PercentualVpos <= filterSettings.BottomBorder);
+            hcheck = (PercentualHpos >= filterSettings.LeftBorder) && (PercentualHpos <= filterSettings.RightBorder);
 
+            hendCheck = (PercentualHendPos >= filterSettings.LeftBorder) && (PercentualHendPos <= filterSettings.RightBorder);
 
-            HendCheck = (PercentualHendPos >= FilterSettings.LeftBorder) && (PercentualHendPos <= FilterSettings.RightBorder);
+            temp = vcheck && hcheck;
 
-            temp = Vcheck && Hcheck;
-
-            if (FilterSettings.IncludeEnding)
-                temp = temp && HendCheck;
+            if (filterSettings.IncludeEnding)
+            {
+                temp = temp && hendCheck;
+            }
 
             //Debug.WriteLine($"PVpos = {PercentualVpos}, Top = {CurrentWindow.TopBorder}, Bottom = {CurrentWindow.BottomBorder}, " +
             //    $"PHpos = {PercentualHpos}, Left = {CurrentWindow.LeftBorder}, Right = {CurrentWindow.RightBorder}, OK? {temp}");
-
             return temp;
-
         }
-        
-        public bool MatchesRegex(string RegExPattern) // Regex MatchPattern
+
+        public bool MatchesRegex(string regExPattern) // Regex MatchPattern
         {
             bool temp = false;
 
-            Regex MatchPattern = new Regex(RegExPattern);
-            MatchCollection Matches = MatchPattern.Matches(ExpandedText);
-            if (Matches.Count > 0)
+            Regex matchPattern = new Regex(regExPattern);
+            MatchCollection matches = matchPattern.Matches(ExpandedText);
+            if (matches.Count > 0)
+            {
                 temp = true;
+            }
             else
+            {
                 temp = false;
+            }
 
             return temp;
         }
 
-        private bool _hasAbbrevTag;
+        private bool hasAbbrevTag;
+
         public bool HasAbbrevTag
         {
             get
             {
-                _hasAbbrevTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Abbrev))
-                        _hasAbbrevTag = _hasAbbrevTag || true;
-                return _hasAbbrevTag;
+                hasAbbrevTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualAbbrev))
+                    {
+                        hasAbbrevTag = hasAbbrevTag || true;
+                    }
+                }
+
+                return hasAbbrevTag;
             }
         }
 
-        private bool _hasEmptyAbbrevTag;
+        private bool hasEmptyAbbrevTag;
+
         public bool HasEmptyAbbrevTag
         {
             get
             {
-                _hasEmptyAbbrevTag = false;
+                hasEmptyAbbrevTag = false;
                 if (HasAbbrevTag)
                 {
-                    foreach (TrTag T in Tags)
-                        if (T.GetType() == typeof(TrTag_Textual_Abbrev))
-                            _hasEmptyAbbrevTag = _hasEmptyAbbrevTag || (T as TrTag_Textual_Abbrev).IsEmpty;
+                    foreach (TrTag t in Tags)
+                    {
+                        if (t.GetType() == typeof(TrTagTextualAbbrev))
+                        {
+                            hasEmptyAbbrevTag = hasEmptyAbbrevTag || (t as TrTagTextualAbbrev).IsEmpty;
+                        }
+                    }
                 }
-                return _hasEmptyAbbrevTag;
+
+                return hasEmptyAbbrevTag;
             }
         }
 
+        private bool hasSicTag;
 
-        private bool _hasSicTag;
         public bool HasSicTag
         {
             get
             {
-                _hasSicTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Sic))
-                        _hasSicTag = _hasSicTag || true;
-                return _hasSicTag;
+                hasSicTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualSic))
+                    {
+                        hasSicTag = hasSicTag || true;
+                    }
+                }
+
+                return hasSicTag;
             }
         }
 
-        private bool _hasCommentTag;
+        private bool hasCommentTag;
+
         public bool HasCommentTag
         {
             get
             {
-                _hasCommentTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Comment))
-                        _hasCommentTag = _hasCommentTag || true;
-                return _hasCommentTag;
+                hasCommentTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualComment))
+                    {
+                        hasCommentTag = hasCommentTag || true;
+                    }
+                }
+
+                return hasCommentTag;
             }
         }
 
+        private bool hasUnclearTag;
 
-        private bool _hasUnclearTag;
         public bool HasUnclearTag
         {
             get
             {
-                _hasUnclearTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Unclear))
-                        _hasUnclearTag = _hasUnclearTag || true;
-                return _hasUnclearTag;
+                hasUnclearTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualUnclear))
+                    {
+                        hasUnclearTag = hasUnclearTag || true;
+                    }
+                }
+
+                return hasUnclearTag;
             }
         }
 
+        private bool hasDateTag;
 
-        private bool _hasDateTag;
         public bool HasDateTag
         {
             get
             {
-                _hasDateTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Date))
-                        _hasDateTag = _hasDateTag || true;
-                return _hasDateTag;
+                hasDateTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualDate))
+                    {
+                        hasDateTag = hasDateTag || true;
+                    }
+                }
+
+                return hasDateTag;
             }
         }
 
+        private bool hasStrikethroughTag;
 
-        private bool _hasStrikethroughTag;
         public bool HasStrikethroughTag
         {
             get
             {
-                _hasStrikethroughTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Style))
+                hasStrikethroughTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualStyle))
                     {
-                        if ((T as TrTag_Textual_Style).Strikethrough)
-                            _hasStrikethroughTag = _hasStrikethroughTag || true;
+                        if ((t as TrTagTextualStyle).Strikethrough)
+                        {
+                            hasStrikethroughTag = hasStrikethroughTag || true;
+                        }
                     }
-                return _hasStrikethroughTag;
+                }
+
+                return hasStrikethroughTag;
             }
         }
 
-        private bool _hasSuperscriptTag;
+        private bool hasSuperscriptTag;
+
         public bool HasSuperscriptTag
         {
             get
             {
-                _hasSuperscriptTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Style))
+                hasSuperscriptTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualStyle))
                     {
-                        if ((T as TrTag_Textual_Style).Superscript)
-                            _hasSuperscriptTag = _hasSuperscriptTag || true;
+                        if ((t as TrTagTextualStyle).Superscript)
+                        {
+                            hasSuperscriptTag = hasSuperscriptTag || true;
+                        }
                     }
-                return _hasSuperscriptTag;
+                }
+
+                return hasSuperscriptTag;
             }
         }
 
-        private bool _hasSubscriptTag;
+        private bool hasSubscriptTag;
+
         public bool HasSubscriptTag
         {
             get
             {
-                _hasSubscriptTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_Style))
+                hasSubscriptTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualStyle))
                     {
-                        if ((T as TrTag_Textual_Style).Subscript)
-                            _hasSubscriptTag = _hasSubscriptTag || true;
+                        if ((t as TrTagTextualStyle).Subscript)
+                        {
+                            hasSubscriptTag = hasSubscriptTag || true;
+                        }
                     }
-                return _hasSubscriptTag;
+                }
+
+                return hasSubscriptTag;
             }
         }
 
-        private bool _hasRomanNumeralTag;
+        private bool hasRomanNumeralTag;
+
         public bool HasRomanNumeralTag
         {
             get
             {
-                _hasRomanNumeralTag = false;
-                foreach (TrTag T in Tags)
-                    if (T.GetType() == typeof(TrTag_Textual_RomanNumeral))
-                        _hasRomanNumeralTag = _hasRomanNumeralTag || true;
-                return _hasRomanNumeralTag;
+                hasRomanNumeralTag = false;
+                foreach (TrTag t in Tags)
+                {
+                    if (t.GetType() == typeof(TrTagTextualRomanNumeral))
+                    {
+                        hasRomanNumeralTag = hasRomanNumeralTag || true;
+                    }
+                }
+
+                return hasRomanNumeralTag;
             }
         }
 
+        private bool hasFullStrikethroughTag;
 
-        private bool _hasFullStrikethroughTag;
         public bool HasFullStrikethroughTag
         {
             get
             {
-                _hasFullStrikethroughTag = false;
-                foreach (TrTag T in Tags)
+                hasFullStrikethroughTag = false;
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Textual))
+                    if (t.GetType() == typeof(TrTagTextual))
                     {
-                        _hasFullStrikethroughTag = ((T as TrTag_Textual).IsStrikethrough && (T as TrTag_Textual).IsFull) || _hasFullStrikethroughTag;
+                        hasFullStrikethroughTag = ((t as TrTagTextual).IsStrikethrough && (t as TrTagTextual).IsFull) || hasFullStrikethroughTag;
                     }
                 }
-                return _hasFullStrikethroughTag;
+
+                return hasFullStrikethroughTag;
             }
         }
 
+        private bool hasFullDateTag;
 
-        private bool _hasFullDateTag;
         public bool HasFullDateTag
         {
             get
             {
-                _hasFullDateTag = false;
-                foreach (TrTag T in Tags)
+                hasFullDateTag = false;
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Textual))
+                    if (t.GetType() == typeof(TrTagTextual))
                     {
-                        _hasFullDateTag = ((T as TrTag_Textual).IsDate && (T as TrTag_Textual).IsFull) || _hasFullDateTag;
+                        hasFullDateTag = ((t as TrTagTextual).IsDate && (t as TrTagTextual).IsFull) || hasFullDateTag;
                     }
                 }
-                return _hasFullDateTag;
+
+                return hasFullDateTag;
             }
         }
 
-
-        public bool Contains(string SearchFor)
+        public bool Contains(string searchFor)
         {
-            return TextEquiv.Contains(SearchFor);
+            return TextEquiv.Contains(searchFor);
         }
 
-        private string _quickExpandedText;
+        private string quickExpandedText;
+
         public string QuickExpandedText
         {
             get
             {
-                _quickExpandedText = GetExpandedText(true, true);
-                return _quickExpandedText;
+                quickExpandedText = GetExpandedText(true, true);
+                return quickExpandedText;
             }
         }
 
+        private string expandedText;
 
-        private string _expandedText;
         public string ExpandedText
         {
             get
             {
-                _expandedText = GetExpandedText(true, true);
-                return _expandedText;
+                expandedText = GetExpandedText(true, true);
+                return expandedText;
             }
         }
-               
-        private string GetExpandedText(bool Refine, bool ConvertOtrema)
+
+        private string GetExpandedText(bool refine, bool convertOtrema)
         {
             //Debug.Print($"GetExpText: Page: {ParentPageNr} TL # {Number}");
-
             string temp = TextEquiv;
-            int Offset;
-            int TagLength;
+            int offset;
+            int tagLength;
 
-            int CurrentDelta = 0;
-            string OldContent = "";
-            string NewContent = "";
+            int currentDelta = 0;
+            string oldContent = string.Empty;
+            string newContent = string.Empty;
 
             // --- 1 --- konverter roman numbers -------------------------------------------------
             if (HasRomanNumeralTag)
@@ -1410,34 +1676,39 @@ namespace TrClient.Core
                 //Debug.Print($"GetExpText: Roman numbers temp = _{temp}_");
                 for (int i = Tags.Count - 1; i >= 0; i--)
                 {
-                    TrTag TestTag = Tags[i];
-                    if (TestTag.GetType() == typeof(TrTag_Textual_RomanNumeral))
+                    TrTag testTag = Tags[i];
+                    if (testTag.GetType() == typeof(TrTagTextualRomanNumeral))
                     {
-                        TrTag R = (TestTag as TrTag_Textual_RomanNumeral);
-                        Offset = (R as TrTag_Textual).Offset;
-                        TagLength = (R as TrTag_Textual).Length;
+                        TrTag r = testTag as TrTagTextualRomanNumeral;
+                        offset = (r as TrTagTextual).Offset;
+                        tagLength = (r as TrTagTextual).Length;
 
-                        OldContent = TextEquiv.Substring(Offset, TagLength);
-                        NewContent = (R as TrTag_Textual_RomanNumeral).ArabicEquivalent.ToString();
+                        oldContent = TextEquiv.Substring(offset, tagLength);
+                        newContent = (r as TrTagTextualRomanNumeral).ArabicEquivalent.ToString();
 
-                        if (TagLength == this.Length)
+                        if (tagLength == Length)
                         {
-                            temp = NewContent;
+                            temp = newContent;
                         }
-                        else if (Offset >= 0 && TagLength < this.Length)
-                        {   
-                            temp = temp.Remove(Offset, TagLength);
-                            if (NewContent != "" && Offset < this.Length)
-                                temp = temp.Insert(Offset, NewContent);
+                        else if (offset >= 0 && tagLength < Length)
+                        {
+                            temp = temp.Remove(offset, tagLength);
+                            if (newContent != string.Empty && offset < Length)
+                            {
+                                temp = temp.Insert(offset, newContent);
+                            }
                         }
+
                         // CurrentDelta sættes; den indeholder forskellen i længde på gammelt og nyt indhold
-                        CurrentDelta = NewContent.Length - OldContent.Length; // tidl. - taglength
+                        currentDelta = newContent.Length - oldContent.Length; // tidl. - taglength
+
                         // Nu er problemet så, at tags længere ude i strengen har forkerte Offset og Length-værdier
                         // Det ordnes ved at gennemløbe disse og sætte deres Delta-værdi
                         //Debug.Print($"GetExpText: Roman numbers - currentdelta: {CurrentDelta}");
-
-                        if (CurrentDelta != 0)
-                            Tags.Move(Offset, CurrentDelta, false);
+                        if (currentDelta != 0)
+                        {
+                            Tags.Move(offset, currentDelta, false);
+                        }
                     }
                 }
             }
@@ -1446,79 +1717,85 @@ namespace TrClient.Core
             if (HasSuperscriptTag)
             {
                 //Debug.Print($"GetExpText: Superscripts: temp = _{temp}_");
-                TrTags SuperscriptTags = new TrTags();
-                foreach (TrTag T in Tags)
+                TrTags superscriptTags = new TrTags();
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Textual_Style))
-                        if ((T as TrTag_Textual_Style).Superscript)
-                            SuperscriptTags.Add(T);
+                    if (t.GetType() == typeof(TrTagTextualStyle))
+                    {
+                        if ((t as TrTagTextualStyle).Superscript)
+                        {
+                            superscriptTags.Add(t);
+                        }
+                    }
                 }
 
-                int SuperscriptCount = SuperscriptTags.Count;
+                int superscriptCount = superscriptTags.Count;
 
-                string OldNumbers;
-                string NewNumbers = "";
-                char CurrentChar;
-                char NewChar = ' ';
-                Offset = 0;
-                TagLength = 0;
+                string oldNumbers;
+                string newNumbers = string.Empty;
+                char currentChar;
+                char newChar = ' ';
+                offset = 0;
+                tagLength = 0;
 
-                for (int i = 0; i < SuperscriptCount ; i++)
+                for (int i = 0; i < superscriptCount; i++)
                 {
-                    TrTag S = SuperscriptTags[i];
-                    Offset = (S as TrTag_Textual).Offset;
-                    TagLength = (S as TrTag_Textual).Length;
-                    OldNumbers = temp.Substring(Offset, TagLength);
+                    TrTag s = superscriptTags[i];
+                    offset = (s as TrTagTextual).Offset;
+                    tagLength = (s as TrTagTextual).Length;
+                    oldNumbers = temp.Substring(offset, tagLength);
 
-                    if (OldNumbers.Length > 0)
+                    if (oldNumbers.Length > 0)
                     {
-                        for (int k = 0; k < OldNumbers.Length; k++)
+                        for (int k = 0; k < oldNumbers.Length; k++)
                         {
-                            CurrentChar = OldNumbers[k];
-                            if (char.IsNumber(CurrentChar))
+                            currentChar = oldNumbers[k];
+                            if (char.IsNumber(currentChar))
                             {
-                                NewChar = TrLibrary.GetSuperscriptChar(CurrentChar);
+                                newChar = TrLibrary.GetSuperscriptChar(currentChar);
                             }
                             else
                             {
-                                NewChar = CurrentChar;
+                                newChar = currentChar;
                             }
-                            NewNumbers = NewNumbers + NewChar.ToString();
+
+                            newNumbers = newNumbers + newChar.ToString();
                         }
 
                         // erstat
-                        temp = temp.Remove(Offset, TagLength);
-                        temp = temp.Insert(Offset, NewNumbers);
+                        temp = temp.Remove(offset, tagLength);
+                        temp = temp.Insert(offset, newNumbers);
                     }
                 }
             }
 
             // --- 3 --- ordinære tags! -------------------------------------------------------------------
-            // henter alle Tags, som er af disse relevante typer 
+            // henter alle Tags, som er af disse relevante typer
             if (HasAbbrevTag || HasSicTag || HasUnclearTag || HasStrikethroughTag || HasCommentTag || HasDateTag)
             {
-                OldContent = "";
-                TrTags TextualTags = new TrTags();
-                foreach (TrTag T in Tags)
+                oldContent = string.Empty;
+                TrTags textualTags = new TrTags();
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Textual_Sic) || T.GetType() == typeof(TrTag_Textual_Abbrev) || T.GetType() == typeof(TrTag_Textual_Unclear) || T.GetType() == typeof(TrTag_Textual_Comment) || T.GetType() == typeof(TrTag_Textual_Date))
+                    if (t.GetType() == typeof(TrTagTextualSic) || t.GetType() == typeof(TrTagTextualAbbrev) || t.GetType() == typeof(TrTagTextualUnclear) || t.GetType() == typeof(TrTagTextualComment) || t.GetType() == typeof(TrTagTextualDate))
                     {
                         //Debug.Print($"GetExpText: Fundet Sic/Abbrev/Date/Unclear temp = _{temp}_");
-                        TextualTags.Add(T);
-                        T.ParentLine = this;
+                        textualTags.Add(t);
+                        t.ParentLine = this;
                     }
-                    else if (T.GetType() == typeof(TrTag_Textual_Style))
+                    else if (t.GetType() == typeof(TrTagTextualStyle))
                     {
                         // det eneste styletag, som er relevant, er Strikethrough
-                        if ((T as TrTag_Textual_Style).Strikethrough)
+                        if ((t as TrTagTextualStyle).Strikethrough)
                         {
                             // Debug.Print($"GetExpText: Fundet Strike");
-                            TextualTags.Add(T);
-                            T.ParentLine = this;
+                            textualTags.Add(t);
+                            t.ParentLine = this;
                         }
                     }
                 }
-                int Max = TextualTags.Count;
+
+                int max = textualTags.Count;
 
                 // TextualTags indeholder nu kun de tags, der skal bruges til at ændre teksten
 
@@ -1527,204 +1804,219 @@ namespace TrClient.Core
                 {
                     //Debug.Print($"GetExpText: Has Full Strike");
                     // i givet fald er hele teksten streget ud; der skal returneres en tom streng
-                    OldContent = temp;
-                    temp = "";
-
+                    oldContent = temp;
+                    temp = string.Empty;
                 }
+
                 // --- 3.2. --- dernæst testes, om der findes et FULL DateTag
                 else if (HasFullDateTag)
                 {
                     //Debug.Print($"GetExpText: Has Full Date");
                     // i givet fald skal det pågældende datetag findes; dette returneres alene
-                    foreach (TrTag T in TextualTags)
+                    foreach (TrTag t in textualTags)
                     {
-                        if (T.GetType() == typeof(TrTag_Textual_Date))
+                        if (t.GetType() == typeof(TrTagTextualDate))
                         {
-                            OldContent = temp;
-                            temp = (T as TrTag_Textual_Date).ExpandedDate;
+                            oldContent = temp;
+                            temp = (t as TrTagTextualDate).ExpandedDate;
                         }
                     }
                 }
+
                 // --- 3.3. --- hvis hverken full strikethrough eller full date, skal alle gennemgås:
                 else
                 {
                     //Debug.Print($"GetExpText: Std. tag procedure");
                     // de fundne tags sorteres (efter SortKey)
-                    TextualTags.Sort();
+                    textualTags.Sort();
 
-                    NewContent = "";
-                    OldContent = "";
-                    Offset = 0;
-                    TagLength = 0;
-                    CurrentDelta = 0;
+                    newContent = string.Empty;
+                    oldContent = string.Empty;
+                    offset = 0;
+                    tagLength = 0;
+                    currentDelta = 0;
 
-                    // kører BAGLÆNS for ikke at få problemer med de øvrige tags undervejs 
+                    // kører BAGLÆNS for ikke at få problemer med de øvrige tags undervejs
 
                     // 1. gennemløb: ALLE PÅNÆR DATE
-                    for (int i = Max - 1; i >= 0; i--)
+                    for (int i = max - 1; i >= 0; i--)
                     {
                         //Debug.Print($"GetExpText: 1. gennemløb");
-                        TrTag T = TextualTags[i];
+                        TrTag t = textualTags[i];
 
-                        if (!(T as TrTag_Textual).IsDate)
+                        if (!(t as TrTagTextual).IsDate)
                         {
                             //Debug.Print($"GetExpText: is NOT date");
-                            Offset = (T as TrTag_Textual).Offset;
-                            TagLength = (T as TrTag_Textual).Length;
-                            //Debug.Print($"Ikke date: Number: {Number}, Type: {T.Type}, Offset: {Offset}, Length: {TagLength}, Text: {TextEquiv}");
+                            offset = (t as TrTagTextual).Offset;
+                            tagLength = (t as TrTagTextual).Length;
 
-                            if (TagLength > temp.Length || Offset > temp.Length)
+                            //Debug.Print($"Ikke date: Number: {Number}, Type: {T.Type}, Offset: {Offset}, Length: {TagLength}, Text: {TextEquiv}");
+                            if (tagLength > temp.Length || offset > temp.Length)
+
                             //if (TagLength > TextEquiv.Length || Offset > TextEquiv.Length)
                             {
-                                Debug.Print($"FATAL ERROR: Offset: {Offset}, Taglength: {TagLength}, Textequiv.Length: {TextEquiv.Length}");
+                                Debug.Print($"FATAL ERROR: Offset: {offset}, Taglength: {tagLength}, Textequiv.Length: {TextEquiv.Length}");
                             }
                             else
                             {
-                                if (TagLength + Offset > temp.Length)
-                                    Debug.Print($"FATAL ERROR: Offset: {Offset}, Taglength: {TagLength}, Textequiv.Length: {TextEquiv.Length}");
+                                if (tagLength + offset > temp.Length)
+                                {
+                                    Debug.Print($"FATAL ERROR: Offset: {offset}, Taglength: {tagLength}, Textequiv.Length: {TextEquiv.Length}");
+                                }
                                 else
-                                    OldContent = temp.Substring(Offset, TagLength); // rettet fra textequiv.substring
+                                {
+                                    oldContent = temp.Substring(offset, tagLength); // rettet fra textequiv.substring
+                                }
                             }
 
                             // hvis det enkelte tag har et overlappende datetag, erstattes teksten med dette datetags expansion
-                            if ((T as TrTag_Textual).HasOverlappingDateTag)
+                            if ((t as TrTagTextual).HasOverlappingDateTag)
                             {
                                 //Debug.Print($"GetExpText: has overlap date");
-                                NewContent = (T as TrTag_Textual).GetOverlappingDateTag().ExpandedDate;
+                                newContent = (t as TrTagTextual).GetOverlappingDateTag().ExpandedDate;
+
                                 // det pågæld. datetag markeres som "resolved", så det ikke bliver benyttet nedenunder (i 2. gennemløb)
-                                (T as TrTag_Textual).GetOverlappingDateTag().Resolved = true;
+                                (t as TrTagTextual).GetOverlappingDateTag().Resolved = true;
                             }
+
                             // men hvis det har et overlappende, behandles det helt normalt
                             else
                             {
                                 //Debug.Print($"GetExpText: has NOT overlap date");
                                 // afhængigt af type, sættes NewContent
-
-                                if (T.GetType() == typeof(TrTag_Textual_Sic))
-                                    NewContent = (T as TrTag_Textual_Sic).Correction;
-                                else if (T.GetType() == typeof(TrTag_Textual_Abbrev))
-                                    NewContent = (T as TrTag_Textual_Abbrev).Expansion;
-                                else if (T.GetType() == typeof(TrTag_Textual_Style))
-                                    NewContent = ""; // jo, det kan vi godt tillade os, for det eneste styletag, der er med nu, er strikethrough!
-                                else if (T.GetType() == typeof(TrTag_Textual_Unclear))
+                                if (t.GetType() == typeof(TrTagTextualSic))
                                 {
-                                    if (!(T as TrTag_Textual_Unclear).IsEmpty)
+                                    newContent = (t as TrTagTextualSic).Correction;
+                                }
+                                else if (t.GetType() == typeof(TrTagTextualAbbrev))
+                                {
+                                    newContent = (t as TrTagTextualAbbrev).Expansion;
+                                }
+                                else if (t.GetType() == typeof(TrTagTextualStyle))
+                                {
+                                    newContent = string.Empty; // jo, det kan vi godt tillade os, for det eneste styletag, der er med nu, er strikethrough!
+                                }
+                                else if (t.GetType() == typeof(TrTagTextualUnclear))
+                                {
+                                    if (!(t as TrTagTextualUnclear).IsEmpty)
                                     {
-                                        NewContent = OldContent + " [alt.: " + (T as TrTag_Textual_Unclear).Alternative;
-                                        if ((T as TrTag_Textual_Unclear).Reason != "")
+                                        newContent = oldContent + " [alt.: " + (t as TrTagTextualUnclear).Alternative;
+                                        if ((t as TrTagTextualUnclear).Reason != string.Empty)
                                         {
-                                            NewContent = NewContent + " (" + (T as TrTag_Textual_Unclear).Reason + ")";
+                                            newContent = newContent + " (" + (t as TrTagTextualUnclear).Reason + ")";
                                         }
-                                        NewContent = NewContent + "] ";
+
+                                        newContent = newContent + "] ";
                                     }
                                     else
                                     {
-                                        NewContent = OldContent;
+                                        newContent = oldContent;
                                     }
                                 }
-                                else if (T.GetType() == typeof(TrTag_Textual_Comment))
+                                else if (t.GetType() == typeof(TrTagTextualComment))
                                 {
-                                    if (!(T as TrTag_Textual_Comment).IsEmpty)
+                                    if (!(t as TrTagTextualComment).IsEmpty)
                                     {
-                                        NewContent = OldContent + " [note: " + (T as TrTag_Textual_Comment).Comment + "] ";
+                                        newContent = oldContent + " [note: " + (t as TrTagTextualComment).Comment + "] ";
                                     }
                                 }
                             }
 
-                            // hvis det aktuelle IKKE er et Datetag, kan man herefter  
+                            // hvis det aktuelle IKKE er et Datetag, kan man herefter
                             // fjerne oprindelig tekst og erstatte med NewContent
                             //Debug.Print($"GetExpText: udfører skift");
-                            if (TagLength == this.Length)
+                            if (tagLength == Length)
                             {
-                                temp = NewContent;
+                                temp = newContent;
                             }
-                            else if (Offset >= 0 && TagLength < this.Length)
+                            else if (offset >= 0 && tagLength < Length)
                             {
-                                if (TagLength + Offset > temp.Length)
-                                    Debug.Print($"FATAL ERROR: Offset: {Offset}, Taglength: {TagLength}, Textequiv.Length: {TextEquiv.Length}");
+                                if (tagLength + offset > temp.Length)
+                                {
+                                    Debug.Print($"FATAL ERROR: Offset: {offset}, Taglength: {tagLength}, Textequiv.Length: {TextEquiv.Length}");
+                                }
                                 else
                                 {
-                                    temp = temp.Remove(Offset, TagLength);
-                                    if (NewContent != "" && Offset < this.Length)
-                                        temp = temp.Insert(Offset, NewContent);
+                                    temp = temp.Remove(offset, tagLength);
+                                    if (newContent != string.Empty && offset < Length)
+                                    {
+                                        temp = temp.Insert(offset, newContent);
+                                    }
                                 }
-
                             }
 
-
                             // CurrentDelta sættes; den indeholder forskellen i længde på gammelt og nyt indhold
-                            CurrentDelta = NewContent.Length - OldContent.Length; // tidl. - taglength
+                            currentDelta = newContent.Length - oldContent.Length; // tidl. - taglength
+
                             //Debug.Print($"GetExpText: Std tag - currentdelta: {CurrentDelta}");
                             //Debug.WriteLine($"GetExpText #1 - Type: {T.Type}, Offset: {Offset}, TagLength: {TagLength}, TextLength: {this.Length}, TempLength: {temp.Length}, OldContent: {OldContent}, NewContent: {NewContent}");
 
                             // Nu er problemet så, at tags længere ude i strengen har forkerte Offset og Length-værdier
                             // Det ordnes ved at gennemløbe disse og sætte deres Delta-værdi
-                            if (CurrentDelta != 0)
-                                Tags.Move(Offset, CurrentDelta, false);
-                            
+                            if (currentDelta != 0)
+                            {
+                                Tags.Move(offset, currentDelta, false);
+                            }
                         }
-
                     }
 
                     // --- 4 --- KUN DATE! -------------------------------------------------------------------
-                    // i eget (andet) gennemløb: 
-
-                    for (int i = Max - 1; i >= 0; i--)
-			        {
+                    // i eget (andet) gennemløb:
+                    for (int i = max - 1; i >= 0; i--)
+                    {
                         //Debug.Print($"GetExpText: 2. gennemløb");
-                        TrTag T = TextualTags[i];
+                        TrTag t = textualTags[i];
 
-                        if ((T as TrTag_Textual).IsDate)
-				        {
+                        if ((t as TrTagTextual).IsDate)
+                        {
                             //Debug.Print($"GetExpText: is date (should be) temp = _{temp}_");
-                            Offset = (T as TrTag_Textual).Offset;
-                            TagLength = (T as TrTag_Textual).Length;
+                            offset = (t as TrTagTextual).Offset;
+                            tagLength = (t as TrTagTextual).Length;
 
                             // kun de datetags, som ikke allerede i 1. gennemløb er fixet, skal ordnes
-                            if (!(T as TrTag_Textual_Date).Resolved)
-					        {
+                            if (!(t as TrTagTextualDate).Resolved)
+                            {
                                 //Debug.Print($"GetExpText: udfører skift");
-                                NewContent = (T as TrTag_Textual_Date).ExpandedDate;
-						
-                                if (TagLength == this.Length)
-                                {
-                                    temp = NewContent;
-                                }
-                                else if (Offset >= 0 && TagLength < this.Length)
-                                {
-                                    temp = temp.Remove(Offset, TagLength);
-                                    if (NewContent != "" && Offset < this.Length)
-                                        temp = temp.Insert(Offset, NewContent);
-                                }
+                                newContent = (t as TrTagTextualDate).ExpandedDate;
 
+                                if (tagLength == Length)
+                                {
+                                    temp = newContent;
+                                }
+                                else if (offset >= 0 && tagLength < Length)
+                                {
+                                    temp = temp.Remove(offset, tagLength);
+                                    if (newContent != string.Empty && offset < Length)
+                                    {
+                                        temp = temp.Insert(offset, newContent);
+                                    }
+                                }
                             }
                         }
+
                         //Debug.WriteLine($"GetExpText #2 - Type: {T.Type}, Offset: {Offset}, TagLength: {TagLength}, TextLength: {this.Length}, TempLength: {temp.Length}, OldContent: {OldContent}, NewContent: {NewContent}");
                     }
-
-
-
                 }
             }
 
             // for ikke at forplumre næste kald til GetExp... skal alle Deltaværdier på alle Tags nulstilles!
-            foreach (TrTag T in Tags)
+            foreach (TrTag t in Tags)
             {
-                T.DeltaOffset = 0;
-                T.DeltaLength = 0;
+                t.DeltaOffset = 0;
+                t.DeltaLength = 0;
             }
 
             // uanset øvrigt udfald, skal temp-strengen trimmes og evt. raffineres.
             temp = temp.Trim();
 
-	        if (Refine)
-                temp = TrLibrary.RefineText(temp, ConvertOtrema);
+            if (refine)
+            {
+                temp = TrLibrary.RefineText(temp, convertOtrema);
+            }
 
             //Debug.Print($"RESULT ------------------------------------------------ {temp}");
-
-	        return temp;
+            return temp;
         }
-
 
         private bool TernaryXor(bool a, bool b, bool c)
         {
@@ -1733,7 +2025,6 @@ namespace TrClient.Core
             // taking into account Jim Mischel's comment, a faster solution would be:
             return (!a && (b ^ c)) || (a && !(b || c));
         }
-
 
         //private string GetExpandedText(bool Refine, bool ConvertOtrema)
         //{
@@ -1750,27 +2041,26 @@ namespace TrClient.Core
         //            foreach (TrTag T in Tags)
         //            {
         //                // hvis det er sic eller abbrev, skal der helt klart hentes noget andet frem
-        //                if (T.GetType() == typeof(TrTag_Textual_Sic) || T.GetType() == typeof(TrTag_Textual_Abbrev))
+        //                if (T.GetType() == typeof(TrTagTextualSic) || T.GetType() == typeof(TrTagTextualAbbrev))
         //                {
         //                    TextualTags.Add(T);
-        //                    // Debug.Print($"Tag: {(T as TrTag_Textual).Type}, {(T as TrTag_Textual).Offset}, {(T as TrTag_Textual).Length}, {(T as TrTag_Textual).Content}");
+        //                    // Debug.Print($"Tag: {(T as TrTagTextual).Type}, {(T as TrTagTextual).Offset}, {(T as TrTagTextual).Length}, {(T as TrTagTextual).Content}");
         //                }
         //                // men hvis det er gennemstreget tekst, skal der slettes tekst
-        //                else if (T.GetType() == typeof(TrTag_Textual_Style))
+        //                else if (T.GetType() == typeof(TrTagTextualStyle))
         //                {
         //                    // Debug.Print($"Found Styletag!!!");
-        //                    if ((T as TrTag_Textual_Style).Strikethrough)
+        //                    if ((T as TrTagTextualStyle).Strikethrough)
         //                    {
-        //                        // Debug.Print($"Adding strikethrough tag: Offset = {(T as TrTag_Textual_Style).Offset}");
+        //                        // Debug.Print($"Adding strikethrough tag: Offset = {(T as TrTagTextualStyle).Offset}");
         //                        TextualTags.Add(T);
         //                    }
         //                }
-        //                else if (T.GetType() == typeof(TrTag_Textual_Date))
+        //                else if (T.GetType() == typeof(TrTagTextualDate))
         //                {
         //                    TextualTags.Add(T);
         //                }
         //            }
-
 
         //            TextualTags.Sort();
 
@@ -1779,26 +2069,25 @@ namespace TrClient.Core
         //            int Offset;
         //            int TagLength;
 
-
         //            // kører BAGLÆNS for ikke at få problemer med de øvrige tags undervejs (offset og length ændres ikke på de andre - med mindre de OVERLAPPER)
 
         //            // 1. gennemløb: KUN tags, som IKKE har fuld længde - øh nej, kun hvis ikke date
         //            for (int i = Max - 1; i >= 0; i--)
         //            {
         //                TrTag T = TextualTags[i];
-        //                Offset = (T as TrTag_Textual).Offset;
-        //                TagLength = (T as TrTag_Textual).Length;
+        //                Offset = (T as TrTagTextual).Offset;
+        //                TagLength = (T as TrTagTextual).Length;
 
         //                //if (TagLength < this.Length)
         //                {
-        //                    if (T.GetType() == typeof(TrTag_Textual_Sic))
-        //                        NewContent = (T as TrTag_Textual_Sic).Correction;
-        //                    else if (T.GetType() == typeof(TrTag_Textual_Abbrev))
-        //                        NewContent = (T as TrTag_Textual_Abbrev).Expansion;
-        //                    else if (T.GetType() == typeof(TrTag_Textual_Style))
+        //                    if (T.GetType() == typeof(TrTagTextualSic))
+        //                        NewContent = (T as TrTagTextualSic).Correction;
+        //                    else if (T.GetType() == typeof(TrTagTextualAbbrev))
+        //                        NewContent = (T as TrTagTextualAbbrev).Expansion;
+        //                    else if (T.GetType() == typeof(TrTagTextualStyle))
         //                        NewContent = ""; // for så er det strikethrough, dvs. der skal slettes.
-        //                    else if (T.GetType() == typeof(TrTag_Textual_Date))
-        //                        NewContent = (T as TrTag_Textual_Date).ExpandedDate;
+        //                    else if (T.GetType() == typeof(TrTagTextualDate))
+        //                        NewContent = (T as TrTagTextualDate).ExpandedDate;
 
         //                    //Debug.WriteLine($"GetExpText ** Type: {T.Type}, Offset: {Offset}, TagLength: {TagLength}, TextLength: {this.Length}, TempLength: {temp.Length}, OldContent: {TextEquiv.Substring(Offset, TagLength)}, NewContent: {NewContent}");
 
@@ -1809,10 +2098,10 @@ namespace TrClient.Core
         //                        if (TagLength <= temp.Length)
         //                        {
         //                            // hvis dato skal det helt udskiftes
-        //                            if (T.GetType() == typeof(TrTag_Textual_Date))
+        //                            if (T.GetType() == typeof(TrTagTextualDate))
         //                            {
         //                                temp = NewContent;
-                                            
+
         //                            }
         //                            else
         //                            {
@@ -1836,20 +2125,20 @@ namespace TrClient.Core
         //            //for (int i = Max - 1; i >= 0; i--)
         //            //{
         //            //    TrTag T = TextualTags[i];
-        //            //    Offset = (T as TrTag_Textual).Offset;
-        //            //    TagLength = (T as TrTag_Textual).Length;
+        //            //    Offset = (T as TrTagTextual).Offset;
+        //            //    TagLength = (T as TrTagTextual).Length;
 
         //            //    //if (Offset == 0 && TagLength == this.Length)
         //            //    {
-        //            //        //if (T.GetType() == typeof(TrTag_Textual_Sic))
-        //            //        //    NewContent = (T as TrTag_Textual_Sic).Correction;
-        //            //        //else if (T.GetType() == typeof(TrTag_Textual_Abbrev))
-        //            //        //    NewContent = (T as TrTag_Textual_Abbrev).Expansion;
-        //            //        //else if (T.GetType() == typeof(TrTag_Textual_Style))
+        //            //        //if (T.GetType() == typeof(TrTagTextualSic))
+        //            //        //    NewContent = (T as TrTagTextualSic).Correction;
+        //            //        //else if (T.GetType() == typeof(TrTagTextualAbbrev))
+        //            //        //    NewContent = (T as TrTagTextualAbbrev).Expansion;
+        //            //        //else if (T.GetType() == typeof(TrTagTextualStyle))
         //            //        //    NewContent = ""; // for så er det strikethrough, dvs. der skal slettes.
-        //            //        //else 
-        //            //        if (T.GetType() == typeof(TrTag_Textual_Date))
-        //            //            NewContent = (T as TrTag_Textual_Date).ExpandedDate;
+        //            //        //else
+        //            //        if (T.GetType() == typeof(TrTagTextualDate))
+        //            //            NewContent = (T as TrTagTextualDate).ExpandedDate;
 
         //            //        // Debug.WriteLine($"Type: {T.Type}, Offset: {Offset}, Length: {Length}, Content: {NewContent}");
 
@@ -1880,23 +2169,23 @@ namespace TrClient.Core
 
         //    return temp;
         //}
-               
-        // genbrugte
 
-        public contentType ContentType = contentType.undefined;
+        // genbrugte
+        public ContentType ContentType = ContentType.Undefined;
 
         // public string[] TagStrings;
-               
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
-        
+
         // endnu nyere constructor til indlæsning af Xdoc
-        public TrTextLine(string tID, string tTags, string tLineCoords, string tBaseLineCoords, string tTextEquiv)
+        public TrTextLine(string tID, string tTags, string tLineCoords, string tBaseLineCoords, string tTextEquiv, TrTextLines parentContainer)
         {
             ID = tID;
             TagString = tTags;
@@ -1904,87 +2193,98 @@ namespace TrClient.Core
             CoordsString = tLineCoords;
             BaseLineCoordsString = tBaseLineCoords;
             TextEquiv = tTextEquiv;
+            ParentContainer = parentContainer;
+            ParentRegion = ParentContainer.ParentRegion;
+            if (ParentRegion == null)
+            {
+                Debug.Print($"TextLine constructor: ParentRegion = null");
+            }
 
             //Debug.WriteLine("#1!");
-
-            Tags.ParentRegion = this.ParentRegion;
+            Tags.ParentRegion = ParentRegion;
             Tags.ParentLine = this;
+
             //Debug.WriteLine("#2!") ;
             Tags.LoadFromCustomAttribute(tTags);
-            //Debug.WriteLine("#3!");
 
+            //Debug.WriteLine("#3!");
             if (Tags.Count > 0)
             {
-                foreach (TrTag Tag in Tags)
+                foreach (TrTag tag in Tags)
                 {
-                    if (Tag.GetType() == typeof(TrTag_Structural))
+                    if (tag.GetType() == typeof(TrTagStructural))
                     {
-                        StructuralTag = (TrTag_Structural)Tag;
+                        StructuralTag = (TrTagStructural)tag;
                     }
                 }
             }
+
             // Debug.WriteLine("Textline created!");
         }
 
         public List<string> GetTextualTags()
         {
-            List<string> temp = new List<string>(); 
+            List<string> temp = new List<string>();
             StringBuilder sb = new StringBuilder();
 
             if (HasTags)
             {
-                foreach (TrTag T in Tags)
+                foreach (TrTag t in Tags)
                 {
                     sb.Clear();
 
-                    if (T.GetType() == typeof(TrTag_Textual) || T.GetType() == typeof(TrTag_Textual_Abbrev) || T.GetType() == typeof(TrTag_Textual_Sic) || T.GetType() == typeof(TrTag_Textual_Unclear) || T.GetType() == typeof(TrTag_Textual_Date))
+                    if (t.GetType() == typeof(TrTagTextual) || t.GetType() == typeof(TrTagTextualAbbrev) || t.GetType() == typeof(TrTagTextualSic) || t.GetType() == typeof(TrTagTextualUnclear) || t.GetType() == typeof(TrTagTextualDate))
                     {
                         sb.Append("Type: ");
-                        sb.Append(T.Type);
+                        sb.Append(t.Type);
 
                         sb.Append(", Offset: ");
-                        sb.Append((T as TrTag_Textual).Offset);
+                        sb.Append((t as TrTagTextual).Offset);
                         sb.Append(", Length: ");
-                        sb.Append((T as TrTag_Textual).Length);
+                        sb.Append((t as TrTagTextual).Length);
                     }
 
-                    if (T.GetType() == typeof(TrTag_Textual_Abbrev))
+                    if (t.GetType() == typeof(TrTagTextualAbbrev))
                     {
                         sb.Append(", Expansion: ");
-                        sb.Append((T as TrTag_Textual_Abbrev).Expansion);
+                        sb.Append((t as TrTagTextualAbbrev).Expansion);
                     }
-                    else if (T.GetType() == typeof(TrTag_Textual_Sic))
+                    else if (t.GetType() == typeof(TrTagTextualSic))
                     {
                         sb.Append(", Correction: ");
-                        sb.Append((T as TrTag_Textual_Sic).Correction);
+                        sb.Append((t as TrTagTextualSic).Correction);
                     }
-                    else if (T.GetType() == typeof(TrTag_Textual_Unclear))
+                    else if (t.GetType() == typeof(TrTagTextualUnclear))
                     {
                         sb.Append(", Alternative: ");
-                        sb.Append((T as TrTag_Textual_Unclear).Alternative);
+                        sb.Append((t as TrTagTextualUnclear).Alternative);
                         sb.Append(", Reason: ");
-                        sb.Append((T as TrTag_Textual_Unclear).Reason);
+                        sb.Append((t as TrTagTextualUnclear).Reason);
                     }
 
-                    if (T.GetType() == typeof(TrTag_Textual_Date))
+                    if (t.GetType() == typeof(TrTagTextualDate))
                     {
                         sb.Append(", Year: ");
-                        sb.Append((T as TrTag_Textual_Date).Year);
+                        sb.Append((t as TrTagTextualDate).Year);
                         sb.Append(", Month: ");
-                        sb.Append((T as TrTag_Textual_Date).Month);
+                        sb.Append((t as TrTagTextualDate).Month);
                         sb.Append(", Day: ");
-                        sb.Append((T as TrTag_Textual_Date).Day);
+                        sb.Append((t as TrTagTextualDate).Day);
                     }
 
-                    if (T.IsEmpty)
+                    if (t.IsEmpty)
+                    {
                         sb.Append(" (Empty)");
+                    }
                     else
+                    {
                         sb.Append(" (OK)");
+                    }
 
                     temp.Add(sb.ToString());
-
                 }
             }
+
             return temp;
         }
 
@@ -1995,112 +2295,131 @@ namespace TrClient.Core
 
             if (HasTags)
             {
-                foreach (TrTag T in Tags)
+                foreach (TrTag t in Tags)
                 {
                     sb.Clear();
                     sb.Append("Type: ");
-                    sb.Append(T.Type);
-                    foreach (TrTagProperty TP in T.Properties)
+                    sb.Append(t.Type);
+                    foreach (TrTagProperty tP in t.Properties)
                     {
                         sb.Append(", Name: ");
-                        sb.Append(TP.Name);
+                        sb.Append(tP.Name);
                         sb.Append(", Value: ");
-                        sb.Append(TP.Value);
+                        sb.Append(tP.Value);
                     }
+
                     temp.Add(sb.ToString());
                 }
             }
+
             return temp;
         }
 
-        private bool _hasBaseLine;
+        private bool hasBaseLine;
+
         public bool HasBaseLine
         {
             get
             {
-                _hasBaseLine = (BaseLineCoordsString != "");
-                return _hasBaseLine;
+                hasBaseLine = BaseLineCoordsString != string.Empty;
+                return hasBaseLine;
             }
         }
 
-        private bool _hasCoords;
+        private bool hasCoords;
+
         public bool HasCoords
         {
             get
             {
-                _hasCoords = (CoordsString != "");
-                return _hasCoords;
+                hasCoords = CoordsString != string.Empty;
+                return hasCoords;
             }
         }
-        
-        private bool _hasTags;
+
+        private bool hasTags;
+
         public bool HasTags
         {
             get
             {
-                _hasTags = (Tags.Count > 0);
-                return _hasTags;
+                hasTags = Tags.Count > 0;
+                return hasTags;
             }
         }
 
-        private bool _hasStructuralTag;
+        private bool hasStructuralTag;
+
         public bool HasStructuralTag
         {
             get
             {
-                _hasStructuralTag = false;
+                hasStructuralTag = false;
 
-                foreach (TrTag T in Tags)
+                foreach (TrTag t in Tags)
                 {
-                    _hasStructuralTag = _hasStructuralTag || (T.GetType() == typeof(TrTag_Structural));
+                    hasStructuralTag = hasStructuralTag || (t.GetType() == typeof(TrTagStructural));
                 }
-                return _hasStructuralTag;
 
+                return hasStructuralTag;
             }
         }
-                     
-        private string _structuralTagValue;
+
+        private string structuralTagValue;
+
         public string StructuralTagValue
         {
             get
             {
                 if (HasStructuralTag && StructuralTag != null)
-                    _structuralTagValue = StructuralTag.SubType;
+                {
+                    structuralTagValue = StructuralTag.SubType;
+                }
                 else
-                    _structuralTagValue = "";
-                return _structuralTagValue;
+                {
+                    structuralTagValue = string.Empty;
+                }
+
+                return structuralTagValue;
             }
+
             set
             {
-                if (_structuralTagValue != value)
+                if (structuralTagValue != value)
                 {
-                    _structuralTagValue = value;
+                    structuralTagValue = value;
                     NotifyPropertyChanged("StructuralTagValue");
                 }
             }
         }
 
-        public bool HasSpecificStructuralTag(string TagName)
+        public bool HasSpecificStructuralTag(string tagName)
         {
             if (HasStructuralTag)
             {
-                if (StructuralTagValue == TagName)
+                if (StructuralTagValue == tagName)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
             }
             else
+            {
                 return false;
+            }
         }
 
-        public void RenameStructuralTag(string OldName, string NewName)
+        public void RenameStructuralTag(string oldName, string newName)
         {
             if (HasStructuralTag)
             {
-                if (StructuralTag.SubType == OldName)
+                if (StructuralTag.SubType == oldName)
                 {
-                    StructuralTag.SubType = NewName;
-                    StructuralTagValue = NewName;
+                    StructuralTag.SubType = newName;
+                    StructuralTagValue = newName;
                     HasChanged = true;
                     NotifyPropertyChanged("StructuralTag");
                     NotifyPropertyChanged("StructuralValue");
@@ -2108,20 +2427,24 @@ namespace TrClient.Core
             }
         }
 
-        public void AddStructuralTag(string TagName, bool OverWrite)
+        public void AddStructuralTag(string tagName, bool overWrite)
         {
-            bool ProcessThis;
-            if (OverWrite)
-                ProcessThis = true;
-            else
-                ProcessThis = !HasStructuralTag;
-
-            if (ProcessThis)
+            bool processThis;
+            if (overWrite)
             {
-                TrTag_Structural NewTag = new TrTag_Structural(TagName);
-                Tags.Add(NewTag);
-                StructuralTag = NewTag;
-                StructuralTagValue = TagName;
+                processThis = true;
+            }
+            else
+            {
+                processThis = !HasStructuralTag;
+            }
+
+            if (processThis)
+            {
+                TrTagStructural newTag = new TrTagStructural(tagName);
+                Tags.Add(newTag);
+                StructuralTag = newTag;
+                StructuralTagValue = tagName;
                 HasChanged = true;
                 NotifyPropertyChanged("StructuralTag");
                 NotifyPropertyChanged("StructuralValue");
@@ -2132,27 +2455,33 @@ namespace TrClient.Core
 
         public void DeleteStructuralTag()
         {
-            bool FoundTag = false;
+            bool foundTag = false;
 
             if (HasStructuralTag)
             {
-                FoundTag = true;
-                foreach (TrTag T in Tags)
+                foundTag = true;
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Structural))
-                        T.MarkToDeletion = true;
+                    if (t.GetType() == typeof(TrTagStructural))
+                    {
+                        t.MarkToDeletion = true;
+                    }
                 }
+
                 StructuralTag = null;
-                StructuralTagValue = "";
+                StructuralTagValue = string.Empty;
             }
 
-            if (FoundTag)
+            if (foundTag)
             {
                 for (int i = Tags.Count - 1; i >= 0; i--)
                 {
                     if (Tags[i].MarkToDeletion)
+                    {
                         Tags.RemoveAt(i);
+                    }
                 }
+
                 HasChanged = true;
                 NotifyPropertyChanged("StructuralTag");
                 NotifyPropertyChanged("StructuralValue");
@@ -2160,77 +2489,77 @@ namespace TrClient.Core
                 NotifyPropertyChanged("HasTags");
             }
         }
-        
-        public void AddAbbrevTag(int Offset, int Length, string Expansion)
+
+        public void AddAbbrevTag(int offset, int length, string expansion)
         {
             // Debug.Print("Tags before: " + Tags.ToString());
-            TrTag_Textual NewTag = new TrTag_Textual_Abbrev(Offset, Length, Expansion);
-            Tags.Add(NewTag);
+            TrTagTextual newTag = new TrTagTextualAbbrev(offset, length, expansion);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
             NotifyPropertyChanged("HasAbbrevTag");
-            NotifyPropertyChanged("ExpandedText"); 
+            NotifyPropertyChanged("ExpandedText");
             Debug.Print("Tag added! " + Tags.ToString());
         }
 
-        public void AddSicTag(int Offset, int Length, string Correction)
+        public void AddSicTag(int offset, int length, string correction)
         {
-            TrTag_Textual NewTag = new TrTag_Textual_Sic(Offset, Length, Correction);
-            Tags.Add(NewTag);
+            TrTagTextual newTag = new TrTagTextualSic(offset, length, correction);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
             NotifyPropertyChanged("HasSicTag");
             NotifyPropertyChanged("ExpandedText");
         }
 
-        public void AddUnclearTag(int Offset, int Length, string Alternative, string Reason)
+        public void AddUnclearTag(int offset, int length, string alternative, string reason)
         {
-            TrTag_Textual NewTag = new TrTag_Textual_Unclear(Offset, Length, Alternative, Reason);
-            Tags.Add(NewTag);
+            TrTagTextual newTag = new TrTagTextualUnclear(offset, length, alternative, reason);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
         }
 
-        public void AddCustomTextualTag(string TagName, int Offset, int Length)
+        public void AddCustomTextualTag(string tagName, int offset, int length)
         {
-            TrTag_Textual NewTag = new TrTag_Textual(TagName, Offset, Length);
-            Tags.Add(NewTag);
+            TrTagTextual newTag = new TrTagTextual(tagName, offset, length);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
         }
 
-        public void AddDateTag(int Offset, int Length, DateTime Date)
+        public void AddDateTag(int offset, int length, DateTime date)
         {
-            TrTag_Textual_Date NewTag = new TrTag_Textual_Date(Offset, Length, Date);
-            Tags.Add(NewTag);
+            TrTagTextualDate newTag = new TrTagTextualDate(offset, length, date);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
-            Debug.Print($"Datetag added as DATE: {NewTag.ExpandedDate}");
+            Debug.Print($"Datetag added as DATE: {newTag.ExpandedDate}");
         }
 
-        public void AddDateTag(int Offset, int Length, int Day, int Month, int Year)
+        public void AddDateTag(int offset, int length, int day, int month, int year)
         {
-            TrTag_Textual_Date NewTag = new TrTag_Textual_Date(Offset, Length, Day, Month, Year);
-            Tags.Add(NewTag);
+            TrTagTextualDate newTag = new TrTagTextualDate(offset, length, day, month, year);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
-            Debug.Print($"Datetag added as INTs: {NewTag.ExpandedDate}");
+            Debug.Print($"Datetag added as INTs: {newTag.ExpandedDate}");
         }
 
-        public void AddRomanNumeralTag(int Offset, int Length, string RomanValue)
+        public void AddRomanNumeralTag(int offset, int length, string romanValue)
         {
-            TrTag_Textual_RomanNumeral NewTag = new TrTag_Textual_RomanNumeral(Offset, Length, RomanValue);
-            Tags.Add(NewTag);
+            TrTagTextualRomanNumeral newTag = new TrTagTextualRomanNumeral(offset, length, romanValue);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
             NotifyPropertyChanged("ExpandedText");
             Debug.Print("Tag added! " + Tags.ToString());
         }
 
-        public void AddStyleTag(int Offset, int Length, string Type)
+        public void AddStyleTag(int offset, int length, string type)
         {
-            TrTag_Textual_Style NewTag = new TrTag_Textual_Style(Offset, Length, Type);
-            Tags.Add(NewTag);
+            TrTagTextualStyle newTag = new TrTagTextualStyle(offset, length, type);
+            Tags.Add(newTag);
             HasChanged = true;
             NotifyPropertyChanged("HasTags");
             NotifyPropertyChanged("ExpandedText");
@@ -2239,57 +2568,62 @@ namespace TrClient.Core
 
         public void DeleteDateTags()
         {
-            bool FoundTag = false;
+            bool foundTag = false;
 
             if (HasTags)
             {
-                FoundTag = true;
-                foreach (TrTag T in Tags)
+                foundTag = true;
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Textual_Date))
+                    if (t.GetType() == typeof(TrTagTextualDate))
                     {
-                        T.MarkToDeletion = true;
+                        t.MarkToDeletion = true;
                     }
                 }
             }
 
-            if (FoundTag)
+            if (foundTag)
             {
                 for (int i = Tags.Count - 1; i >= 0; i--)
                 {
                     if (Tags[i].MarkToDeletion)
+                    {
                         Tags.RemoveAt(i);
+                    }
                 }
+
                 HasChanged = true;
                 NotifyPropertyChanged("HasTags");
                 NotifyPropertyChanged("ExpandedText");
             }
-
         }
 
         public void DeleteSicAndAbbrevTags()
         {
-            bool FoundTag = false;
+            bool foundTag = false;
 
             if (HasTags)
             {
-                FoundTag = true;
-                foreach (TrTag T in Tags)
+                foundTag = true;
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_Textual_Sic) || T.GetType() == typeof(TrTag_Textual_Abbrev))
+                    if (t.GetType() == typeof(TrTagTextualSic) || t.GetType() == typeof(TrTagTextualAbbrev))
                     {
-                            T.MarkToDeletion = true;
+                        t.MarkToDeletion = true;
                     }
                 }
             }
 
-            if (FoundTag)
+            if (foundTag)
             {
                 for (int i = Tags.Count - 1; i >= 0; i--)
                 {
                     if (Tags[i].MarkToDeletion)
+                    {
                         Tags.RemoveAt(i);
+                    }
                 }
+
                 HasChanged = true;
                 NotifyPropertyChanged("HasTags");
                 NotifyPropertyChanged("HasAbbrevTags");
@@ -2297,127 +2631,150 @@ namespace TrClient.Core
                 NotifyPropertyChanged("ExpandedText");
             }
         }
-        
-        public void ExtendRight(int Amount)
+
+        public void ExtendRight(int amount)
         {
             // Debug.WriteLine($"TrTextLine : ExtendRight");
-
             if (HasCoords && HasBaseLine)
             {
-                int NewX;
+                int newX;
 
-                TrCoords C = new TrCoords(BaseLineCoordsString);
-                int RightMostX = C.GetRightMostXcoord();
-                int RightMostY = C.GetRightMostYcoord();
+                TrCoords c = new TrCoords(BaseLineCoordsString);
+                int rightMostX = c.GetRightMostXcoord();
+                int rightMostY = c.GetRightMostYcoord();
 
-                if (RightMostX + Amount < ParentRegion.ParentTranscript.ParentPage.Width)
-                    NewX = RightMostX + Amount;
+                if (rightMostX + amount < ParentRegion.ParentTranscript.ParentPage.Width)
+                {
+                    newX = rightMostX + amount;
+                }
                 else
-                    NewX = ParentRegion.ParentTranscript.ParentPage.Width;
+                {
+                    newX = ParentRegion.ParentTranscript.ParentPage.Width;
+                }
 
-                TrCoord NewCoord = new TrCoord(NewX, RightMostY);
-                C.Add(NewCoord);
-                BaseLineCoordsString = C.ToString();
+                TrCoord newCoord = new TrCoord(newX, rightMostY);
+                c.Add(newCoord);
+                BaseLineCoordsString = c.ToString();
                 HasChanged = true;
                 NotifyPropertyChanged("BaseLineCoordsString");
                 NotifyPropertyChanged("VisualBaseLine");
             }
         }
 
-        public void ExtendLeft(int Amount)
+        public void ExtendLeft(int amount)
         {
             // Debug.WriteLine($"TrTextLine : ExtendLeft");
-
             if (HasCoords && HasBaseLine)
             {
-                int NewX;
+                int newX;
 
-                TrCoords C = new TrCoords(BaseLineCoordsString);
-                int LeftMostX = C.GetLeftMostXcoord();
-                int LeftMostY = C.GetLeftMostYcoord();
+                TrCoords c = new TrCoords(BaseLineCoordsString);
+                int leftMostX = c.GetLeftMostXcoord();
+                int leftMostY = c.GetLeftMostYcoord();
 
-                if (LeftMostX - Amount > 0)
-                    NewX = LeftMostX - Amount;
+                if (leftMostX - amount > 0)
+                {
+                    newX = leftMostX - amount;
+                }
                 else
-                    NewX = 0;
+                {
+                    newX = 0;
+                }
 
-                TrCoord NewCoord = new TrCoord(NewX, LeftMostY);
-                C.Add(NewCoord);
-                C.Sort();
-                BaseLineCoordsString = C.ToString();
+                TrCoord newCoord = new TrCoord(newX, leftMostY);
+                c.Add(newCoord);
+                c.Sort();
+                BaseLineCoordsString = c.ToString();
                 HasChanged = true;
                 NotifyPropertyChanged("BaseLineCoordsString");
                 NotifyPropertyChanged("VisualBaseLine");
             }
         }
 
-        public void Move(int Horizontally, int Vertically)
+        public void Move(int horizontally, int vertically)
         {
             if (HasCoords && HasBaseLine)
             {
-                // The line itself            
-                TrCoords L = new TrCoords(CoordsString);
-                foreach (TrCoord CurrentCoord in L)
+                // The line itself
+                TrCoords l = new TrCoords(CoordsString);
+                foreach (TrCoord currentCoord in l)
                 {
-                    CurrentCoord.X = CurrentCoord.X + Horizontally;
-                    CurrentCoord.Y = CurrentCoord.Y + Vertically;
+                    currentCoord.X = currentCoord.X + horizontally;
+                    currentCoord.Y = currentCoord.Y + vertically;
                 }
-                CoordsString = L.ToString();
+
+                CoordsString = l.ToString();
 
                 // and then the baseline
-                TrCoords C = new TrCoords(BaseLineCoordsString);
-                C.Sort();
-                foreach (TrCoord CurrentCoord in C)
+                TrCoords c = new TrCoords(BaseLineCoordsString);
+                c.Sort();
+                foreach (TrCoord currentCoord in c)
                 {
-                    CurrentCoord.X = CurrentCoord.X + Horizontally;
-                    CurrentCoord.Y = CurrentCoord.Y + Vertically;
+                    currentCoord.X = currentCoord.X + horizontally;
+                    currentCoord.Y = currentCoord.Y + vertically;
                 }
-                BaseLineCoordsString = C.ToString();
+
+                BaseLineCoordsString = c.ToString();
                 HasChanged = true;
                 NotifyPropertyChanged("BaseLineCoordsString");
                 NotifyPropertyChanged("VisualBaseLine");
-
             }
         }
 
+        private bool isCoordinatesPositive;
 
-
-        private bool _isCoordinatesPositive;
         public bool IsCoordinatesPositive
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _isCoordinatesPositive = TrLibrary.CheckBaseLineCoordinates(BaseLineCoordsString);
+                {
+                    isCoordinatesPositive = TrLibrary.CheckBaseLineCoordinates(BaseLineCoordsString);
+                }
                 else
-                    _isCoordinatesPositive = false;
-                return _isCoordinatesPositive;
+                {
+                    isCoordinatesPositive = false;
+                }
+
+                return isCoordinatesPositive;
             }
         }
 
-        private bool _isBaseLineStraight;
+        private bool isBaseLineStraight;
+
         public bool IsBaseLineStraight
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _isBaseLineStraight = TrLibrary.CheckBaseLineStraightness(BaseLineCoordsString, MaxAllowedBaseLineAngle);
+                {
+                    isBaseLineStraight = TrLibrary.CheckBaseLineStraightness(BaseLineCoordsString, MaxAllowedBaseLineAngle);
+                }
                 else
-                    _isBaseLineStraight = false;
-                return _isBaseLineStraight;
+                {
+                    isBaseLineStraight = false;
+                }
+
+                return isBaseLineStraight;
             }
         }
 
-        private bool _isBaseLineDirectionOK;
+        private bool isBaseLineDirectionOK;
+
         public bool IsBaseLineDirectionOK
         {
             get
             {
                 if (HasCoords && HasBaseLine)
-                    _isBaseLineDirectionOK = TrLibrary.CheckBaseLineDirection(BaseLineCoordsString);
+                {
+                    isBaseLineDirectionOK = TrLibrary.CheckBaseLineDirection(BaseLineCoordsString);
+                }
                 else
-                    _isBaseLineDirectionOK = false;
-                return _isBaseLineDirectionOK;
+                {
+                    isBaseLineDirectionOK = false;
+                }
+
+                return isBaseLineDirectionOK;
             }
         }
 
@@ -2425,15 +2782,21 @@ namespace TrClient.Core
         {
             if (HasCoords && HasBaseLine)
             {
-                TrCoords NewCoords = new TrCoords(BaseLineCoordsString);
-                foreach (TrCoord C in NewCoords)
+                TrCoords newCoords = new TrCoords(BaseLineCoordsString);
+                foreach (TrCoord c in newCoords)
                 {
-                    if (C.X < 0)
-                        C.X = 0;
-                    if (C.X > ParentRegion.ParentTranscript.ParentPage.Width)
-                        C.X = ParentRegion.ParentTranscript.ParentPage.Width;
+                    if (c.X < 0)
+                    {
+                        c.X = 0;
+                    }
+
+                    if (c.X > ParentRegion.ParentTranscript.ParentPage.Width)
+                    {
+                        c.X = ParentRegion.ParentTranscript.ParentPage.Width;
+                    }
                 }
-                BaseLineCoordsString = NewCoords.ToString();
+
+                BaseLineCoordsString = newCoords.ToString();
                 HasChanged = true;
                 NotifyPropertyChanged("BaseLineCoordsString");
                 NotifyPropertyChanged("VisualBaseLine");
@@ -2445,14 +2808,15 @@ namespace TrClient.Core
         {
             if (HasCoords && HasBaseLine)
             {
-                int NewY = TrLibrary.GetAverageYcoord(BaseLineCoordsString);
+                int newY = TrLibrary.GetAverageYcoord(BaseLineCoordsString);
 
-                TrCoords NewCoords = new TrCoords(BaseLineCoordsString);
-                foreach (TrCoord C in NewCoords)
+                TrCoords newCoords = new TrCoords(BaseLineCoordsString);
+                foreach (TrCoord c in newCoords)
                 {
-                    C.Y = NewY;
+                    c.Y = newY;
                 }
-                BaseLineCoordsString = NewCoords.ToString();
+
+                BaseLineCoordsString = newCoords.ToString();
                 HasChanged = true;
                 NotifyPropertyChanged("BaseLineCoordsString");
                 NotifyPropertyChanged("VisualBaseLine");
@@ -2460,14 +2824,13 @@ namespace TrClient.Core
             }
         }
 
-
         public void FixDirection()
         {
             if (HasCoords && HasBaseLine)
             {
-                TrCoords NewCoords = new TrCoords(BaseLineCoordsString);
-                NewCoords.Sort();
-                BaseLineCoordsString = NewCoords.ToString();
+                TrCoords newCoords = new TrCoords(BaseLineCoordsString);
+                newCoords.Sort();
+                BaseLineCoordsString = newCoords.ToString();
                 HasChanged = true;
                 NotifyPropertyChanged("BaseLineCoordsString");
                 NotifyPropertyChanged("VisualBaseLine");
@@ -2475,60 +2838,65 @@ namespace TrClient.Core
             }
         }
 
-
         public void FixLineCoordinates()
         {
             if (HasCoords)
+            {
                 CoordsString = FixCoordinates(CoordsString);
+            }
         }
 
         public void FixBaseLineCoordinates()
         {
             if (HasBaseLine)
+            {
                 BaseLineCoordsString = FixCoordinates(BaseLineCoordsString);
+            }
         }
 
-        private string FixCoordinates(string Coords)
+        private string FixCoordinates(string coords)
         {
-            int PageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
-            int PageHeigth = ParentRegion.ParentTranscript.ParentPage.Height;
+            int pageWidth = ParentRegion.ParentTranscript.ParentPage.Width;
+            int pageHeigth = ParentRegion.ParentTranscript.ParentPage.Height;
 
-            TrCoords CurrentCoords = new TrCoords(Coords);
+            TrCoords currentCoords = new TrCoords(coords);
 
-            string Temp = Coords;
+            string temp = coords;
 
             // ændrer punkter med negative koordinater eller større end siden
-            foreach (TrCoord C in CurrentCoords)
+            foreach (TrCoord c in currentCoords)
             {
-                if (C.X < 0)
+                if (c.X < 0)
                 {
-                    C.X = 0;
+                    c.X = 0;
                     HasChanged = true;
                 }
 
-                if (C.X > PageWidth)
+                if (c.X > pageWidth)
                 {
-                    C.X = PageWidth;
+                    c.X = pageWidth;
                     HasChanged = true;
                 }
 
-                if (C.Y < 0)
+                if (c.Y < 0)
                 {
-                    C.Y = 0;
+                    c.Y = 0;
                     HasChanged = true;
                 }
 
-                if (C.Y > PageHeigth)
+                if (c.Y > pageHeigth)
                 {
-                    C.Y = PageHeigth;
+                    c.Y = pageHeigth;
                     HasChanged = true;
                 }
             }
 
             if (HasChanged)
-                Temp = CurrentCoords.ToString();
+            {
+                temp = currentCoords.ToString();
+            }
 
-            return Temp;
+            return temp;
         }
 
         public void Trim()
@@ -2540,16 +2908,20 @@ namespace TrClient.Core
                     //Debug.Print($"Line ends with space");
                     if (TextEquiv.Length > 0)
                     {
-                        int LastRealCharPosition = TextEquiv.Length - 1;
-                        while (char.IsWhiteSpace(TextEquiv[LastRealCharPosition]))
-                            LastRealCharPosition--;
-                        string Temp = TextEquiv.Substring(0, LastRealCharPosition + 1);
-                        int Difference = Temp.Length - TextEquiv.Length;
-                        //Debug.Print($"Length: {TextEquiv.Length}, lastrealcharpos: {LastRealCharPosition}, difference: {Difference}");
-                        if (Difference != 0)
+                        int lastRealCharPosition = TextEquiv.Length - 1;
+                        while (char.IsWhiteSpace(TextEquiv[lastRealCharPosition]))
                         {
-                            Tags.Move(LastRealCharPosition + 1, Difference, true);
-                            TextEquiv = Temp;
+                            lastRealCharPosition--;
+                        }
+
+                        string temp = TextEquiv.Substring(0, lastRealCharPosition + 1);
+                        int difference = temp.Length - TextEquiv.Length;
+
+                        //Debug.Print($"Length: {TextEquiv.Length}, lastrealcharpos: {LastRealCharPosition}, difference: {Difference}");
+                        if (difference != 0)
+                        {
+                            Tags.Move(lastRealCharPosition + 1, difference, true);
+                            TextEquiv = temp;
                             HasChanged = true;
                         }
                     }
@@ -2560,16 +2932,20 @@ namespace TrClient.Core
                     //Debug.Print($"Line starts with space");
                     if (TextEquiv.Length > 0)
                     {
-                        int FirstRealCharPosition = 0;
-                        while (char.IsWhiteSpace(TextEquiv[FirstRealCharPosition]))
-                            FirstRealCharPosition++;
-                        string Temp = TextEquiv.Substring(FirstRealCharPosition);
-                        int Difference = Temp.Length - TextEquiv.Length;
-                        //Debug.Print($"Length: {TextEquiv.Length}, firstrealcharpos: {FirstRealCharPosition}, difference: {Difference}");
-                        if (Difference != 0)
+                        int firstRealCharPosition = 0;
+                        while (char.IsWhiteSpace(TextEquiv[firstRealCharPosition]))
                         {
-                            Tags.Move(FirstRealCharPosition - 1, Difference, true);
-                            TextEquiv = Temp;
+                            firstRealCharPosition++;
+                        }
+
+                        string temp = TextEquiv.Substring(firstRealCharPosition);
+                        int difference = temp.Length - TextEquiv.Length;
+
+                        //Debug.Print($"Length: {TextEquiv.Length}, firstrealcharpos: {FirstRealCharPosition}, difference: {Difference}");
+                        if (difference != 0)
+                        {
+                            Tags.Move(firstRealCharPosition - 1, difference, true);
+                            TextEquiv = temp;
                             HasChanged = true;
                         }
                     }
@@ -2580,67 +2956,82 @@ namespace TrClient.Core
         public void SimplifyBoundingBox()
         {
             if (HasCoords && HasBaseLine)
+            {
                 ExecuteSimplifyBoundingBox(TopBorder, BottomBorder, LeftBorder, RightBorder);
+            }
             else
+            {
                 Debug.WriteLine($"ERROR: Doc: {ParentDocTitle}, Page: {ParentPageNr}, Line: {ParentRegionNr}-{Number} has corrupt format!");
+            }
         }
 
-        public void SimplifyBoundingBox(int MinimumHeight, int MaximumHeight)
+        public void SimplifyBoundingBox(int minimumHeight, int maximumHeight)
         {
             if (HasCoords && HasBaseLine)
             {
-                int ActualHeight = BoundingBoxHeight;
+                int actualHeight = BoundingBoxHeight;
 
-                int TopDelta = (int)((double)MaximumHeight * 0.8);
-                int BottomDelta = (int)((double)MaximumHeight * 0.2);
+                int topDelta = (int)((double)maximumHeight * 0.8);
+                int bottomDelta = (int)((double)maximumHeight * 0.2);
 
-                int TopBorderValue;
-                int BottomBorderValue;
+                int topBorderValue;
+                int bottomBorderValue;
 
-
-                if (ActualHeight < MinimumHeight || ActualHeight > MaximumHeight)
+                if (actualHeight < minimumHeight || actualHeight > maximumHeight)
                 {
                     // firefemtedele over linien - enfemtedel under
-                    TopBorderValue = Vpos - TopDelta;
-                    BottomBorderValue = Vpos + BottomDelta;
+                    topBorderValue = Vpos - topDelta;
+                    bottomBorderValue = Vpos + bottomDelta;
                 }
                 else
                 {
-                    TopBorderValue = TopBorder;
-                    BottomBorderValue = BottomBorder;
+                    topBorderValue = TopBorder;
+                    bottomBorderValue = BottomBorder;
                 }
 
-                ExecuteSimplifyBoundingBox(TopBorderValue, BottomBorderValue, LeftBorder, RightBorder);
+                ExecuteSimplifyBoundingBox(topBorderValue, bottomBorderValue, LeftBorder, RightBorder);
             }
             else
+            {
                 Debug.WriteLine($"ERROR: Doc: {ParentDocTitle}, Page: {ParentPageNr}, Line: {ParentRegionNr}-{Number} has corrupt format!");
-
+            }
         }
 
-        private void ExecuteSimplifyBoundingBox(int Top, int Bottom, int Left, int Right)
+        private void ExecuteSimplifyBoundingBox(int top, int bottom, int left, int right)
         {
-            if (Top < 0)
-                Top = 0;
-            if (Left < 0)
-                Left = 0;
-            if (Bottom > ParentRegion.ParentTranscript.ParentPage.Height)
-                Bottom = ParentRegion.ParentTranscript.ParentPage.Height;
-            if (Right > ParentRegion.ParentTranscript.ParentPage.Width)
-                Right = ParentRegion.ParentTranscript.ParentPage.Width;
+            if (top < 0)
+            {
+                top = 0;
+            }
 
-            TrCoord LeftTop = new TrCoord(Left, Top);
-            TrCoord LeftBottom = new TrCoord(Left, Bottom);
-            TrCoord RightTop = new TrCoord(Right, Top);
-            TrCoord RightBottom = new TrCoord(Right, Bottom);
+            if (left < 0)
+            {
+                left = 0;
+            }
 
-            TrCoords NewCoords = new TrCoords();
+            if (bottom > ParentRegion.ParentTranscript.ParentPage.Height)
+            {
+                bottom = ParentRegion.ParentTranscript.ParentPage.Height;
+            }
 
-            NewCoords.Add(LeftBottom);
-            NewCoords.Add(RightBottom);
-            NewCoords.Add(RightTop);
-            NewCoords.Add(LeftTop);
+            if (right > ParentRegion.ParentTranscript.ParentPage.Width)
+            {
+                right = ParentRegion.ParentTranscript.ParentPage.Width;
+            }
 
-            CoordsString = NewCoords.ToString();
+            TrCoord leftTop = new TrCoord(left, top);
+            TrCoord leftBottom = new TrCoord(left, bottom);
+            TrCoord rightTop = new TrCoord(right, top);
+            TrCoord rightBottom = new TrCoord(right, bottom);
+
+            TrCoords newCoords = new TrCoords();
+
+            newCoords.Add(leftBottom);
+            newCoords.Add(rightBottom);
+            newCoords.Add(rightTop);
+            newCoords.Add(leftTop);
+
+            CoordsString = newCoords.ToString();
             HasChanged = true;
             NotifyPropertyChanged("CoordsString");
             NotifyPropertyChanged("VisualLineArea");
@@ -2649,21 +3040,25 @@ namespace TrClient.Core
         public XElement ToXML()
         {
             // string CustomString = "readingOrder {index:" + ReadingOrder.ToString() + ";}";
-            string CustomString = Tags.ToString();
-            
-            XElement xLine = new XElement(TrLibrary.xmlns + "TextLine",
+            string customString = Tags.ToString();
+
+            XElement xLine = new XElement(
+                TrLibrary.Xmlns + "TextLine",
                 new XAttribute("id", ID),
-                new XAttribute("custom", CustomString),
-                new XElement(TrLibrary.xmlns + "Coords",
+                new XAttribute("custom", customString),
+                new XElement(
+                    TrLibrary.Xmlns + "Coords",
                     new XAttribute("points", CoordsString)),
-                new XElement(TrLibrary.xmlns + "Baseline",
+                new XElement(
+                    TrLibrary.Xmlns + "Baseline",
                     new XAttribute("points", BaseLineCoordsString)),
-                new XElement(TrLibrary.xmlns + "TextEquiv",
-                    new XElement(TrLibrary.xmlns + "Unicode", TextEquiv)));
+                new XElement(
+                    TrLibrary.Xmlns + "TextEquiv",
+                    new XElement(TrLibrary.Xmlns + "Unicode", TextEquiv)));
 
             return xLine;
         }
-               
+
         //public XElement ToRefinedXML()
         //{
         //    XElement XLine = new XElement("textLine",
@@ -2686,7 +3081,6 @@ namespace TrClient.Core
         //    // Debug.WriteLine(XLine.ToString());
         //    return XLine;
         //}
-        
         public int CompareTo(object obj)
         {
             var line = obj as TrTextLine;
@@ -2701,8 +3095,6 @@ namespace TrClient.Core
                 default:
                     return ReadingOrder.CompareTo(line.ReadingOrder);
             }
-
         }
     }
 }
-

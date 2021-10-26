@@ -1,32 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using TrClient;
-using System.Windows.Media;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
+﻿// <copyright file="TrCurrent.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Settings
 {
+    using System.ComponentModel;
+    using TrClient.Core;
+
     public class TrCurrent : INotifyPropertyChanged
     {
-        private TrCollection _collection;
+        private TrCollection collection;
+
         public TrCollection Collection
         {
-            get { return _collection; }
+            get
+            {
+                return collection;
+            }
+
             set
             {
-                if (_collection != value)
+                if (collection != value)
                 {
-                    _collection = value;
+                    collection = value;
                     NotifyPropertyChanged("Collection");
+
                     // CollectionName = value.Name;
                     // CollectionStatusColor = value.StatusColor;
                 }
@@ -46,27 +44,27 @@ namespace TrClient.Settings
         //        }
         //    }
         //}
+        private TrDocument document;
 
-
-
-
-        private TrDocument _document;
         public TrDocument Document
         {
-            get { return _document; }
+            get
+            {
+                return document;
+            }
+
             set
             {
-                if (_document != value)
+                if (document != value)
                 {
-                    _document = value;
+                    document = value;
                     NotifyPropertyChanged("Document");
+
                     // DocumentTitle = value.Title;
                     // DocumentStatusColor = value.StatusColor;
                 }
             }
         }
-
-
 
         //private string _documentTitle = "";
         //public string DocumentTitle
@@ -81,51 +79,62 @@ namespace TrClient.Settings
         //        }
         //    }
         //}
+        private TrPage page;
 
-        private TrPage _page;
         public TrPage Page
         {
-            get { return _page; }
+            get
+            {
+                return page;
+            }
+
             set
             {
-                if (_page != value)
+                if (page != value)
                 {
-                    _page = value;
+                    page = value;
                     NotifyPropertyChanged("Page");
-                    
                 }
             }
         }
 
+        private int pageNumber = 0;
 
-        private int _pageNumber = 0;
         public int PageNumber
         {
-            get { return _pageNumber; }
+            get
+            {
+                return pageNumber;
+            }
+
             set
             {
-                if (_pageNumber != value)
+                if (pageNumber != value)
                 {
-                    _pageNumber = value;
+                    pageNumber = value;
                     NotifyPropertyChanged("PageNumber");
                 }
             }
         }
 
-        private string _transcriptID = "";
+        private string transcriptID = string.Empty;
+
         public string TranscriptID
         {
-            get { return _transcriptID; }
+            get
+            {
+                return transcriptID;
+            }
+
             set
             {
-                if (_transcriptID != value)
+                if (transcriptID != value)
                 {
-                    _transcriptID = value;
+                    transcriptID = value;
                     NotifyPropertyChanged("TranscriptID");
                 }
             }
         }
-
 
         //private SolidColorBrush _collectionStatusColor = Brushes.Red;
         //public SolidColorBrush CollectionStatusColor
@@ -154,26 +163,22 @@ namespace TrClient.Settings
         //        }
         //    }
         //}
-
-
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
-
 
         public TrCurrent()
         {
             // CollectionName = "";
             // DocumentTitle = "";
             PageNumber = 0;
-            TranscriptID = "";
+            TranscriptID = string.Empty;
         }
-
-
     }
 }

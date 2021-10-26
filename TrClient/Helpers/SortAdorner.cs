@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Media;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="SortAdorner.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System.ComponentModel;
+    using System.Windows;
+    using System.Windows.Documents;
+    using System.Windows.Media;
+
     public class SortAdorner : Adorner
     {
         private static Geometry ascGeometry =
@@ -29,7 +22,7 @@ namespace TrClient.Helpers
         public SortAdorner(UIElement element, ListSortDirection dir)
             : base(element)
         {
-            this.Direction = dir;
+            Direction = dir;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -37,18 +30,21 @@ namespace TrClient.Helpers
             base.OnRender(drawingContext);
 
             if (AdornedElement.RenderSize.Width < 20)
+            {
                 return;
+            }
 
-            TranslateTransform transform = new TranslateTransform
-                (
+            TranslateTransform transform = new TranslateTransform(
                     AdornedElement.RenderSize.Width - 15,
-                    (AdornedElement.RenderSize.Height - 5) / 2
-                );
+                    (AdornedElement.RenderSize.Height - 5) / 2);
             drawingContext.PushTransform(transform);
 
             Geometry geometry = ascGeometry;
-            if (this.Direction == ListSortDirection.Descending)
+            if (Direction == ListSortDirection.Descending)
+            {
                 geometry = descGeometry;
+            }
+
             drawingContext.DrawGeometry(Brushes.Black, null, geometry);
 
             drawingContext.Pop();

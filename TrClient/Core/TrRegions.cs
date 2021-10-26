@@ -1,189 +1,182 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
-using System.Xml.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrRegions.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using TrClient.Helpers;
+    using TrClient.Libraries;
+
     public class TrRegions : IEnumerable
     {
-        private List<TrRegion> Regions;
-        public int Count { get => Regions.Count; }
+        private List<TrRegion> regions;
+
+        public int Count { get => regions.Count; }
 
         public string OrderedGroupID { get; set; }
 
         public TrTranscript ParentTranscript;
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
-                foreach (TrRegion TR in Regions)
-                    TR.ChangesUploaded = value;
+                changesUploaded = value;
+                foreach (TrRegion textRegion in regions)
+                {
+                    textRegion.ChangesUploaded = value;
+                }
             }
         }
 
+        private bool isZeroBased;
 
-        private bool _isZeroBased;
         public bool IsZeroBased
         {
             get
             {
-                _isZeroBased = (Regions[0].ReadingOrder == 0);
-                return _isZeroBased;
+                isZeroBased = regions[0].ReadingOrder == 0;
+                return isZeroBased;
             }
         }
 
-        public void Add(TrRegion Region)
+        public void Add(TrRegion region)
         {
-            Regions.Add(Region);
+            regions.Add(region);
+
             // Region.
-            Region.ParentContainer = this;
-            Region.ParentTranscript = this.ParentTranscript;
+            region.ParentContainer = this;
+            region.ParentTranscript = ParentTranscript;
+
             // Debug.WriteLine($"TrRegion: Region added. Number = {Region.Number}");
         }
 
-
-        public void Remove(TrRegion Region)
+        public void Remove(TrRegion region)
         {
-            Regions.Remove(Region);
+            regions.Remove(region);
         }
 
         public void Clear()
         {
-            Regions.Clear();
+            regions.Clear();
         }
 
         public void Sort()
         {
-            Regions.Sort();
+            regions.Sort();
         }
 
         public void RemoveAt(int i)
         {
-            Regions.RemoveAt(i);
+            regions.RemoveAt(i);
             ParentTranscript.HasChanged = true;
         }
 
-
         public TrRegion this[int index]
         {
-            get { return Regions[index]; }
-            set { Regions[index] = value; }
+            get { return regions[index]; }
+            set { regions[index] = value; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Regions).GetEnumerator();
+            return ((IEnumerable)regions).GetEnumerator();
         }
 
-        public TrRegion GetRegionFromID(string Search)
+        public TrRegion GetRegionFromID(string search)
         {
-            var Region = Regions.Where(r => r.ID == Search).FirstOrDefault();
-            return Region;
+            var region = regions.Where(r => r.ID == search).FirstOrDefault();
+            return region;
         }
 
-        public TrRegion GetRegionFromReadingOrder(int Search)
+        public TrRegion GetRegionFromReadingOrder(int search)
         {
-            var Region = Regions.Where(r => r.ReadingOrder == Search).FirstOrDefault();
-            return Region;
+            var region = regions.Where(r => r.ReadingOrder == search).FirstOrDefault();
+            return region;
         }
-
 
         public void ReNumberHorizontally()
         {
             // NB: ReadingOrder er det centrale - Number dannes af Reading Order
+            TrPairOrderIDs pairs = new TrPairOrderIDs();
 
-            TrPairOrderIDs Pairs = new TrPairOrderIDs();
-
-            foreach (TrRegion TR in Regions)
+            foreach (TrRegion textRegion in regions)
             {
                 // Debug.WriteLine($"Current ID: {TR.ID} - Current reading order: {TR.ReadingOrder} - " +
                 //    $"Current Hpos: {TR.Hpos} - Current Vpos: {TR.Vpos}");
-
-                TrPairOrderID Pair = new TrPairOrderID(TR.HorizontalOrder, TR.ID);
-                Pairs.Add(Pair);
+                TrPairOrderID pair = new TrPairOrderID(textRegion.HorizontalOrder, textRegion.ID);
+                pairs.Add(pair);
             }
 
-            Pairs.Sort();
+            pairs.Sort();
 
             int i = 0;
-            foreach (TrPairOrderID Pair in Pairs)
+            foreach (TrPairOrderID pair in pairs)
             {
-                TrRegion CurrentRegion = GetRegionFromID(Pair.ID);
-                CurrentRegion.ReadingOrder = i;
-                CurrentRegion.HasChanged = true;
+                TrRegion currentRegion = GetRegionFromID(pair.ID);
+                currentRegion.ReadingOrder = i;
+                currentRegion.HasChanged = true;
+
                 // Debug.WriteLine($"Sorted ID: {CurrentRegion.ID} - Sorted reading order: {CurrentRegion.ReadingOrder} - " +
                 // $"Sorted Hpos: {CurrentRegion.Hpos} - Sorted Vpos: {CurrentRegion.Vpos}");
                 i++;
-
             }
-            Regions.Sort();
-        }
 
+            regions.Sort();
+        }
 
         public void ReNumberVertically()
         {
             // NB: ReadingOrder er det centrale - Number dannes af Reading Order
+            TrPairOrderIDs pairs = new TrPairOrderIDs();
 
-            TrPairOrderIDs Pairs = new TrPairOrderIDs();
-
-            foreach (TrRegion TR in Regions)
+            foreach (TrRegion textRegion in regions)
             {
                 // Debug.WriteLine($"Current ID: {TR.ID} - Current reading order: {TR.ReadingOrder} - " +
                 // $"Current Hpos: {TR.Hpos} - Current Vpos: {TR.Vpos}");
-
-                TrPairOrderID Pair = new TrPairOrderID(TR.VerticalOrder, TR.ID);
-                Pairs.Add(Pair);
+                TrPairOrderID pair = new TrPairOrderID(textRegion.VerticalOrder, textRegion.ID);
+                pairs.Add(pair);
             }
 
-            Pairs.Sort();
+            pairs.Sort();
 
             int i = 0;
-            foreach (TrPairOrderID Pair in Pairs)
+            foreach (TrPairOrderID pair in pairs)
             {
-                TrRegion CurrentRegion = GetRegionFromID(Pair.ID);
-                CurrentRegion.ReadingOrder = i;
-                CurrentRegion.HasChanged = true;
+                TrRegion currentRegion = GetRegionFromID(pair.ID);
+                currentRegion.ReadingOrder = i;
+                currentRegion.HasChanged = true;
+
                 // Debug.WriteLine($"Sorted ID: {CurrentRegion.ID} - Sorted reading order: {CurrentRegion.ReadingOrder} - " +
                 // $"Sorted Hpos: {CurrentRegion.Hpos} - Sorted Vpos: {CurrentRegion.Vpos}");
                 i++;
-
             }
-            Regions.Sort();
+
+            regions.Sort();
         }
-
-
 
         public TrRegions()
         {
-            Regions = new List<TrRegion>();
+            regions = new List<TrRegion>();
         }
 
-        public TrRegions(bool NewOrderedGroup)
+        public TrRegions(bool newOrderedGroup)
         {
-            Regions = new List<TrRegion>();
-            if (NewOrderedGroup)
+            regions = new List<TrRegion>();
+            if (newOrderedGroup)
+            {
                 OrderedGroupID = "ro_" + TrLibrary.GetNewTimeStamp();
+            }
         }
-
-
-
     }
 }

@@ -99,133 +99,138 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Dialog\Statistics\dlgShowHistogram.xaml.cs">
-      <DependentUpon>dlgShowHistogram.xaml</DependentUpon>
+    <Compile Include="Core\TrContainer.cs" />
+    <Compile Include="Core\TrItem.cs" />
+    <Compile Include="Core\TrMainItem.cs" />
+    <Compile Include="Core\TrPageLevelItem.cs" />
+    <Compile Include="Helpers\RangeCountPair.cs" />
+    <Compile Include="Views\Statistics\ShowHistogram.xaml.cs">
+      <DependentUpon>ShowHistogram.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Histogram.cs" />
-    <Compile Include="Tags\TrTag_Textual_Abbrev.cs" />
-    <Compile Include="Tags\TrTag_Textual_Comment.cs" />
-    <Compile Include="Tags\TrTag_Textual_Date.cs" />
-    <Compile Include="Tags\TrTag_ReadingOrder.cs" />
-    <Compile Include="Tags\TrTag_Textual_RomanNumeral.cs" />
-    <Compile Include="Tags\TrTag_Textual_Sic.cs" />
-    <Compile Include="Tags\TrTag_Structural.cs" />
-    <Compile Include="Tags\TrTag_Textual_Style.cs" />
-    <Compile Include="Tags\TrTag.cs" />
-    <Compile Include="Tags\TrTagProperty.cs" />
-    <Compile Include="Tags\TrTag_Textual.cs" />
-    <Compile Include="Tags\TrTag_Textual_Unclear.cs" />
-    <Compile Include="Tags\TrTagProperties.cs" />
-    <Compile Include="Tags\TrTags.cs" />
-    <Page Include="Dialog\Collections\dlgCopyFromCollection.xaml">
+    <Compile Include="Core\Tags\TrTagTextualAbbrev.cs" />
+    <Compile Include="Core\Tags\TrTagTextualComment.cs" />
+    <Compile Include="Core\Tags\TrTagTextualDate.cs" />
+    <Compile Include="Core\Tags\TrTagReadingOrder.cs" />
+    <Compile Include="Core\Tags\TrTagTextualRomanNumeral.cs" />
+    <Compile Include="Core\Tags\TrTagTextualSic.cs" />
+    <Compile Include="Core\Tags\TrTagStructural.cs" />
+    <Compile Include="Core\Tags\TrTagTextualStyle.cs" />
+    <Compile Include="Core\Tags\TrTag.cs" />
+    <Compile Include="Core\Tags\TrTagProperty.cs" />
+    <Compile Include="Core\Tags\TrTagTextual.cs" />
+    <Compile Include="Core\Tags\TrTagTextualUnclear.cs" />
+    <Compile Include="Core\Tags\TrTagProperties.cs" />
+    <Compile Include="Core\Tags\TrTags.cs" />
+    <Page Include="Views\Collections\CopyFromCollection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Content\dlgEditLemma.xaml">
+    <Page Include="Views\Content\EditLemma.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Content\dlgFindReplace.xaml">
+    <Page Include="Views\Content\FindReplace.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Content\dlgShowLemmas.xaml">
+    <Page Include="Views\Content\ShowLemmas.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Content\dlgShowParagraphs.xaml">
+    <Page Include="Views\Content\ShowParagraphs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Export\dlgShowAndExportPages.xaml">
+    <Page Include="Views\Export\ShowAndExportPages.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Filters\dlgFilterLines.xaml">
+    <Page Include="Views\Filters\FilterLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Filters\dlgFilterLinesByLocation.xaml">
+    <Page Include="Views\Filters\FilterLinesByLocation.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Filters\dlgFilterLinesByRegex.xaml">
+    <Page Include="Views\Filters\FilterLinesByRegex.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\General\dlgChooseMinMaxNumbers.xaml">
+    <Page Include="Views\General\ChooseMinMaxNumbers.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\General\dlgChoosePageRange.xaml">
+    <Page Include="Views\General\ChoosePageRange.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Lines\dlgDeleteLines.xaml">
+    <Page Include="Views\Lines\DeleteLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Lines\dlgEditBaseLines.xaml">
+    <Page Include="Views\Lines\EditBaseLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Lines\dlgEditTextLine.xaml">
+    <Page Include="Views\Lines\EditTextLine.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Lines\dlgRepairBaseLines.xaml">
+    <Page Include="Views\Lines\RepairBaseLines.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Lines\dlgShowTextLine.xaml">
+    <Page Include="Views\Lines\ShowTextLine.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Lines\dlgSimplifyBoundingBoxes.xaml">
+    <Page Include="Views\Lines\SimplifyBoundingBoxes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Log\dlgShowLog.xaml">
+    <Page Include="Views\Log\ShowLog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Pages\dlgShowPage.xaml">
+    <Page Include="Views\Pages\ShowPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\ProgressBars\dlgProgressCopy.xaml">
+    <Page Include="Views\ProgressBars\ProgressCopy.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\ProgressBars\dlgProgressLoadDocs.xaml">
+    <Page Include="Views\ProgressBars\ProgressLoadDocs.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\ProgressBars\dlgProgressLoadPages.xaml">
+    <Page Include="Views\ProgressBars\ProgressLoadPages.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Regions\dlgDeleteRegions.xaml">
+    <Page Include="Views\Regions\DeleteRegions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Regions\dlgMoveRegions.xaml">
+    <Page Include="Views\Regions\MoveRegions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Statistics\dlgShowHistogram.xaml">
+    <Page Include="Views\Statistics\ShowHistogram.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialog\Tags\dlgEditStructuralTags.xaml">
+    <Page Include="Views\Tags\EditStructuralTags.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Tags\dlgRenameTags.xaml">
+    <Page Include="Views\Tags\RenameTags.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\Tags\dlgShowTags.xaml">
+    <Page Include="Views\Tags\ShowTags.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -243,90 +248,90 @@
     <Compile Include="Core\TrDocument.cs" />
     <Compile Include="Core\TrPage.cs" />
     <Compile Include="Core\TrRegion.cs" />
-    <Compile Include="Core\TrRegion_Table.cs" />
+    <Compile Include="Core\TrTableRegion.cs" />
     <Compile Include="Core\TrTextLine.cs" />
-    <Compile Include="Core\TrRegion_Text.cs" />
+    <Compile Include="Core\TrTextRegion.cs" />
     <Compile Include="Core\TrTranscript.cs" />
-    <Compile Include="Dialog\Collections\dlgCopyFromCollection.xaml.cs">
-      <DependentUpon>dlgCopyFromCollection.xaml</DependentUpon>
+    <Compile Include="Views\Collections\CopyFromCollection.xaml.cs">
+      <DependentUpon>CopyFromCollection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Content\dlgEditLemma.xaml.cs">
-      <DependentUpon>dlgEditLemma.xaml</DependentUpon>
+    <Compile Include="Views\Content\EditLemma.xaml.cs">
+      <DependentUpon>EditLemma.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Content\dlgFindReplace.xaml.cs">
-      <DependentUpon>dlgFindReplace.xaml</DependentUpon>
+    <Compile Include="Views\Content\FindReplace.xaml.cs">
+      <DependentUpon>FindReplace.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Content\dlgShowLemmas.xaml.cs">
-      <DependentUpon>dlgShowLemmas.xaml</DependentUpon>
+    <Compile Include="Views\Content\ShowLemmas.xaml.cs">
+      <DependentUpon>ShowLemmas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Content\dlgShowParagraphs.xaml.cs">
-      <DependentUpon>dlgShowParagraphs.xaml</DependentUpon>
+    <Compile Include="Views\Content\ShowParagraphs.xaml.cs">
+      <DependentUpon>ShowParagraphs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Export\dlgShowAndExportPages.xaml.cs">
-      <DependentUpon>dlgShowAndExportPages.xaml</DependentUpon>
+    <Compile Include="Views\Export\ShowAndExportPages.xaml.cs">
+      <DependentUpon>ShowAndExportPages.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Filters\dlgFilterLines.xaml.cs">
-      <DependentUpon>dlgFilterLines.xaml</DependentUpon>
+    <Compile Include="Views\Filters\FilterLines.xaml.cs">
+      <DependentUpon>FilterLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Filters\dlgFilterLinesByLocation.xaml.cs">
-      <DependentUpon>dlgFilterLinesByLocation.xaml</DependentUpon>
+    <Compile Include="Views\Filters\FilterLinesByLocation.xaml.cs">
+      <DependentUpon>FilterLinesByLocation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Filters\dlgFilterLinesByRegex.xaml.cs">
-      <DependentUpon>dlgFilterLinesByRegex.xaml</DependentUpon>
+    <Compile Include="Views\Filters\FilterLinesByRegex.xaml.cs">
+      <DependentUpon>FilterLinesByRegex.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\General\dlgChooseMinMaxNumbers.xaml.cs">
-      <DependentUpon>dlgChooseMinMaxNumbers.xaml</DependentUpon>
+    <Compile Include="Views\General\ChooseMinMaxNumbers.xaml.cs">
+      <DependentUpon>ChooseMinMaxNumbers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\General\dlgChoosePageRange.xaml.cs">
-      <DependentUpon>dlgChoosePageRange.xaml</DependentUpon>
+    <Compile Include="Views\General\ChoosePageRange.xaml.cs">
+      <DependentUpon>ChoosePageRange.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Lines\dlgDeleteLines.xaml.cs">
-      <DependentUpon>dlgDeleteLines.xaml</DependentUpon>
+    <Compile Include="Views\Lines\DeleteLines.xaml.cs">
+      <DependentUpon>DeleteLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Lines\dlgEditBaseLines.xaml.cs">
-      <DependentUpon>dlgEditBaseLines.xaml</DependentUpon>
+    <Compile Include="Views\Lines\EditBaseLines.xaml.cs">
+      <DependentUpon>EditBaseLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Lines\dlgEditTextLine.xaml.cs">
-      <DependentUpon>dlgEditTextLine.xaml</DependentUpon>
+    <Compile Include="Views\Lines\EditTextLine.xaml.cs">
+      <DependentUpon>EditTextLine.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Lines\dlgRepairBaseLines.xaml.cs">
-      <DependentUpon>dlgRepairBaseLines.xaml</DependentUpon>
+    <Compile Include="Views\Lines\RepairBaseLines.xaml.cs">
+      <DependentUpon>RepairBaseLines.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Lines\dlgShowTextLine.xaml.cs">
-      <DependentUpon>dlgShowTextLine.xaml</DependentUpon>
+    <Compile Include="Views\Lines\ShowTextLine.xaml.cs">
+      <DependentUpon>ShowTextLine.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Lines\dlgSimplifyBoundingBoxes.xaml.cs">
-      <DependentUpon>dlgSimplifyBoundingBoxes.xaml</DependentUpon>
+    <Compile Include="Views\Lines\SimplifyBoundingBoxes.xaml.cs">
+      <DependentUpon>SimplifyBoundingBoxes.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Log\dlgShowLog.xaml.cs">
-      <DependentUpon>dlgShowLog.xaml</DependentUpon>
+    <Compile Include="Views\Log\ShowLog.xaml.cs">
+      <DependentUpon>ShowLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Pages\dlgShowPage.xaml.cs">
-      <DependentUpon>dlgShowPage.xaml</DependentUpon>
+    <Compile Include="Views\Pages\ShowPage.xaml.cs">
+      <DependentUpon>ShowPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\ProgressBars\dlgProgressCopy.xaml.cs">
-      <DependentUpon>dlgProgressCopy.xaml</DependentUpon>
+    <Compile Include="Views\ProgressBars\ProgressCopy.xaml.cs">
+      <DependentUpon>ProgressCopy.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\ProgressBars\dlgProgressLoadDocs.xaml.cs">
-      <DependentUpon>dlgProgressLoadDocs.xaml</DependentUpon>
+    <Compile Include="Views\ProgressBars\ProgressLoadDocs.xaml.cs">
+      <DependentUpon>ProgressLoadDocs.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\ProgressBars\dlgProgressLoadPages.xaml.cs">
-      <DependentUpon>dlgProgressLoadPages.xaml</DependentUpon>
+    <Compile Include="Views\ProgressBars\ProgressLoadPages.xaml.cs">
+      <DependentUpon>ProgressLoadPages.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Regions\dlgDeleteRegions.xaml.cs">
-      <DependentUpon>dlgDeleteRegions.xaml</DependentUpon>
+    <Compile Include="Views\Regions\DeleteRegions.xaml.cs">
+      <DependentUpon>DeleteRegions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Regions\dlgMoveRegions.xaml.cs">
-      <DependentUpon>dlgMoveRegions.xaml</DependentUpon>
+    <Compile Include="Views\Regions\MoveRegions.xaml.cs">
+      <DependentUpon>MoveRegions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Tags\dlgEditStructuralTags.xaml.cs">
-      <DependentUpon>dlgEditStructuralTags.xaml</DependentUpon>
+    <Compile Include="Views\Tags\EditStructuralTags.xaml.cs">
+      <DependentUpon>EditStructuralTags.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Tags\dlgRenameTags.xaml.cs">
-      <DependentUpon>dlgRenameTags.xaml</DependentUpon>
+    <Compile Include="Views\Tags\RenameTags.xaml.cs">
+      <DependentUpon>RenameTags.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\Tags\dlgShowTags.xaml.cs">
-      <DependentUpon>dlgShowTags.xaml</DependentUpon>
+    <Compile Include="Views\Tags\ShowTags.xaml.cs">
+      <DependentUpon>ShowTags.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\TrLemma.cs" />
     <Compile Include="Extensions\TrMarcField.cs" />
@@ -391,6 +396,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -446,6 +455,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TrClient.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

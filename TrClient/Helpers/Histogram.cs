@@ -1,127 +1,98 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="Histogram.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using TrClient.Core;
 
     public enum HistogramType
     {
         LineLength,
         LineWidth,
         LineHpos,
-        LineVpos
-    }
-
-    public class RangeCountPair
-    {
-        public string Range { get; set; }
-        public int Count { get; set; }
-
-        public RangeCountPair(string R, int C)
-        {
-            Range = R;
-            Count = C;
-        }
+        LineVpos,
     }
 
     public class Histogram
     {
-
         public List<RangeCountPair> Result = new List<RangeCountPair>();
-        
 
         // constructor
-        public Histogram(TrDocument Document, HistogramType Type, int BucketSize)
+        public Histogram(TrDocument document, HistogramType type, int bucketSize)
         {
             // fylder i en normal liste - ikke containerklasse!
+            List<TrTextLine> allLines = new List<TrTextLine>();
 
-            List<TrTextLine> AllLines = new List<TrTextLine>();
-
-            foreach (TrPage Page in Document.Pages)
+            foreach (TrPage page in document.Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                AllLines.Add(TL);
-                                TL.ParentRegion = (TrRegion_Text)TR;
+                                allLines.Add(textLine);
+                                textLine.ParentRegion = (TrTextRegion)textRegion;
                             }
                         }
                     }
                 }
             }
+            Debug.Print($"Histogram: allLines.Count = {allLines.Count}");
 
+            ILookup<int, TrTextLine> lookUp;
 
-            ILookup<int, TrTextLine> LookUp;
-
-
-            // BUG: crasher, hvis bucketsize er 0!!
-            switch (Type)
+            // NB: crasher, hvis bucketsize er 0!!
+            switch (type)
             {
                 case HistogramType.LineLength:
-                    LookUp = AllLines.ToLookup(x => x.Length / BucketSize);
+                    lookUp = allLines.ToLookup(x => x.Length / bucketSize);
                     break;
 
                 case HistogramType.LineWidth:
-                    LookUp = AllLines.ToLookup(x => x.Width/ BucketSize);
+                    lookUp = allLines.ToLookup(x => x.Width / bucketSize);
                     break;
 
                 case HistogramType.LineHpos:
-                    LookUp = AllLines.ToLookup(x => x.Hpos/ BucketSize);
+                    lookUp = allLines.ToLookup(x => x.Hpos / bucketSize);
                     break;
 
                 case HistogramType.LineVpos:
-                    LookUp = AllLines.ToLookup(x => x.Vpos / BucketSize);
+                    lookUp = allLines.ToLookup(x => x.Vpos / bucketSize);
                     break;
 
                 default:
-                    LookUp = null;
+                    lookUp = null;
                     break;
             }
-            
-            // BUG: crasher, hvis sekvenser ikke indeholder elementer
-            if (LookUp != null)
-            {
-                int Smallest = LookUp.Min(x => x.Key);
-                int Largest = LookUp.Max(x => x.Key);
 
-                var Query = from x in Enumerable.Range(Smallest, Largest - Smallest + 1)
+            // NB: crasher, hvis sekvenser ikke indeholder elementer, dvs. at der ikke er nogen lines i doc
+            if (lookUp != null)
+            {
+                int smallest = lookUp.Min(x => x.Key);
+                int largest = lookUp.Max(x => x.Key);
+
+                var query = from x in Enumerable.Range(smallest, largest - smallest + 1)
                             select new
                             {
-                                Range = String.Format("{0}-{1}", x * BucketSize, (x + 1) * BucketSize),
-                                Count = LookUp[x].Count(),
+                                Range = String.Format("{0}-{1}", x * bucketSize, (x + 1) * bucketSize),
+                                Count = lookUp[x].Count(),
                             };
 
-                foreach (var p in Query)
+                foreach (var p in query)
                 {
-                    RangeCountPair NewPair = new RangeCountPair(p.Range, p.Count);
-                    Result.Add(NewPair);
+                    RangeCountPair newPair = new RangeCountPair(p.Range, p.Count);
+                    Result.Add(newPair);
                     Debug.Print($"Range: {p.Range} - Count: {p.Count}");
                 }
-
             }
-
         }
-
-
-
-
-
     }
 }

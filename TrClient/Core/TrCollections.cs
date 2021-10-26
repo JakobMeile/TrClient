@@ -1,39 +1,37 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System.ComponentModel;
-using System.Windows.Media;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrCollections.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Windows.Media;
+
     public class TrCollections : IEnumerable, INotifyPropertyChanged
     {
-        private List<TrCollection> Collections;
-        public int Count { get => Collections.Count; }
+        private List<TrCollection> collections;
 
-        private bool _isLoaded = false;
+        public int Count { get => collections.Count; }
+
+        private bool isLoaded = false;
+
         public bool IsLoaded
         {
-            get { return _isLoaded; }
+            get
+            {
+                return isLoaded;
+            }
+
             set
             {
-                if (_isLoaded != value)
+                if (isLoaded != value)
                 {
-                    _isLoaded = value;
+                    isLoaded = value;
                     NotifyPropertyChanged("IsLoaded");
-                    switch (_isLoaded)
+                    switch (isLoaded)
                     {
                         case true:
                             StatusColor = Brushes.LimeGreen;
@@ -46,100 +44,117 @@ namespace TrClient.Core
             }
         }
 
-        private SolidColorBrush _statusColor = Brushes.Red;
+        private SolidColorBrush statusColor = Brushes.Red;
+
         public SolidColorBrush StatusColor
         {
-            get { return _statusColor; }
+            get
+            {
+                return statusColor;
+            }
+
             set
             {
-                if (_statusColor != value)
+                if (statusColor != value)
                 {
-                    _statusColor = value;
+                    statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
         }
 
-        private bool _hasChanged = false;
+        private bool hasChanged = false;
+
         public bool HasChanged
         {
-            get { return _hasChanged; }
+            get
+            {
+                return hasChanged;
+            }
+
             set
             {
-                _hasChanged = value;
+                hasChanged = value;
                 NotifyPropertyChanged("HasChanged");
-                if (_hasChanged)
+                if (hasChanged)
+                {
                     StatusColor = Brushes.Orange;
+                }
             }
         }
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
+                changesUploaded = value;
                 NotifyPropertyChanged("ChangesUploaded");
-                if (_changesUploaded)
+                if (changesUploaded)
+                {
                     StatusColor = Brushes.DarkViolet;
+                }
             }
         }
 
-
-
-
-        public void Add(TrCollection Coll)
+        public void Add(TrCollection coll)
         {
-            Collections.Add(Coll);
-            Coll.ParentContainer = this;
+            collections.Add(coll);
+            coll.ParentContainer = this;
         }
 
         public void Sort()
         {
-            Collections.Sort();
+            collections.Sort();
         }
 
         public void Clear()
         {
-            Collections.Clear();
+            collections.Clear();
         }
 
         public TrCollection this[int index]
         {
-            get { return Collections[index]; }
-            set { Collections[index] = value; }
+            get { return collections[index]; }
+            set { collections[index] = value; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Collections).GetEnumerator();
+            return ((IEnumerable)collections).GetEnumerator();
         }
 
-        public TrCollection GetCollectionFromName(string Search)
+        public TrCollection GetCollectionFromName(string search)
         {
-            var Coll = Collections.Where(c => c.Name == Search).FirstOrDefault();
-            return Coll;
+            var coll = collections.Where(c => c.Name == search).FirstOrDefault();
+            return coll;
         }
 
-        public TrCollection GetCollectionFromID(string Search)
+        public TrCollection GetCollectionFromID(string search)
         {
-            var Coll = Collections.Where(c => c.ID == Search).FirstOrDefault();
-            return Coll;
+            var coll = collections.Where(c => c.ID == search).FirstOrDefault();
+            return coll;
         }
 
-        public string GetIDFromName(string SearchName)
+        public string GetIDFromName(string searchName)
         {
-            string Temp = "";
-            foreach (TrCollection Coll in Collections)
+            string temp = string.Empty;
+            foreach (TrCollection coll in collections)
             {
-                if (Coll.Name == SearchName)
+                if (coll.Name == searchName)
                 {
-                    Temp = Coll.ID;
+                    temp = coll.ID;
                     break;
                 }
             }
-            return Temp;
+
+            return temp;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -147,15 +162,14 @@ namespace TrClient.Core
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
-
-
 
         public TrCollections()
         {
-            Collections = new List<TrCollection>();
+            collections = new List<TrCollection>();
         }
-
     }
 }

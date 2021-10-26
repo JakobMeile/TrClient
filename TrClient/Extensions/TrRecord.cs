@@ -1,31 +1,12 @@
-﻿using System;   
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Xml.Serialization;
-using System.IO;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-using System.Text.RegularExpressions;
-using DanishNLP;
+﻿// <copyright file="TrRecord.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Extensions
 {
+    using System.Text.RegularExpressions;
+    using TrClient.Libraries;
+
     public class TrRecord
     {
         public string Name;
@@ -41,11 +22,11 @@ namespace TrClient.Extensions
             Name = pName;
 
             // her fjerner vi lige alt muligt snask efter datoen
-            Regex Dates = new Regex(@"\d{4}-\d{2}(-\d{2})?");
-            MatchCollection DateMatches = Dates.Matches(pDate);
-            if (DateMatches.Count == 1)
+            Regex dates = new Regex(@"\d{4}-\d{2}(-\d{2})?");
+            MatchCollection dateMatches = dates.Matches(pDate);
+            if (dateMatches.Count == 1)
             {
-                Date = DateMatches[0].Value;
+                Date = dateMatches[0].Value;
             }
             else
             {
@@ -58,14 +39,12 @@ namespace TrClient.Extensions
             SourceLineNumber = pSourceLineNumber;
         }
 
-
         public override string ToString()
         {
-            string Temp = "";
-            char Delimiter = TrLibrary.CSV_Delimiter;
+            string temp = string.Empty;
+            char delimiter = TrLibrary.CSVDelimiter;
 
-            Temp = Name + Delimiter + Date + Delimiter + Source + Delimiter + SourcePageNumber.ToString() + Delimiter + SourceLineNumber.ToString() + Delimiter + Metadata;
-
+            temp = Name + delimiter + Date + delimiter + Source + delimiter + SourcePageNumber.ToString() + delimiter + SourceLineNumber.ToString() + delimiter + Metadata;
 
             //Regex Numbers = new Regex(@"\d+\p{L}?");
             //string Stripped = clsLanguageLibrary.StripAll(Name);
@@ -82,9 +61,7 @@ namespace TrClient.Extensions
             //}
 
             //Temp = NewName + Delimiter + Date + Delimiter + Source + Delimiter + SourcePageNumber.ToString() + Delimiter + SourceLineNumber.ToString() + Delimiter + Metadata;
-
-            return Temp;
+            return temp;
         }
-
     }
 }

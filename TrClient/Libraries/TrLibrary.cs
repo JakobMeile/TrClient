@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using System.Diagnostics;
-using System.IO;
-using TrClient;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
+﻿// <copyright file="TrLibrary.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Libraries
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Xml.Linq;
+    using TrClient.Core;
+
     // funktioner til understøttelse af TrClient
     public static class TrLibrary
     {
         public enum MarcFelt
         {
-            Udefineret,     
+            Udefineret,
             UdgivelsesAar,      // 008a
             Opstilling,         // 096a
             Forfatter,          // 100a+h
@@ -37,25 +31,24 @@ namespace TrClient.Libraries
             TitelSomEmneord,    // 645a+b
             Ophav,              // 700a+h
             BrevAfsender,       // 700a+h+4
-            BrevModtager        // 700a+h+4
+            BrevModtager,        // 700a+h+4
         }
 
         // SETTINGS
         public static bool OfflineMode = false;
         public static bool LoadOnlyNewestTranscript = true;
-        public static bool KOB_ACC = true;  // skal sættes
+        public static bool KOBACC = true;  // skal sættes
 
-        public static char CSV_Delimiter = '\t';
+        public static char CSVDelimiter = '\t';
         public static char NullChar = '\0';
 
         //public static string OfflineBaseFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\SYNC\";
 
         //public static string ExportFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Export\";
         //public static string LogFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Log\";
-
-        public static XNamespace xmlns = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
-        public static XNamespace xsi = "http://www.w3.org/2001/XMLSchema-instance";
-        public static XNamespace schemaLocation = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd";
+        public static XNamespace Xmlns = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
+        public static XNamespace Xsi = "http://www.w3.org/2001/XMLSchema-instance";
+        public static XNamespace SchemaLocation = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd";
 
         public static string TrpBaseAdress = "https://transkribus.eu/TrpServer/rest/";
         public static string TrpLogin = "https://transkribus.eu/TrpServer/rest/auth/login";
@@ -66,56 +59,52 @@ namespace TrClient.Libraries
         public static int NarrowColumnWidth = 8;
         public static int BroadColumnWidth = 4 * NarrowColumnWidth;
 
-
-        public static string EscapeString(string Source)
+        public static string EscapeString(string source)
         {
-            string Temp = Source;
-            
+            string temp = source;
+
             // kolon
-            Temp = Temp.Replace(":", "\\u003A");
+            temp = temp.Replace(":", "\\u003A");
 
             // semikolon
-            Temp = Temp.Replace(":", "\\u003B");
+            temp = temp.Replace(":", "\\u003B");
 
             // højre tuborg
-            Temp = Temp.Replace(":", "\\u007D");
+            temp = temp.Replace(":", "\\u007D");
 
-            return Temp;
+            return temp;
         }
 
         public static long GetNewTimeStamp()
         {
-            long Elapsed = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            return Elapsed;
+            long elapsed = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            return elapsed;
         }
 
-        public static DateTime ConvertUnixTimeStamp(string Timestamp)
+        public static DateTime ConvertUnixTimeStamp(string timestamp)
         {
             DateTimeOffset dtOffset = new DateTimeOffset();
-            dtOffset = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(Timestamp));
-            DateTime Date = dtOffset.DateTime;
-            return Date;
+            dtOffset = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(timestamp));
+            DateTime date = dtOffset.DateTime;
+            return date;
         }
 
-        public static DateTime ConvertFromISO_Time(string DateString)
+        public static DateTime ConvertFromISO_Time(string dateString)
         {
-            DateTime NewDate = DateTime.ParseExact(DateString, "yyyy-MM-ddThh:mm:ss.fffzzz", CultureInfo.InvariantCulture);
-            return NewDate;
-
+            DateTime newDate = DateTime.ParseExact(dateString, "yyyy-MM-ddThh:mm:ss.fffzzz", CultureInfo.InvariantCulture);
+            return newDate;
         }
 
-        public static string ConvertToISO_Time(DateTime DateTimeObject)
+        public static string ConvertToISO_Time(DateTime dateTimeObject)
         {
-            return DateTimeObject.ToString("yyyy-MM-ddThh:mm:ss.fffzzz");
-
+            return dateTimeObject.ToString("yyyy-MM-ddThh:mm:ss.fffzzz");
         }
 
-
-        public static bool IsNumeric(object Expression)
+        public static bool IsNumeric(object expression)
         {
             double retNum;
 
-            bool isNum = Double.TryParse(Convert.ToString(Expression), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out retNum);
+            bool isNum = Double.TryParse(Convert.ToString(expression), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out retNum);
             return isNum;
         }
 
@@ -132,117 +121,126 @@ namespace TrClient.Libraries
             string temp = attribute;
             if (temp.Contains("readingOrder"))
             {
-                int Position = temp.IndexOf("readingOrder");
-                temp = temp.Substring(Position, temp.Length - Position);
-                temp = temp.Replace("readingOrder {index:", "");
+                int position = temp.IndexOf("readingOrder");
+                temp = temp.Substring(position, temp.Length - position);
+                temp = temp.Replace("readingOrder {index:", string.Empty);
                 temp = temp.Remove(temp.IndexOf(";"));
                 int tempInt = (int)Convert.ToInt32(temp);
                 return tempInt + 1;
             }
             else
+            {
                 return 0;
+            }
         }
-
 
         public static int GetAverageYcoord(string coords)
         {
             int tempResult = -1;
-            if (coords != "")
+            if (coords != string.Empty)
             {
                 string temp = coords.Replace(" ", ";");
-                var PointsArray = temp.Split(';').ToArray();
-                int PointsCount = PointsArray.Length;
+                var pointsArray = temp.Split(';').ToArray();
+                int pointsCount = pointsArray.Length;
 
-                int SumYcoord = 0;
+                int sumYcoord = 0;
 
-                for (int i = 0; i < PointsCount; i++)
+                for (int i = 0; i < pointsCount; i++)
                 {
-                    int CommaPos = PointsArray[i].IndexOf(",");
-                    int y = (int)Convert.ToInt32(PointsArray[i].Substring(CommaPos + 1));
+                    int commaPos = pointsArray[i].IndexOf(",");
+                    int y = (int)Convert.ToInt32(pointsArray[i].Substring(commaPos + 1));
 
-                    SumYcoord += y;
+                    sumYcoord += y;
                 }
-                tempResult = (int)(SumYcoord / PointsCount);
+
+                tempResult = (int)(sumYcoord / pointsCount);
             }
+
             return tempResult;
         }
 
         public static int GetLeftMostXcoord(string coords)
         {
             int tempResult = -1;
-            if (coords != "")
+            if (coords != string.Empty)
             {
                 string temp = coords.Replace(" ", ";");
-                var PointsArray = temp.Split(';').ToArray();
-                int PointsCount = PointsArray.Length;
+                var pointsArray = temp.Split(';').ToArray();
+                int pointsCount = pointsArray.Length;
 
-                int MinX = 10000;
+                int minX = 10000;
 
-                for (int i = 0; i < PointsCount; i++)
+                for (int i = 0; i < pointsCount; i++)
                 {
-                    int CommaPos = PointsArray[i].IndexOf(",");
-                    int x = (int)Convert.ToInt32(PointsArray[i].Substring(0, CommaPos));
-                    if (x < MinX)
-                        MinX = x;
+                    int commaPos = pointsArray[i].IndexOf(",");
+                    int x = (int)Convert.ToInt32(pointsArray[i].Substring(0, commaPos));
+                    if (x < minX)
+                    {
+                        minX = x;
+                    }
                 }
-                tempResult = MinX;
+
+                tempResult = minX;
             }
+
             return tempResult;
         }
 
         public static int GetRightMostXcoord(string coords)
         {
             string temp = coords.Replace(" ", ";");
-            var PointsArray = temp.Split(';').ToArray();
-            int PointsCount = PointsArray.Length;
+            var pointsArray = temp.Split(';').ToArray();
+            int pointsCount = pointsArray.Length;
 
-            int MaxX = 0;
+            int maxX = 0;
 
-            for (int i = 0; i < PointsCount; i++)
+            for (int i = 0; i < pointsCount; i++)
             {
-                int CommaPos = PointsArray[i].IndexOf(",");
-                if (CommaPos > -1)
+                int commaPos = pointsArray[i].IndexOf(",");
+                if (commaPos > -1)
                 {
-                    int x = (int)Convert.ToInt32(PointsArray[i].Substring(0, CommaPos));
-                    if (x > MaxX)
-                        MaxX = x;
+                    int x = (int)Convert.ToInt32(pointsArray[i].Substring(0, commaPos));
+                    if (x > maxX)
+                    {
+                        maxX = x;
+                    }
                 }
             }
-            return MaxX;
+
+            return maxX;
         }
 
-        public static bool CheckBaseLineStraightness(string CoordsString, double MaxAllowedAngle)
+        public static bool CheckBaseLineStraightness(string coordsString, double maxAllowedAngle)
         {
-            double LengthLimit = 10;
-
-            TrCoords Coords = new TrCoords(CoordsString);
-            int HighestIndex = Coords.Count - 1;
-            int DeltaX = 0;
-            int DeltaY = 0;
-            double Ratio = 0;
-            double Angle = 0;
-            double Length = 0;
-            bool OK = true;
+            TrCoords coords = new TrCoords(coordsString);
+            int highestIndex = coords.Count - 1;
+            int deltaX = 0;
+            int deltaY = 0;
+            double ratio = 0;
+            double angle = 0;
+            bool oK = true;
 
             // tjekker vinklen TIL alle punkter, dvs. fra det andet punkt (nr. 0) og ud
-            for (int i = 1; i <= HighestIndex; i++)
+            for (int i = 1; i <= highestIndex; i++)
             {
-                DeltaX = Coords[i].X - Coords[i - 1].X;
-                DeltaY = Coords[i].Y - Coords[i - 1].Y;
+                deltaX = coords[i].X - coords[i - 1].X;
+                deltaY = coords[i].Y - coords[i - 1].Y;
 
-                if (DeltaX != 0)
+                if (deltaX != 0)
                 {
-                    if (DeltaX > 0)
+                    if (deltaX > 0)
                     {
                         // deltaX > 0: hvis deltaY er 0 er alt godt, ellers tjekker vi vinklen - NEJ IKKE: og LÆNGDEN - for hvis det er en lille pjosker, gør det ikke noget
-                        if (DeltaY != 0)
+                        if (deltaY != 0)
                         {
-                            Ratio = (double)DeltaY / (double)DeltaX;
-                            Angle = System.Math.Atan(Ratio) * (180 / Math.PI);
+                            ratio = (double)deltaY / (double)deltaX;
+                            angle = System.Math.Atan(ratio) * (180 / Math.PI);
+
                             // Length = System.Math.Sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
 
                             // if (Length > LengthLimit)
-                            OK = OK && (Math.Abs(Angle) <= MaxAllowedAngle);
+                            oK = oK && (Math.Abs(angle) <= maxAllowedAngle);
+
                             // Debug.WriteLine($"DeltaX: {DeltaX}, DeltaY: {DeltaY}, Ratio: {Ratio}, Angle: {Angle}, OK: {OK}");
                         }
                     }
@@ -250,144 +248,159 @@ namespace TrClient.Libraries
                     {
                         // Debug.WriteLine($"DeltaX < 0");
                         // deltaX < 0; den er helt gal!
-                        OK = false;
+                        oK = false;
                     }
                 }
                 else
                 {
                     // Debug.WriteLine($"DeltaX = 0");
                     // deltaX = 0: så skal deltaY OGSÅ være nul - eller meget tæt på... dvs. < +/-5
-                    if (DeltaY < -5 || DeltaY > 5)
-                        OK = false;
+                    if (deltaY < -5 || deltaY > 5)
+                    {
+                        oK = false;
+                    }
                 }
             }
-            return OK;
+
+            return oK;
         }
 
-
-        public static bool CheckBaseLineDirection(string CoordsString)
+        public static bool CheckBaseLineDirection(string coordsString)
         {
-            string temp = CoordsString.Replace(" ", ";");
-            var PointsArray = temp.Split(';').ToArray();
-            int PointsCount = PointsArray.Length;
-            bool OK = true;
+            string temp = coordsString.Replace(" ", ";");
+            var pointsArray = temp.Split(';').ToArray();
+            int pointsCount = pointsArray.Length;
+            bool oK = true;
 
-            if (PointsCount >= 2)
+            if (pointsCount >= 2)
             {
-                int PreviousX = -1;
-                int CurrentX = 0;
-                int CommaPos = 0;
-                for (int i = 0; i < PointsCount; i++)
+                int previousX = -1;
+                int currentX = 0;
+                int commaPos = 0;
+                for (int i = 0; i < pointsCount; i++)
                 {
-                    CommaPos = PointsArray[i].IndexOf(",");
-                    CurrentX = (int)Convert.ToInt32(PointsArray[i].Substring(0, CommaPos));
-                    OK = (CurrentX >= PreviousX);
-                    if (OK)
-                        PreviousX = CurrentX;
+                    commaPos = pointsArray[i].IndexOf(",");
+                    currentX = (int)Convert.ToInt32(pointsArray[i].Substring(0, commaPos));
+                    oK = currentX >= previousX;
+                    if (oK)
+                    {
+                        previousX = currentX;
+                    }
                     else
+                    {
                         break;
+                    }
                 }
             }
             else
             {
-                OK = false;                
+                oK = false;
             }
-            
-            return OK;
+
+            return oK;
         }
 
-        public static bool CheckCoordinates(string CoordsString, int PageWidth, int PageHeigth)
+        public static bool CheckCoordinates(string coordsString, int pageWidth, int pageHeigth)
         {
-            TrCoords Coords = new TrCoords(CoordsString);
-            bool OK = true;
+            TrCoords coords = new TrCoords(coordsString);
+            bool oK = true;
             bool xOK;
             bool yOK;
 
             // tjekker, om et punkt har negative koordinater eller om det er større end siden
-            foreach (TrCoord C in Coords)
+            foreach (TrCoord c in coords)
             {
-                xOK = (C.X >= 0 && C.X <= PageWidth);
-                yOK = (C.Y >= 0 && C.Y <= PageHeigth);
-                OK = OK && xOK && yOK;
+                xOK = c.X >= 0 && c.X <= pageWidth;
+                yOK = c.Y >= 0 && c.Y <= pageHeigth;
+                oK = oK && xOK && yOK;
             }
-            return OK;
+
+            return oK;
         }
 
-
-        public static bool CheckBaseLineCoordinates(string CoordsString)
+        public static bool CheckBaseLineCoordinates(string coordsString)
         {
-            TrCoords Coords = new TrCoords(CoordsString);
-            bool OK = true;
+            TrCoords coords = new TrCoords(coordsString);
+            bool oK = true;
             bool xOK;
             bool yOK;
 
             // tjekker, om et punkt har negative koordinater
-            foreach (TrCoord C in Coords)
+            foreach (TrCoord c in coords)
             {
-                xOK = (C.X >= 0);
-                yOK = (C.Y >= 0);
-                OK = OK && xOK && yOK;
+                xOK = c.X >= 0;
+                yOK = c.Y >= 0;
+                oK = oK && xOK && yOK;
             }
-            return OK;
-        }
 
+            return oK;
+        }
 
         public static int GetTopYcoord(string coords)
         {
             string temp = coords.Replace(" ", ";");
-            var PointsArray = temp.Split(';').ToArray();
-            int PointsCount = PointsArray.Length;
+            var pointsArray = temp.Split(';').ToArray();
+            int pointsCount = pointsArray.Length;
 
-            int TopY = 20000;
+            int topY = 20000;
 
-            for (int i = 0; i < PointsCount; i++)
+            for (int i = 0; i < pointsCount; i++)
             {
-                int CommaPos = PointsArray[i].IndexOf(",");
-                int y = (int)Convert.ToInt32(PointsArray[i].Substring(CommaPos + 1));
-                if (y < TopY)
-                    TopY = y;
+                int commaPos = pointsArray[i].IndexOf(",");
+                int y = (int)Convert.ToInt32(pointsArray[i].Substring(commaPos + 1));
+                if (y < topY)
+                {
+                    topY = y;
+                }
             }
-            return TopY;
+
+            return topY;
         }
 
         public static int GetBottomYcoord(string coords)
         {
             // Debug.WriteLine($"Bottom");
             string temp = coords.Replace(" ", ";");
-            var PointsArray = temp.Split(';').ToArray();
-            int PointsCount = PointsArray.Length;
+            var pointsArray = temp.Split(';').ToArray();
+            int pointsCount = pointsArray.Length;
 
-            int BottomY = 0;
+            int bottomY = 0;
 
-            for (int i = 0; i < PointsCount; i++)
+            for (int i = 0; i < pointsCount; i++)
             {
-                int CommaPos = PointsArray[i].IndexOf(",");
-                int y = (int)Convert.ToInt32(PointsArray[i].Substring(CommaPos + 1));
-                if (y > BottomY)
-                    BottomY = y;
+                int commaPos = pointsArray[i].IndexOf(",");
+                int y = (int)Convert.ToInt32(pointsArray[i].Substring(commaPos + 1));
+                if (y > bottomY)
+                {
+                    bottomY = y;
+                }
+
                 // Debug.WriteLine($"y = {y}, BottomY= {BottomY}");
             }
-            return BottomY;
+
+            return bottomY;
         }
 
-        public static string RefineText(string RawText, bool ConvertOtrema)
+        public static string RefineText(string rawText, bool convertOtrema)
         {
-            string Temp = RawText.Trim();
-            while (Temp.IndexOf("  ") != -1)
+            string temp = rawText.Trim();
+            while (temp.IndexOf("  ") != -1)
             {
-                Temp = Temp.Replace("  ", " ");
+                temp = temp.Replace("  ", " ");
             }
 
-            if (ConvertOtrema)
-                Temp = Temp.Replace('ö', 'ø');
+            if (convertOtrema)
+            {
+                temp = temp.Replace('ö', 'ø');
+            }
 
-            Temp = Temp.Replace('ó', 'ø');
-            Temp = Temp.Replace('Ó', 'Ø');
-            Temp = Temp.Replace('ÿ', 'y');
-            Temp = Temp.Replace('ū', 'u');
-            Temp = Temp.Replace('Ū', 'U');
-            Temp = Temp.Replace('ú', 'u');
-            Temp = Temp.Replace('Ú', 'U');
+            temp = temp.Replace('ó', 'ø');
+            temp = temp.Replace('Ó', 'Ø');
+            temp = temp.Replace('ÿ', 'y');
+            temp = temp.Replace('ū', 'u');
+            temp = temp.Replace('Ū', 'U');
+            temp = temp.Replace('ú', 'u');
+            temp = temp.Replace('Ú', 'U');
 
             // flg. fjernet, da de giver problemer med auto-tagging
             //Temp = Temp.Replace('„', '"');
@@ -395,72 +408,70 @@ namespace TrClient.Libraries
             //Temp = Temp.Replace("\'", "\u2019"); // right single quotation mark
 
             //Temp = Temp.Replace(" - ", " \u2013 ").Trim();  // en dash
+            temp = temp.Replace("...", "\u2026"); // ellipsis
 
-            Temp = Temp.Replace("...", "\u2026"); // ellipsis
+            temp = temp.Replace(" .", ".").Trim();
+            temp = temp.Replace(" ,", ",").Trim();
 
-            Temp = Temp.Replace(" .", ".").Trim();
-            Temp = Temp.Replace(" ,", ",").Trim();
+            temp = temp.Replace(" :", ":").Trim();
+            temp = temp.Replace(" ;", ";").Trim();
 
-            Temp = Temp.Replace(" :", ":").Trim();
-            Temp = Temp.Replace(" ;", ";").Trim();
+            temp = temp.Replace("( ", "(").Trim();
+            temp = temp.Replace(" )", ")").Trim();
 
-            Temp = Temp.Replace("( ", "(").Trim();
-            Temp = Temp.Replace(" )", ")").Trim();
+            temp = temp.Replace("[ ", "[").Trim();
+            temp = temp.Replace(" ]", "]").Trim();
 
-            Temp = Temp.Replace("[ ", "[").Trim();
-            Temp = Temp.Replace(" ]", "]").Trim();
-
-            return Temp;
+            return temp;
         }
 
-        public static int UniqueNumbersCount(string Source)
+        public static int UniqueNumbersCount(string source)
         {
-            List<int> Numbers = GetNumbers(Source);
-            int Count = Numbers.Count;
-            return Count;
+            List<int> numbers = GetNumbers(source);
+            int count = numbers.Count;
+            return count;
         }
 
-
-        public static List<int> GetNumbers(string Source)
+        public static List<int> GetNumbers(string source)
         {
-            string[] Numbers = Regex.Split(Source, @"\D+");
-            List<int> OutputList = new List<int>();
+            string[] numbers = Regex.Split(source, @"\D+");
+            List<int> outputList = new List<int>();
 
-            foreach (string Value in Numbers)
+            foreach (string value in numbers)
             {
-                if (!string.IsNullOrEmpty(Value))
+                if (!string.IsNullOrEmpty(value))
                 {
-                    int i = int.Parse(Value);
-                    OutputList.Add(i);
+                    int i = int.Parse(value);
+                    outputList.Add(i);
                 }
             }
-            return OutputList;
+
+            return outputList;
         }
 
-        private static int ExpandNumber(int FirstNumber, int LastNumber)
+        private static int ExpandNumber(int firstNumber, int lastNumber)
         {
             // returnerer 0, hvis der er noget helt galt
+            string firstString = firstNumber.ToString();
+            string lastString = lastNumber.ToString();
+            int firstLength = firstString.Length;
+            int lastLength = lastString.Length;
 
-            string FirstString = FirstNumber.ToString();
-            string LastString = LastNumber.ToString();
-            int FirstLength = FirstString.Length;
-            int LastLength = LastString.Length;
-
-            if (FirstNumber < LastNumber && FirstLength <= LastLength)
+            if (firstNumber < lastNumber && firstLength <= lastLength)
             {
                 // alt er godt, numrene er rigtige, fx 1-10, 20-22
-                return LastNumber;
+                return lastNumber;
             }
-            else if (FirstNumber > LastNumber && FirstLength > LastLength)
+            else if (firstNumber > lastNumber && firstLength > lastLength)
             {
                 // intervalt fundet af typen 327-29, 1001-8
-                int DiffLength = FirstLength - LastLength;
-                string MissingNumbers = FirstString.Substring(0, DiffLength);
-                string CombinedNumbers = MissingNumbers + LastString;
-                int NewNumber = int.Parse(CombinedNumbers);
-                return NewNumber;
+                int diffLength = firstLength - lastLength;
+                string missingNumbers = firstString.Substring(0, diffLength);
+                string combinedNumbers = missingNumbers + lastString;
+                int newNumber = int.Parse(combinedNumbers);
+                return newNumber;
             }
-	        else if (FirstNumber > LastNumber && FirstLength == LastLength)
+            else if (firstNumber > lastNumber && firstLength == lastLength)
             {
                 // her er der noget helt galt, fx 327-315
                 return 0;
@@ -471,224 +482,229 @@ namespace TrClient.Libraries
             }
         }
 
-
-
-        public static string GetDate(string Source, string Year)
+        public static string GetDate(string source, string year)
         {
-            string FirstChar = "[";
-            string LastChar = "]";
-            string DMdivider = "/";
-            string MYdivider = "-";
-            string Result;
+            string firstChar = "[";
+            string lastChar = "]";
+            string dMdivider = "/";
+            string mYdivider = "-";
+            string result;
 
-            List<int> Numbers = GetNumbers(Source);
-            int Count = Numbers.Count;
+            List<int> numbers = GetNumbers(source);
+            int count = numbers.Count;
 
-            if (Count == 2 || Count == 3)   // 3, for det hænder, at nogle også skriver året, fx 2/10-42
+            if (count == 2 || count == 3)   // 3, for det hænder, at nogle også skriver året, fx 2/10-42
             {
-                int DayNr = Numbers[0];
-                int MonthNr = Numbers[1];
-                if (DayNr >= 1 && DayNr <= 31 && MonthNr >= 1 && MonthNr <= 12)
+                int dayNr = numbers[0];
+                int monthNr = numbers[1];
+                if (dayNr >= 1 && dayNr <= 31 && monthNr >= 1 && monthNr <= 12)
                 {
-                    string Day = DayNr.ToString();
-                    string Month = MonthNr.ToString();
-                    Result = FirstChar + Day + DMdivider + Month + MYdivider + Year + LastChar;
+                    string day = dayNr.ToString();
+                    string month = monthNr.ToString();
+                    result = firstChar + day + dMdivider + month + mYdivider + year + lastChar;
                 }
                 else
-                    Result = "n/a";
+                {
+                    result = "n/a";
+                }
             }
             else
             {
-                Result = "n/a";
+                result = "n/a";
             }
-            return Result;
+
+            return result;
         }
 
-        public static string ExpandStringWithNumericInterval(string Source)
+        public static string ExpandStringWithNumericInterval(string source)
         {
-            string Result = "";
+            string result = string.Empty;
 
-            List<int> Numbers = GetNumbers(Source);
-            int Count = Numbers.Count;
+            List<int> numbers = GetNumbers(source);
+            int count = numbers.Count;
 
-            if (Count == 1)
+            if (count == 1)
             {
                 // ikke noget interval fundet! returnerer input uændret
-                Result = Source;
+                result = source;
             }
-            else 
+            else
             {
-                int FirstNumber = Numbers[0];
-                int LastNumber = 0;
+                int firstNumber = numbers[0];
+                int lastNumber = 0;
 
-                if (Count == 2)
+                if (count == 2)
                 {
                     // klassisk interval af formen 317-19 fundet; splitter det op
-                    LastNumber = Numbers[1];
+                    lastNumber = numbers[1];
                 }
                 else
                 {
                     // mere sært interval; sandsynligvis blot oplistning af numre
-                    LastNumber = Numbers[Count - 1];
+                    lastNumber = numbers[count - 1];
                 }
-                LastNumber = ExpandNumber(FirstNumber, LastNumber);
 
-                if (FirstNumber < LastNumber)
+                lastNumber = ExpandNumber(firstNumber, lastNumber);
+
+                if (firstNumber < lastNumber)
                 {
                     // interval fundet, alt er godt (bl.a. har ExpandNumber ikke returneret 0)
-                    StringBuilder MultipleNumbers = new StringBuilder();
-                    for (int i = FirstNumber; i <= LastNumber; i++)
+                    StringBuilder multipleNumbers = new StringBuilder();
+                    for (int i = firstNumber; i <= lastNumber; i++)
                     {
-                        string CurrentNumber = i.ToString();
-                        MultipleNumbers.Append(CurrentNumber);
-                        if (i < LastNumber)
-                            MultipleNumbers.Append(" ");
+                        string currentNumber = i.ToString();
+                        multipleNumbers.Append(currentNumber);
+                        if (i < lastNumber)
+                        {
+                            multipleNumbers.Append(" ");
+                        }
                     }
-                    Result = MultipleNumbers.ToString();
+
+                    result = multipleNumbers.ToString();
                 }
                 else
                 {
                     // enten har ExpandNumber returneret 0, eller også er der noget logisk galt i inputtet
-                    Result = "n/a";
+                    result = "n/a";
                 }
-
             }
 
-            return Result;
+            return result;
         }
 
-
-        public static string ExtractRecordName(string Source)
+        public static string ExtractRecordName(string source)
         {
-            string Prefix = "Elfelt-Visit_";
-            string Suffix = ".tif";
+            string prefix = "Elfelt-Visit_";
+            string suffix = ".tif";
 
-            char LastChar = Source[Source.Length - 1];
-            string Temp = "";
+            char lastChar = source[source.Length - 1];
+            string temp = string.Empty;
 
-            if (!char.IsLetter(LastChar))
+            if (!char.IsLetter(lastChar))
             {
                 // der er IKKE et bogstav i enden
-                Temp = Convert.ToInt32(Source).ToString("00000");
+                temp = Convert.ToInt32(source).ToString("00000");
             }
             else
             {
                 // der ER et bogstav i enden
                 //string Letter = NumberMatches[0].Value.Last().ToString();
-                int DigitCount = Source.Length - 1;
-                int DigitValue = Convert.ToInt32(Source.Substring(0, DigitCount));
-                Temp = DigitValue.ToString("00000") + LastChar.ToString();
-
+                int digitCount = source.Length - 1;
+                int digitValue = Convert.ToInt32(source.Substring(0, digitCount));
+                temp = digitValue.ToString("00000") + lastChar.ToString();
             }
-            string OutputName = Prefix + Temp + Suffix;
-            return OutputName;
+
+            string outputName = prefix + temp + suffix;
+            return outputName;
         }
 
-
-        public static string GetAccNo(string Source, string Year)
+        public static string GetAccNo(string source, string year)
         {
             // NB: Kan IKKE håndtere efterstillede bogstaver, fx "123a" eller "123a/b"
-            string FirstChar = "[";
-            string LastChar = "]";
-            string Prefix = "Acc. ";
-            string YNdivider = "/";
-            string MultipleDivider = " - ";
-            string Result;
+            string firstChar = "[";
+            string lastChar = "]";
+            string prefix = "Acc. ";
+            string yNdivider = "/";
+            string multipleDivider = " - ";
+            string result;
 
-            List<int> Numbers = GetNumbers(Source);
-            int Count = Numbers.Count;
+            List<int> numbers = GetNumbers(source);
+            int count = numbers.Count;
 
-            if (Count == 1)
+            if (count == 1)
             {
                 // simpelt tilfælde: kun eet nummer
-                string AccNo = Numbers[0].ToString();
-                Result = FirstChar + Prefix + Year + YNdivider + AccNo + LastChar;
+                string accNo = numbers[0].ToString();
+                result = firstChar + prefix + year + yNdivider + accNo + lastChar;
             }
-            else if (Count == 2)
+            else if (count == 2)
             {
                 // muligvis et interval af acc-nr.
-                int FirstNumber = Numbers[0];
-                int LastNumber = Numbers[1];
-                LastNumber = ExpandNumber(FirstNumber, LastNumber);
+                int firstNumber = numbers[0];
+                int lastNumber = numbers[1];
+                lastNumber = ExpandNumber(firstNumber, lastNumber);
 
-                if (FirstNumber < LastNumber)
+                if (firstNumber < lastNumber)
                 {
                     // interval fundet
                     // alt er godt (bl.a. har ExpandNumber ikke returneret 0
-                    StringBuilder MultipleAccNos = new StringBuilder();
-                    for (int i = FirstNumber; i <= LastNumber; i++)
+                    StringBuilder multipleAccNos = new StringBuilder();
+                    for (int i = firstNumber; i <= lastNumber; i++)
                     {
-                        string CurrentAccNo = i.ToString();
-                        string ListValue = Prefix + Year + YNdivider + CurrentAccNo;
-                        MultipleAccNos.Append(ListValue);
-                        if (i < LastNumber)
-                            MultipleAccNos.Append(MultipleDivider);
+                        string currentAccNo = i.ToString();
+                        string listValue = prefix + year + yNdivider + currentAccNo;
+                        multipleAccNos.Append(listValue);
+                        if (i < lastNumber)
+                        {
+                            multipleAccNos.Append(multipleDivider);
+                        }
                     }
-                    Result = FirstChar + MultipleAccNos.ToString() + LastChar;
+
+                    result = firstChar + multipleAccNos.ToString() + lastChar;
                 }
                 else
                 {
                     // enten har ExpandNumber returneret 0, eller også er der noget logisk galt i inputtet
-                    Result = "n/a";
+                    result = "n/a";
                 }
             }
             else
             {
-                Result = "n/a";
-
+                result = "n/a";
             }
-            return Result;
+
+            return result;
         }
 
-        public static string StripSharpParanthesis(string Source)
+        public static string StripSharpParanthesis(string source)
         {
-            string Temp = Source;
-            Temp = Temp.Replace('[', ' ');
-            Temp = Temp.Replace(']', ' ');
-            Temp = Temp.Trim();
-            return Temp;
+            string temp = source;
+            temp = temp.Replace('[', ' ');
+            temp = temp.Replace(']', ' ');
+            temp = temp.Trim();
+            return temp;
         }
 
-        public static char GetSuperscriptChar(char Source)
+        public static char GetSuperscriptChar(char source)
         {
-            char NewChar = NullChar;
+            char newChar = NullChar;
 
-            switch (Source)
+            switch (source)
             {
                 case '0':
-                    NewChar = '⁰';
+                    newChar = '⁰';
                     break;
                 case '1':
-                    NewChar = '¹';
+                    newChar = '¹';
                     break;
                 case '2':
-                    NewChar = '²';
+                    newChar = '²';
                     break;
                 case '3':
-                    NewChar = '³';
+                    newChar = '³';
                     break;
                 case '4':
-                    NewChar = '⁴';
+                    newChar = '⁴';
                     break;
                 case '5':
-                    NewChar = '⁵';
+                    newChar = '⁵';
                     break;
                 case '6':
-                    NewChar = '⁶';
+                    newChar = '⁶';
                     break;
                 case '7':
-                    NewChar = '⁷';
+                    newChar = '⁷';
                     break;
                 case '8':
-                    NewChar = '⁸';
+                    newChar = '⁸';
                     break;
                 case '9':
-                    NewChar = '⁹';
+                    newChar = '⁹';
                     break;
             }
-            return NewChar;
-        }
 
+            return newChar;
+        }
 
         public static bool VerifyRegex(string testPattern)
         {
@@ -698,7 +714,7 @@ namespace TrClient.Libraries
             {
                 try
                 {
-                    Regex.Match("", testPattern);
+                    Regex.Match(string.Empty, testPattern);
                 }
                 catch (ArgumentException)
                 {
@@ -712,7 +728,7 @@ namespace TrClient.Libraries
                 isValid = false;
             }
 
-            return (isValid);
+            return isValid;
         }
     }
 }

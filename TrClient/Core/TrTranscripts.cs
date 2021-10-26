@@ -1,70 +1,63 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrTranscripts.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class TrTranscripts : IEnumerable
     {
-        private List<TrTranscript> Transcripts;
-        public int Count { get => Transcripts.Count; }
+        private List<TrTranscript> transcripts;
+
+        public int Count { get => transcripts.Count; }
 
         public TrPage ParentPage;
 
-        public void Add(TrTranscript Transcript)
+        public void Add(TrTranscript transcript)
         {
-            Transcripts.Add(Transcript);
-            Transcript.ParentContainer = this;
-            Transcript.ParentPage = this.ParentPage;
+            transcripts.Add(transcript);
+            transcript.ParentContainer = this;
+            transcript.ParentPage = ParentPage;
         }
 
         public void Sort()
         {
-            Transcripts.Sort();
+            transcripts.Sort();
         }
 
         public void Reverse()
         {
-            Transcripts.Reverse();
+            transcripts.Reverse();
         }
 
         public void Clear()
         {
-            Transcripts.Clear();
+            transcripts.Clear();
         }
 
         public TrTranscript this[int index]
         {
-            get { return Transcripts[index]; }
-            set { Transcripts[index] = value; }
+            get { return transcripts[index]; }
+            set { transcripts[index] = value; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Transcripts).GetEnumerator();
+            return ((IEnumerable)transcripts).GetEnumerator();
         }
 
-        public TrTranscript GetTranscriptFromID(string Search)
+        public TrTranscript GetTranscriptFromID(string search)
         {
-            var Transcript = Transcripts.Where(t => t.ID == Search).FirstOrDefault();
-            return Transcript;
+            var transcript = transcripts.Where(t => t.ID == search).FirstOrDefault();
+            return transcript;
         }
 
         public TrTranscripts()
         {
-            Transcripts = new List<TrTranscript>();
+            transcripts = new List<TrTranscript>();
         }
-
     }
 }

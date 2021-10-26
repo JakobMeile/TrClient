@@ -1,162 +1,214 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrDialogTransferSettings.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Helpers
 {
+    using System.ComponentModel;
+
     public class TrDialogTransferSettings : INotifyPropertyChanged
     {
-        private bool _deleteShortBaseLines;
+        private bool deleteShortBaseLines;
+
         public bool DeleteShortBaseLines
         {
-            get { return _deleteShortBaseLines; }
+            get
+            {
+                return deleteShortBaseLines;
+            }
+
             set
             {
-                _deleteShortBaseLines = value;
+                deleteShortBaseLines = value;
                 NotifyPropertyChanged("DeleteShortBaseLines");
             }
         }
 
-        private int _shortLimit;
+        private int shortLimit;
+
         public int ShortLimit
         {
-            get { return _shortLimit; }
+            get
+            {
+                return shortLimit;
+            }
+
             set
             {
-                _shortLimit = value;
+                shortLimit = value;
                 NotifyPropertyChanged("ShortLimit");
             }
         }
 
-        private bool _extendLeft;
+        private bool extendLeft;
+
         public bool ExtendLeft
         {
-            get { return _extendLeft; }
+            get
+            {
+                return extendLeft;
+            }
+
             set
             {
-                _extendLeft = value;
+                extendLeft = value;
                 NotifyPropertyChanged("ExtendLeft");
             }
         }
 
-        private int _leftAmount;
+        private int leftAmount;
+
         public int LeftAmount
         {
-            get { return _leftAmount; }
+            get
+            {
+                return leftAmount;
+            }
+
             set
             {
-                _leftAmount = value;
+                leftAmount = value;
                 NotifyPropertyChanged("LeftAmount");
             }
         }
 
-        private bool _extendRight;
+        private bool extendRight;
+
         public bool ExtendRight
         {
-            get { return _extendRight; }
+            get
+            {
+                return extendRight;
+            }
+
             set
             {
-                _extendRight = value;
+                extendRight = value;
                 NotifyPropertyChanged("ExtendRight");
             }
         }
 
-        private int _rightAmount;
+        private int rightAmount;
+
         public int RightAmount
         {
-            get { return _rightAmount; }
+            get
+            {
+                return rightAmount;
+            }
+
             set
             {
-                _rightAmount = value;
+                rightAmount = value;
                 NotifyPropertyChanged("RightAmount");
             }
         }
 
-        private bool _allPages;
+        private bool allPages;
+
         public bool AllPages
         {
-            get { return _allPages; }
+            get
+            {
+                return allPages;
+            }
+
             set
             {
-                _allPages= value;
+                allPages = value;
                 NotifyPropertyChanged("AllPages");
             }
         }
 
-        private int _pagesFrom;
+        private int pagesFrom;
+
         public int PagesFrom
         {
-            get { return _pagesFrom; }
+            get
+            {
+                return pagesFrom;
+            }
+
             set
             {
-                _pagesFrom = value;
+                pagesFrom = value;
                 NotifyPropertyChanged("PagesFrom");
             }
         }
 
-        private int _pagesTo;
+        private int pagesTo;
+
         public int PagesTo
         {
-            get { return _pagesTo; }
+            get
+            {
+                return pagesTo;
+            }
+
             set
             {
-                _pagesTo = value;
+                pagesTo = value;
                 NotifyPropertyChanged("PagesTo");
             }
         }
 
-        private bool _allRegions;
+        private bool allRegions;
+
         public bool AllRegions
         {
-            get { return _allRegions; }
+            get
+            {
+                return allRegions;
+            }
+
             set
             {
-                _allRegions = value;
+                allRegions = value;
                 NotifyPropertyChanged("AllRegions");
             }
         }
 
-        private int _RegionsFrom;
+        private int regionsFrom;
+
         public int RegionsFrom
         {
-            get { return _RegionsFrom; }
+            get
+            {
+                return regionsFrom;
+            }
+
             set
             {
-                _RegionsFrom = value;
+                regionsFrom = value;
                 NotifyPropertyChanged("RegionsFrom");
             }
         }
 
-        private int _RegionsTo;
+        private int regionsTo;
+
         public int RegionsTo
         {
-            get { return _RegionsTo; }
+            get
+            {
+                return regionsTo;
+            }
+
             set
             {
-                _RegionsTo = value;
+                regionsTo = value;
                 NotifyPropertyChanged("RegionsTo");
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
-
 
         public TrDialogTransferSettings()
         {
@@ -167,22 +219,25 @@ namespace TrClient.Helpers
             ExtendRight = true;
             RightAmount = 40;
             AllPages = true;
+
             //PagesFrom = 1;
             //PagesTo = 1;
             AllRegions = true;
+
             //RegionsFrom = 1;
             //RegionsTo = 1;
         }
 
-        public TrDialogTransferSettings(int MaxPages) : this()
+        public TrDialogTransferSettings(int maxPages)
+            : this()
         {
-            PagesTo = MaxPages;
+            PagesTo = maxPages;
         }
 
-        public TrDialogTransferSettings(int MaxPages, int MaxRegions) : this(MaxPages)
+        public TrDialogTransferSettings(int maxPages, int maxRegions)
+            : this(maxPages)
         {
-            RegionsTo = MaxRegions;
+            RegionsTo = maxRegions;
         }
-
     }
 }

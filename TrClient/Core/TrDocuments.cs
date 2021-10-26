@@ -1,95 +1,84 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrDocuments.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System.Collections;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using TrClient.Helpers;
+
     public class TrDocuments : IEnumerable
     {
+        private ObservableCollection<TrDocument> documents;
 
-        private ObservableCollection<TrDocument> Documents;
         // private List<TrDocument> Documents;
-        public int Count { get => Documents.Count; }
+        public int Count { get => documents.Count; }
 
         public TrCollection ParentCollection;
 
-        public void Add(TrDocument Doc)
+        public void Add(TrDocument doc)
         {
-            Documents.Add(Doc);
-            Doc.ParentContainer = this;
-            Doc.ParentCollection = this.ParentCollection;
-
+            documents.Add(doc);
+            doc.ParentContainer = this;
+            doc.ParentCollection = ParentCollection;
         }
 
         public void Sort()
         {
-            Documents.Sort(i => i.Title);
+            documents.Sort(i => i.Title);
+
             // Documents.Sort();
         }
 
         public void Clear()
         {
-            Documents.Clear();
+            documents.Clear();
         }
 
         public TrDocument this[int index]
         {
-            get { return Documents[index]; }
-            set { Documents[index] = value; }
+            get { return documents[index]; }
+            set { documents[index] = value; }
         }
 
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Documents).GetEnumerator();
+            return ((IEnumerable)documents).GetEnumerator();
         }
 
-        public TrDocument GetDocumentFromTitle(string Search)
+        public TrDocument GetDocumentFromTitle(string search)
         {
-            var Doc = Documents.Where(d => d.Title == Search).FirstOrDefault();
-            return Doc;
+            var doc = documents.Where(d => d.Title == search).FirstOrDefault();
+            return doc;
         }
 
-        public TrDocument GetDocumentFromID(string Search)
+        public TrDocument GetDocumentFromID(string search)
         {
-            var Doc = Documents.Where(d => d.ID == Search).FirstOrDefault();
-            return Doc;
+            var doc = documents.Where(d => d.ID == search).FirstOrDefault();
+            return doc;
         }
 
-        public string GetIDFromName(string SearchName)
+        public string GetIDFromName(string searchName)
         {
-            string Temp = "";
-            foreach (TrDocument Doc in Documents)
+            string temp = string.Empty;
+            foreach (TrDocument doc in documents)
             {
-                if (Doc.Title == SearchName)
+                if (doc.Title == searchName)
                 {
-                    Temp = Doc.ID;
+                    temp = doc.ID;
                     break;
                 }
             }
-            return Temp;
+
+            return temp;
         }
-
-
 
         public TrDocuments()
         {
             // Documents = new List<TrDocument>();
-            Documents = new ObservableCollection<TrDocument>();
+            documents = new ObservableCollection<TrDocument>();
         }
-
     }
 }

@@ -1,0 +1,16 @@
+﻿[*.cs]
+
+# SA1005: Single line comments should begin with single space
+dotnet_diagnostic.SA1005.severity = suggestion
+
+# SA1025: Code should not contain multiple whitespace in a row
+dotnet_diagnostic.SA1025.severity = suggestion
+
+# SA1108: Block statements should not contain embedded comments
+dotnet_diagnostic.SA1108.severity = suggestion
+
+# SA1121: Use built-in type alias
+dotnet_diagnostic.SA1121.severity = suggestion
+
+# SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1101.severity = none

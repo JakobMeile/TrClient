@@ -1,153 +1,175 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.IO;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Text.RegularExpressions;
-using DanishNLP;
-
-
+﻿// <copyright file="TrDocument.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Net.Http;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using System.Windows.Media;
+    using System.Xml;
+    using System.Xml.Linq;
+    using DanishNLP;
+    using TrClient.Extensions;
+    using TrClient.Helpers;
+    using TrClient.Libraries;
+
     public class TrDocument : IComparable, INotifyPropertyChanged
     {
         public string TrpPages = "https://transkribus.eu/TrpServer/rest/collections/_ColID_/_DocID_/fulldoc.xml";
 
-
         public string Folder { get; set; }
+
         public string ID { get; set; }
 
-        private int _nrOfPages = 0;
+        private int nrOfPages = 0;
+
         public int NrOfPages
         {
-            get { return _nrOfPages; }
-            set { _nrOfPages = value; }
+            get { return nrOfPages; }
+            set { nrOfPages = value; }
         }
 
+        private string title = string.Empty;
 
-        private string _title = "";
         public string Title
         {
-            get { return _title; }
+            get
+            {
+                return title;
+            }
+
             set
             {
-                if (_title != value)
+                if (title != value)
                 {
-                    _title = value;
+                    title = value;
                     NotifyPropertyChanged("Title");
                 }
             }
         }
 
-        private int _nrOfTranscriptsLoaded = 0;
+        private int nrOfTranscriptsLoaded = 0;
+
         public int NrOfTranscriptsLoaded
         {
-            get { return _nrOfTranscriptsLoaded; }
+            get
+            {
+                return nrOfTranscriptsLoaded;
+            }
+
             set
             {
-                if (_nrOfTranscriptsLoaded != value)
+                if (nrOfTranscriptsLoaded != value)
                 {
-                    _nrOfTranscriptsLoaded = value;
+                    nrOfTranscriptsLoaded = value;
                     NotifyPropertyChanged("NrOfTranscriptsLoaded");
                 }
             }
         }
 
-        private int _nrOfTranscriptsChanged = 0;
+        private int nrOfTranscriptsChanged = 0;
+
         public int NrOfTranscriptsChanged
         {
-            get { return _nrOfTranscriptsChanged; }
+            get
+            {
+                return nrOfTranscriptsChanged;
+            }
+
             set
             {
-                if (_nrOfTranscriptsChanged != value)
+                if (nrOfTranscriptsChanged != value)
                 {
-                    _nrOfTranscriptsChanged = value;
+                    nrOfTranscriptsChanged = value;
                     NotifyPropertyChanged("NrOfTranscriptsChanged");
                 }
             }
         }
 
-        private int _nrOfTranscriptsUploaded = 0;
+        private int nrOfTranscriptsUploaded = 0;
+
         public int NrOfTranscriptsUploaded
         {
-            get { return _nrOfTranscriptsUploaded; }
+            get
+            {
+                return nrOfTranscriptsUploaded;
+            }
+
             set
             {
-                if (_nrOfTranscriptsUploaded != value)
+                if (nrOfTranscriptsUploaded != value)
                 {
-                    _nrOfTranscriptsUploaded = value;
+                    nrOfTranscriptsUploaded = value;
                     NotifyPropertyChanged("NrOfTranscriptsUploaded");
                 }
             }
         }
 
-        private int _numberOfRegions = 0;
+        private int numberOfRegions = 0;
+
         public int NumberOfRegions
         {
             get
             {
                 int temp = 0;
-                foreach (TrPage P in Pages)
+                foreach (TrPage p in Pages)
                 {
-                    if (P.HasRegions)
+                    if (p.HasRegions)
                     {
-                        temp = temp + P.NumberOfRegions;
+                        temp = temp + p.NumberOfRegions;
                     }
                 }
-                _numberOfRegions = temp;
-                return _numberOfRegions;
+
+                numberOfRegions = temp;
+                return numberOfRegions;
             }
         }
 
-        private int _numberOfLines = 0;
+        private int numberOfLines = 0;
+
         public int NumberOfLines
         {
             get
             {
                 int temp = 0;
-                foreach (TrPage P in Pages)
+                foreach (TrPage p in Pages)
                 {
-                    if (P.HasRegions)
+                    if (p.HasRegions)
                     {
-                        temp = temp + P.NumberOfLines;
+                        temp = temp + p.NumberOfLines;
                     }
                 }
-                _numberOfLines = temp;
-                return _numberOfLines;
+
+                numberOfLines = temp;
+                Debug.Print($"Document {Title}: Number of lines = {numberOfLines}");
+                return numberOfLines;
             }
         }
 
+        private bool isLoaded = false;
 
-        private bool _isLoaded = false;
         public bool IsLoaded
         {
-            get { return _isLoaded; }
+            get
+            {
+                return isLoaded;
+            }
+
             set
             {
-                if (_isLoaded != value)
+                if (isLoaded != value)
                 {
-                    _isLoaded = value;
+                    isLoaded = value;
                     NotifyPropertyChanged("IsLoaded");
-                    switch (_isLoaded)
+                    switch (isLoaded)
                     {
                         case true:
                             StatusColor = Brushes.LimeGreen;
@@ -160,21 +182,24 @@ namespace TrClient.Core
             }
         }
 
+        private SolidColorBrush statusColor = Brushes.Red;
 
-        private SolidColorBrush _statusColor = Brushes.Red;
         public SolidColorBrush StatusColor
         {
-            get { return _statusColor; }
+            get
+            {
+                return statusColor;
+            }
+
             set
             {
-                if (_statusColor != value)
+                if (statusColor != value)
                 {
-                    _statusColor = value;
+                    statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
         }
-
 
         public XmlDocument PagesAndTranscriptsMetadata = new XmlDocument();
 
@@ -184,71 +209,86 @@ namespace TrClient.Core
         public TrDocuments ParentContainer;
         public TrCollection ParentCollection;
 
-        private bool _hasChanged = false;
+        private bool hasChanged = false;
+
         public bool HasChanged
         {
-            get { return _hasChanged; }
+            get
+            {
+                return hasChanged;
+            }
+
             set
             {
-                _hasChanged = value;
+                hasChanged = value;
                 NotifyPropertyChanged("HasChanged");
-                if (_hasChanged)
+                if (hasChanged)
+                {
                     StatusColor = Brushes.Orange;
+                }
+
                 ParentCollection.HasChanged = value;
             }
         }
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
+                changesUploaded = value;
                 NotifyPropertyChanged("ChangesUploaded");
-                if (_changesUploaded)
+                if (changesUploaded)
+                {
                     StatusColor = Brushes.DarkViolet;
+                }
+
                 ParentCollection.ChangesUploaded = value;
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
 
-
-
-
         // constructor ONLINE
-        public TrDocument(string DocTitle, string DocID, int DocNrOfPages)
+        public TrDocument(string docTitle, string docID, int docNrOfPages)
         {
-            Title = DocTitle;
-            ID = DocID;
-            NrOfPages = DocNrOfPages;
+            Title = docTitle;
+            ID = docID;
+            NrOfPages = docNrOfPages;
 
             Pages.ParentDocument = this;
             IsLoaded = false;
+
             // Debug.WriteLine($"Document constructed: {Title}");
         }
 
         // constructor OFFLINE
-        public TrDocument(string DocTitle, string DocID, int DocNrOfPages, string DocFolder)
+        public TrDocument(string docTitle, string docID, int docNrOfPages, string docFolder)
         {
-            Title = DocTitle;
-            Folder = DocFolder;
-            ID = DocID;
-            NrOfPages = DocNrOfPages;
+            Title = docTitle;
+            Folder = docFolder;
+            ID = docID;
+            NrOfPages = docNrOfPages;
 
             Pages.ParentDocument = this;
             IsLoaded = false;
+
             // Debug.WriteLine($"Document constructed: {Title}, ID: {ID}, NrOfPages: {NrOfPages}, Folder: {Folder}");
         }
-
 
         public int CompareTo(object obj)
         {
@@ -256,111 +296,116 @@ namespace TrClient.Core
             return Title.CompareTo(doc.Title);
         }
 
-        public void Move(int OnPage, int Horizontally, int Vertically)
+        public void Move(int onPage, int horizontally, int vertically)
         {
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.PageNr == OnPage)
+                if (page.PageNr == onPage)
                 {
-                    Debug.WriteLine($"Moving regions on Page nr. {Page.PageNr}");
-                    Page.Move(Horizontally, Vertically);
+                    Debug.WriteLine($"Moving regions on Page nr. {page.PageNr}");
+                    page.Move(horizontally, vertically);
                 }
             }
         }
 
         public void WrapSuperAndSubscriptWithSpaces()
         {
-            foreach (TrPage Page in Pages)
-                Page.WrapSuperAndSubscriptWithSpaces();
+            foreach (TrPage page in Pages)
+            {
+                page.WrapSuperAndSubscriptWithSpaces();
+            }
         }
 
         public void TagEmptyTextLines()
         {
-            foreach (TrPage Page in Pages)
-                Page.TagEmptyTextLines();
+            foreach (TrPage page in Pages)
+            {
+                page.TagEmptyTextLines();
+            }
         }
 
         public void TagEmptyAbbrevTags()
         {
-            foreach (TrPage Page in Pages)
-                Page.TagEmptyAbbrevTags();
+            foreach (TrPage page in Pages)
+            {
+                page.TagEmptyAbbrevTags();
+            }
         }
 
         public string KOBACC_GetYear()
         {
-            string Temp = Title.Substring(0, 4);
-            return Temp;
+            string temp = Title.Substring(0, 4);
+            return temp;
         }
-
 
         public XDocument KOBACC_ExportAccessions()
         {
-            XDocument xAccessionsDoc = new XDocument(new XDeclaration("1.0", "UTF-8", "yes"),
+            XDocument xAccessionsDoc = new XDocument(
+                new XDeclaration("1.0", "UTF-8", "yes"),
                 new XComment("Created by Transkribus Client - The Royal Danish Library"));
 
             XElement xRoot = new XElement("Root");
 
-            XElement xAccessions = new XElement("Accessions",
+            XElement xAccessions = new XElement(
+                "Accessions",
                 new XAttribute("Document", Title));
 
             XElement xSources = new XElement("Sources");
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (TL.TextEquiv != "")
+                                if (textLine.TextEquiv != string.Empty)
                                 {
-                                    if (TL.HasSpecificStructuralTag("Acc"))
+                                    if (textLine.HasSpecificStructuralTag("Acc"))
                                     {
                                         // Der kan være een eller flere...
-                                        if (TL.TextEquiv.Contains(" - "))
+                                        if (textLine.TextEquiv.Contains(" - "))
                                         {
                                             // der ER flere
-                                            string[] AccessionNumbers = TL.TextEquiv.Split('-').ToArray();
-                                            foreach (string AN in AccessionNumbers)
+                                            string[] accessionNumbers = textLine.TextEquiv.Split('-').ToArray();
+                                            foreach (string aN in accessionNumbers)
                                             {
-                                                if (AN != "n/a")
+                                                if (aN != "n/a")
                                                 {
-                                                    XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(AN),
-                                                        new XAttribute("Page", Page.PageNr),
-                                                        new XAttribute("Hpos", TL.Hpos),
-                                                        new XAttribute("Vpos", TL.Vpos));
+                                                    XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(aN),
+                                                        new XAttribute("Page", page.PageNr),
+                                                        new XAttribute("Hpos", textLine.Hpos),
+                                                        new XAttribute("Vpos", textLine.Vpos));
                                                     xAccessions.Add(xAccession);
                                                 }
                                             }
-
                                         }
                                         else
                                         {
                                             // der er kun een
-                                            if (TL.TextEquiv != "n/a")
+                                            if (textLine.TextEquiv != "n/a")
                                             {
-                                                XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(TL.TextEquiv),
-                                                    new XAttribute("Page", Page.PageNr),
-                                                    new XAttribute("Hpos", TL.Hpos),
-                                                    new XAttribute("Vpos", TL.Vpos));
+                                                XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(textLine.TextEquiv),
+                                                    new XAttribute("Page", page.PageNr),
+                                                    new XAttribute("Hpos", textLine.Hpos),
+                                                    new XAttribute("Vpos", textLine.Vpos));
                                                 xAccessions.Add(xAccession);
                                             }
                                         }
                                     }
-                                    else if (TL.HasSpecificStructuralTag("caption"))
+                                    else if (textLine.HasSpecificStructuralTag("caption"))
                                     {
-                                        XElement xSource = new XElement("Source", TL.TextEquiv,
-                                            new XAttribute("Page", Page.PageNr),
-                                            new XAttribute("Hpos", TL.Hpos),
-                                            new XAttribute("Vpos", TL.Vpos));
+                                        XElement xSource = new XElement("Source", textLine.TextEquiv,
+                                            new XAttribute("Page", page.PageNr),
+                                            new XAttribute("Hpos", textLine.Hpos),
+                                            new XAttribute("Vpos", textLine.Vpos));
                                         xSources.Add(xSource);
                                     }
                                 }
                             }
-
                         }
                     }
                 }
@@ -371,7 +416,6 @@ namespace TrClient.Core
             xAccessionsDoc.Add(xRoot);
             return xAccessionsDoc;
         }
-
 
         //public async void CopyFromOtherCollection(TrCollection SourceCollection, HttpClient CurrentClient)
         //{
@@ -388,20 +432,18 @@ namespace TrClient.Core
         //            {
         //                Debug.WriteLine($"Document match!!! Title: {Title}");
 
-        //                // henter nyeste transcript for hver side i Source ind 
+        //                // henter nyeste transcript for hver side i Source ind
         //                foreach (TrPage Page in SourceDocument.Pages)
         //                {
         //                    Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(CurrentClient);
         //                    bool OK = await Loaded;
         //                }
 
-
         //                CopyFromOtherDocument(SourceDocument);
         //            }
         //        }
         //    }
         //}
-
 
         //public void CopyFromOtherDocument(TrDocument SourceDocument)
         //{
@@ -440,136 +482,145 @@ namespace TrClient.Core
         //    }
         //}
 
-
-
         //public void SetRowNumbers(int AssumedNumberOfRows)
         //{
         //    foreach (TrPage Page in Pages)
         //    {
         //        Debug.WriteLine($"Setting Row Numbers on Page nr. {Page.PageNr}");
-        //        Page.SetRowNumbers(AssumedNumberOfRows);    
+        //        Page.SetRowNumbers(AssumedNumberOfRows);
         //    }
         //}
-
         public void CreateTopLevelRegions()
         {
-            string LogFileName = "Create Top Level Regions";
-            TrLog Log = new TrLog(LogFileName, ParentCollection.Name, Title);
+            string logFileName = "Create Top Level Regions";
+            TrLog log = new TrLog(logFileName, ParentCollection.Name, Title);
 
-            string LogFileMessage;
-            bool OK;
+            string logFileMessage;
+            bool oK;
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                OK = Page.CreateTopLevelRegion();
+                oK = page.CreateTopLevelRegion();
 
-                LogFileMessage = "Page#" + Page.PageNr.ToString().PadLeft(3) + "     Created? " + OK.ToString();
-                Log.Add(LogFileMessage);
+                logFileMessage = "Page#" + page.PageNr.ToString().PadLeft(3) + "     Created? " + oK.ToString();
+                log.Add(logFileMessage);
             }
-            Log.Save();
+
+            log.Save();
         }
 
-
-        public void AddHorizontalRegions(int UpperPercent, int LowerPercent, int UpperPadding, int LowerPadding)
+        public void AddHorizontalRegions(int upperPercent, int lowerPercent, int upperPadding, int lowerPadding)
         {
-            string LogFileName = "Add Horizontal Regions";
-            TrLog Log = new TrLog(LogFileName, ParentCollection.Name, Title);
+            string logFileName = "Add Horizontal Regions";
+            TrLog log = new TrLog(logFileName, ParentCollection.Name, Title);
 
-            string LogFileMessage;
-            int Number;
+            string logFileMessage;
+            int number;
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                Number = Page.AddHorizontalRegion(UpperPercent, LowerPercent, UpperPadding, LowerPadding);
+                number = page.AddHorizontalRegion(upperPercent, lowerPercent, upperPadding, lowerPadding);
 
-                LogFileMessage = "Page#" + Page.PageNr.ToString().PadLeft(3) + "     Added region#" + Number.ToString().PadLeft(3);
-                Log.Add(LogFileMessage);
+                logFileMessage = "Page#" + page.PageNr.ToString().PadLeft(3) + "     Added region#" + number.ToString().PadLeft(3);
+                log.Add(logFileMessage);
             }
-            Log.Save();
+
+            log.Save();
         }
 
-        public TrTextLines FindText(string SearchFor)
+        public TrTextLines FindText(string searchFor)
         {
-            TrTextLines TempList = new TrTextLines();
-            foreach (TrPage Page in Pages)
+            TrTextLines tempList = new TrTextLines();
+            foreach (TrPage page in Pages)
             {
-                TrTranscript Transcript = Page.Transcripts[0];
-                foreach (TrRegion TR in Transcript.Regions)
+                TrTranscript transcript = page.Transcripts[0];
+                foreach (TrRegion textRegion in transcript.Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            if (TL.Contains(SearchFor))
+                            if (textLine.Contains(searchFor))
                             {
-                                TempList.Add(TL);
-                                TL.ParentRegion = (TrRegion_Text)TR;
+                                tempList.Add(textLine);
+                                textLine.ParentRegion = (TrTextRegion)textRegion;
                             }
 
                             // og så tjekker vi om den ender med mellemrum etc.
-                            if (SearchFor.EndsWith(" "))
+                            if (searchFor.EndsWith(" "))
                             {
-                                if (TL.TextEquiv.EndsWith(SearchFor.Trim()))
+                                if (textLine.TextEquiv.EndsWith(searchFor.Trim()))
                                 {
-                                    TempList.Add(TL);
-                                    TL.ParentRegion = (TrRegion_Text)TR;
+                                    tempList.Add(textLine);
+                                    textLine.ParentRegion = (TrTextRegion)textRegion;
                                 }
                             }
                         }
                     }
-
                 }
             }
-            return TempList;
+
+            return tempList;
         }
 
         public List<string> GetRegionalTags()
         {
-            List<string> TempList = new List<string>();
-            foreach (TrPage Page in Pages)
+            List<string> tempList = new List<string>();
+            foreach (TrPage page in Pages)
             {
-                TrTranscript Transcript = Page.Transcripts[0];
-                if (Transcript.HasRegionalTags)
+                TrTranscript transcript = page.Transcripts[0];
+                if (transcript.HasRegionalTags)
                 {
-                    foreach (TrRegion TR in Transcript.Regions)
-                        if (TR.HasStructuralTag)
-                            TempList.Add(TR.StructuralTagValue);
+                    foreach (TrRegion textRegion in transcript.Regions)
+                    {
+                        if (textRegion.HasStructuralTag)
+                        {
+                            tempList.Add(textRegion.StructuralTagValue);
+                        }
+                    }
                 }
             }
-            List<string> TagList = TempList.Distinct().ToList();
-            TagList.Sort();
-            return TagList;
+
+            List<string> tagList = tempList.Distinct().ToList();
+            tagList.Sort();
+            return tagList;
         }
 
         public int GetHighestRegionNumber()
         {
             int temp = 0;
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    if (Page.Transcripts[0].Regions.Count > temp)
-                        temp = Page.Transcripts[0].Regions.Count;
-                }
-            }
-            return temp;
-        }
-
-        public int GetHighestLineNumber(int RegionNumber)
-        {
-            int temp = 0;
-            foreach (TrPage Page in Pages)
-            {
-                if (Page.ExistsRegionNumber(RegionNumber))
-                {
-                    TrRegion TR = Page.Transcripts[0].GetRegionByNumber(RegionNumber);
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (page.Transcripts[0].Regions.Count > temp)
                     {
-                        if ((TR as TrRegion_Text).TextLines.Count > temp)
-                            temp = (TR as TrRegion_Text).TextLines.Count;
+                        temp = page.Transcripts[0].Regions.Count;
                     }
                 }
             }
+
+            return temp;
+        }
+
+        public int GetHighestLineNumber(int regionNumber)
+        {
+            int temp = 0;
+            foreach (TrPage page in Pages)
+            {
+                if (page.ExistsRegionNumber(regionNumber))
+                {
+                    TrRegion textRegion = page.Transcripts[0].GetRegionByNumber(regionNumber);
+                    if (textRegion.GetType() == typeof(TrTextRegion))
+                    {
+                        if ((textRegion as TrTextRegion).TextLines.Count > temp)
+                        {
+                            temp = (textRegion as TrTextRegion).TextLines.Count;
+                        }
+                    }
+                }
+            }
+
             return temp;
         }
 
@@ -577,10 +628,11 @@ namespace TrClient.Core
         {
             List<string> temp = new List<string>();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                temp.Add(Page.PageNr.ToString());
+                temp.Add(page.PageNr.ToString());
             }
+
             return temp;
         }
 
@@ -589,135 +641,169 @@ namespace TrClient.Core
             List<string> temp = new List<string>();
 
             int i;
-            int MaxRegion = GetHighestRegionNumber();
-            int[] RegionsArray = new int[MaxRegion + 1];
+            int maxRegion = GetHighestRegionNumber();
+            int[] regionsArray = new int[maxRegion + 1];
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                for (i = 1; i <= MaxRegion; i++)
+                for (i = 1; i <= maxRegion; i++)
                 {
-                    if (Page.ExistsRegionNumber(i))
-                        RegionsArray[i]++;
+                    if (page.ExistsRegionNumber(i))
+                    {
+                        regionsArray[i]++;
+                    }
                 }
             }
 
-            for (i = 1; i <= MaxRegion; i++)
+            for (i = 1; i <= maxRegion; i++)
             {
-                if (RegionsArray[i] == Pages.Count)
+                if (regionsArray[i] == Pages.Count)
+                {
                     temp.Add(i.ToString());
+                }
                 else
+                {
                     temp.Add(i.ToString());
+                }
+
                 // temp.Add($"({i.ToString()})");
             }
 
             return temp;
         }
 
-        public List<string> GetListOfPossibleLinesInRegion(int RegionNumber)
+        public List<string> GetListOfPossibleLinesInRegion(int regionNumber)
         {
             List<string> temp = new List<string>();
 
             int i;
-            int MaxLine = GetHighestLineNumber(RegionNumber);
-            int[] LinesArray = new int[MaxLine + 1];
+            int maxLine = GetHighestLineNumber(regionNumber);
+            int[] linesArray = new int[maxLine + 1];
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.ExistsRegionNumber(RegionNumber))
+                if (page.ExistsRegionNumber(regionNumber))
                 {
-                    TrRegion TR = Page.Transcripts[0].GetRegionByNumber(RegionNumber);
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    TrRegion textRegion = page.Transcripts[0].GetRegionByNumber(regionNumber);
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-                        for (i = 1; i <= MaxLine; i++)
+                        for (i = 1; i <= maxLine; i++)
                         {
-                            if ((TR as TrRegion_Text).ExistsLineNumber(i))
-                                LinesArray[i]++;
+                            if ((textRegion as TrTextRegion).ExistsLineNumber(i))
+                            {
+                                linesArray[i]++;
+                            }
                         }
                     }
-
                 }
             }
 
-            for (i = 1; i <= MaxLine; i++)
+            for (i = 1; i <= maxLine; i++)
             {
-                if (LinesArray[i] == Pages.Count)
+                if (linesArray[i] == Pages.Count)
+                {
                     temp.Add(i.ToString());
+                }
                 else
+                {
                     // temp.Add($"({i.ToString()})");
                     temp.Add(i.ToString());
+                }
             }
 
             return temp;
         }
 
-        private bool _hasRegions;
+        private bool hasRegions;
+
         public bool HasRegions
         {
             get
             {
-                _hasRegions = (NrOfPagesWithRegions() > 0);
-                return _hasRegions;
+                hasRegions = NrOfPagesWithRegions() > 0;
+                return hasRegions;
             }
         }
 
-        private bool _hasTables;
+        private bool hasLines;
+
+        public bool HasLines
+        {
+            get
+            {
+                hasLines = NumberOfLines > 0;
+                return hasLines;
+            }
+        }
+
+        private bool hasTables;
+
         public bool HasTables
         {
             get
             {
-                _hasTables = false;
+                hasTables = false;
                 if (Pages.Count > 0)
                 {
-                    foreach (TrPage TP in Pages)
-                        _hasTables = _hasTables || TP.HasTables;
+                    foreach (TrPage tP in Pages)
+                    {
+                        hasTables = hasTables || tP.HasTables;
+                    }
                 }
-                return _hasTables;
+
+                return hasTables;
             }
         }
 
-        private bool _hasFormerTables;
+        private bool hasFormerTables;
+
         public bool HasFormerTables
         {
             get
             {
-                _hasFormerTables = false;
+                hasFormerTables = false;
                 if (Pages.Count > 0)
                 {
-                    foreach (TrPage TP in Pages)
-                        _hasFormerTables = _hasFormerTables || TP.HasFormerTables;
-                }
-                return _hasFormerTables;
-
-            }
-        }
-
-        public void MergeAllRegionsToTopLevelRegion(int StartPage, int EndPage)
-        {
-            if (Pages.Count > 0)
-            {
-                foreach (TrPage TP in Pages)
-                    if (TP.PageNr >= StartPage && TP.PageNr <= EndPage)
+                    foreach (TrPage tP in Pages)
                     {
-                        TP.MergeAllRegionsToTopLevelRegion();
+                        hasFormerTables = hasFormerTables || tP.HasFormerTables;
                     }
+                }
 
+                return hasFormerTables;
             }
         }
 
-        public void ConvertTablesToRegions(int StartPage, int EndPage)
+        public void MergeAllRegionsToTopLevelRegion(int startPage, int endPage)
         {
             if (Pages.Count > 0)
             {
-                foreach (TrPage TP in Pages)
-                    if (TP.PageNr >= StartPage && TP.PageNr <= EndPage)
+                foreach (TrPage tP in Pages)
+                {
+                    if (tP.PageNr >= startPage && tP.PageNr <= endPage)
                     {
-                        if (TP.HasTables)
+                        tP.MergeAllRegionsToTopLevelRegion();
+                    }
+                }
+            }
+        }
+
+        public void ConvertTablesToRegions(int startPage, int endPage)
+        {
+            if (Pages.Count > 0)
+            {
+                foreach (TrPage tP in Pages)
+                {
+                    if (tP.PageNr >= startPage && tP.PageNr <= endPage)
+                    {
+                        if (tP.HasTables)
                         {
-                            TP.ConvertTablesToRegions();
-                            TP.DeleteEmptyRegions();
-                            TP.Transcripts[0].Regions.ReNumberVertically();
+                            tP.ConvertTablesToRegions();
+                            tP.DeleteEmptyRegions();
+                            tP.Transcripts[0].Regions.ReNumberVertically();
                         }
                     }
+                }
             }
         }
 
@@ -726,312 +812,294 @@ namespace TrClient.Core
             // NB: KUN hvis der er gamle og IKKE aktuelle tabeller!
             if (Pages.Count > 0)
             {
-                foreach (TrPage TP in Pages)
-                    if (TP.HasFormerTables && !TP.HasTables)
+                foreach (TrPage tP in Pages)
+                {
+                    if (tP.HasFormerTables && !tP.HasTables)
                     {
-                        TP.CopyOldTablesToNewestTranscript();
+                        tP.CopyOldTablesToNewestTranscript();
                     }
+                }
             }
         }
 
-
-        public TrTextLines GetLinesWithNumber(int RegionNumber, int LineNumber)
+        public TrTextLines GetLinesWithNumber(int regionNumber, int lineNumber)
         {
             TrTextLines temp = new TrTextLines();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.ExistsRegionNumber(RegionNumber))
+                if (page.ExistsRegionNumber(regionNumber))
                 {
-                    TrRegion TR = Page.Transcripts[0].GetRegionByNumber(RegionNumber);
+                    TrRegion textRegion = page.Transcripts[0].GetRegionByNumber(regionNumber);
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            if ((TR as TrRegion_Text).ExistsLineNumber(LineNumber))
+                            if ((textRegion as TrTextRegion).ExistsLineNumber(lineNumber))
                             {
-                                TrTextLine TL = (TR as TrRegion_Text).GetLineByNumber(LineNumber);
-                                temp.Add(TL);
-                                TL.ParentRegion = (TR as TrRegion_Text);
+                                TrTextLine textLine = (textRegion as TrTextRegion).GetLineByNumber(lineNumber);
+                                temp.Add(textLine);
+                                textLine.ParentRegion = textRegion as TrTextRegion;
                             }
-
                         }
                     }
                 }
             }
+
             return temp;
         }
 
-
         public TrTextLines GetAllLines()
         {
-            TrTextLines TempList = new TrTextLines();
+            TrTextLines tempList = new TrTextLines();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                TempList.Add(TL);
-                                TL.ParentRegion = (TrRegion_Text)TR;
+                                tempList.Add(textLine);
+                                textLine.ParentRegion = (TrTextRegion)textRegion;
                             }
-
                         }
                     }
                 }
             }
-            return TempList;
+
+            return tempList;
         }
 
         public TrTextLines GetLinesWithBaseLineProblems()
         {
-            TrTextLines TempList = new TrTextLines();
+            TrTextLines tempList = new TrTextLines();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (!TL.IsBaseLineDirectionOK || !TL.IsBaseLineStraight || !TL.IsCoordinatesPositive)
+                                if (!textLine.IsBaseLineDirectionOK || !textLine.IsBaseLineStraight || !textLine.IsCoordinatesPositive)
                                 {
-                                    TempList.Add(TL);
-                                    TL.ParentRegion = (TrRegion_Text)TR;
+                                    tempList.Add(textLine);
+                                    textLine.ParentRegion = (TrTextRegion)textRegion;
                                 }
                             }
-
                         }
                     }
                 }
-
             }
-            return TempList;
 
+            return tempList;
         }
 
-        public TrTextLines GetLines_BaseLineFiltered(TrBaseLineFilter CurrentFilter)
+        public TrTextLines GetLines_BaseLineFiltered(TrBaseLineFilter currentFilter)
         {
-            TrTextLines TempList = new TrTextLines();
+            TrTextLines tempList = new TrTextLines();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (TL.IsOKwithBaseLineFilter(CurrentFilter))
+                                if (textLine.IsOKwithBaseLineFilter(currentFilter))
                                 {
-                                    TempList.Add(TL);
-                                    TL.ParentRegion = (TrRegion_Text)TR;
+                                    tempList.Add(textLine);
+                                    textLine.ParentRegion = (TrTextRegion)textRegion;
                                 }
                             }
-
                         }
                     }
                 }
-
             }
-            return TempList;
+
+            return tempList;
         }
 
-        public TrTextLines GetFilteredLines(TrLineFilterSettings CurrentFilter)
+        public TrTextLines GetFilteredLines(TrLineFilterSettings currentFilter)
         {
-            TrTextLines TempList = new TrTextLines();
+            TrTextLines tempList = new TrTextLines();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (TL.MeetsFilterConditions(CurrentFilter))
+                                if (textLine.MeetsFilterConditions(currentFilter))
                                 {
-                                    TempList.Add(TL);
-                                    TL.ParentRegion = (TrRegion_Text)TR;
+                                    tempList.Add(textLine);
+                                    textLine.ParentRegion = (TrTextRegion)textRegion;
                                 }
-
                             }
-
                         }
-
-
                     }
                 }
-
             }
-            return TempList;
 
+            return tempList;
         }
 
-        public TrTextLines GetLines_WindowFiltered(TrLineFilterSettings Settings)
+        public TrTextLines GetLines_WindowFiltered(TrLineFilterSettings settings)
         {
-            TrTextLines TempList = new TrTextLines();
+            TrTextLines tempList = new TrTextLines();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (Settings.Inside)
+                                if (settings.Inside)
                                 {
-                                    if (TL.IsInWindow(Settings))
+                                    if (textLine.IsInWindow(settings))
                                     {
-                                        TempList.Add(TL);
-                                        TL.ParentRegion = (TrRegion_Text)TR;
+                                        tempList.Add(textLine);
+                                        textLine.ParentRegion = (TrTextRegion)textRegion;
                                     }
                                 }
                                 else
                                 {
-                                    if (!TL.IsInWindow(Settings))
+                                    if (!textLine.IsInWindow(settings))
                                     {
-                                        TempList.Add(TL);
-                                        TL.ParentRegion = (TrRegion_Text)TR;
+                                        tempList.Add(textLine);
+                                        textLine.ParentRegion = (TrTextRegion)textRegion;
                                     }
                                 }
                             }
-
                         }
-
-
                     }
                 }
-
             }
-            return TempList;
+
+            return tempList;
         }
 
-        public TrTextLines GetLines_RegexFiltered(string RegExPattern) // Regex MatchPattern
+        public TrTextLines GetLines_RegexFiltered(string regExPattern) // Regex MatchPattern
         {
             // Debug.Print($"TrDocument: Pattern: {MatchPattern.ToString()}");
+            TrTextLines tempList = new TrTextLines();
 
-            TrTextLines TempList = new TrTextLines();
-
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
                 //Debug.Print($"Page {Page.PageNr}");
-
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    foreach (TrRegion TR in Page.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
                                 //Debug.Print($"Line {TL.Number}");
-
-                                if (TL.MatchesRegex(RegExPattern))
+                                if (textLine.MatchesRegex(regExPattern))
                                 {
-                                    TempList.Add(TL);
-                                    TL.ParentRegion = (TrRegion_Text)TR;
+                                    tempList.Add(textLine);
+                                    textLine.ParentRegion = (TrTextRegion)textRegion;
                                 }
                             }
                         }
                     }
                 }
             }
-            return TempList;
 
+            return tempList;
         }
 
         public List<string> CheckElfeltRecordNumbers()
         {
-            string CurrentRecord = "";
+            string currentRecord = string.Empty;
 
-            char Delimiter = TrLibrary.CSV_Delimiter;
-            List<string> TempList = new List<string>();
+            char delimiter = TrLibrary.CSVDelimiter;
+            List<string> tempList = new List<string>();
 
-            foreach (TrPage P in Pages)
+            foreach (TrPage p in Pages)
             {
-
-                int LineCounter = 0;
+                int lineCounter = 0;
                 StringBuilder sb = new StringBuilder();
 
-                foreach (TrRegion TR in P.Transcripts[0].Regions)
+                foreach (TrRegion textRegion in p.Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            if (TL.HasSpecificStructuralTag("RecordName"))
+                            if (textLine.HasSpecificStructuralTag("RecordName"))
                             {
-                                LineCounter += 1;
-                                CurrentRecord = P.PageNr.ToString() + Delimiter + LineCounter.ToString() + Delimiter + TL.ExpandedText;
-                                TempList.Add(CurrentRecord);
+                                lineCounter += 1;
+                                currentRecord = p.PageNr.ToString() + delimiter + lineCounter.ToString() + delimiter + textLine.ExpandedText;
+                                tempList.Add(currentRecord);
+
                                 //Debug.Print(CurrentRecord);
                             }
                         }
                     }
                 }
-
             }
-            return TempList;
 
+            return tempList;
         }
 
-        public List<TrRecord> GetPseudoTableText(int MinimumRecordNumber)
+        public List<TrRecord> GetPseudoTableText(int minimumRecordNumber)
         {
-            List<TrRecord> TempRecords = new List<TrRecord>();
-            string CurrentDate = "";
-            string CurrentRecordName = "";
-            string Metadata = "";
-            char Delimiter = TrLibrary.CSV_Delimiter;
+            List<TrRecord> tempRecords = new List<TrRecord>();
+            string currentDate = string.Empty;
+            string currentRecordName = string.Empty;
+            string metadata = string.Empty;
+            char delimiter = TrLibrary.CSVDelimiter;
 
-            foreach (TrPage P in Pages)
+            foreach (TrPage p in Pages)
             {
                 //Debug.Print($"Page # {PageNr} ----------------------------------------------------");
+                int lineCounter = 0;
 
-                int LineCounter = 0;
-
-                int CurrentHpos = 0;
-                int CurrentVpos = 0;
-                int PreviousHpos = 0;
-                int PreviousVpos = 0;
+                int currentHpos = 0;
+                int currentVpos = 0;
+                int previousHpos = 0;
+                int previousVpos = 0;
 
                 StringBuilder sb = new StringBuilder();
-                TrRecord NewRecord;
+                TrRecord newRecord;
 
-                foreach (TrRegion TR in P.Transcripts[0].Regions)
+                foreach (TrRegion textRegion in p.Transcripts[0].Regions)
                 {
-                    if (TR.GetType() == typeof(TrRegion_Text))
+                    if (textRegion.GetType() == typeof(TrTextRegion))
                     {
-
-                        foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                         {
-                            // Debug.Print($"Page # {P.PageNr} - TL number {TL.Number}");   
-                            if (!TL.HasSpecificStructuralTag("Year") && !TL.HasSpecificStructuralTag("Title") && !TL.HasSpecificStructuralTag("Exclude"))
+                            // Debug.Print($"Page # {P.PageNr} - TL number {TL.Number}");
+                            if (!textLine.HasSpecificStructuralTag("Year") && !textLine.HasSpecificStructuralTag("Title") && !textLine.HasSpecificStructuralTag("Exclude"))
                             {
-                                PreviousHpos = CurrentHpos;
-                                PreviousVpos = CurrentVpos;
+                                previousHpos = currentHpos;
+                                previousVpos = currentVpos;
 
-                                CurrentHpos = TL.Hpos;
-                                CurrentVpos = TL.Vpos;
+                                currentHpos = textLine.Hpos;
+                                currentVpos = textLine.Vpos;
 
                                 // test for linieskift = ny record
                                 // dog hvis previousHpos og previousVpos begge er 0, er det den første TL på siden - den skal springes over
-                                if (PreviousHpos != 0 && PreviousVpos != 0)
+                                if (previousHpos != 0 && previousVpos != 0)
                                 {
                                     // Debug.Print("Not zero");
                                     // hvis vi er rykket ned - eller det er den sidste TL skal der ske noget
@@ -1039,43 +1107,40 @@ namespace TrClient.Core
                                     // ((CurrentHpos < (PreviousHpos - 300) && CurrentVpos > PreviousVpos) )
                                     // men det gav mange fejl i 4'eren, hvor det er meningen, at man godt må hoppe LIDT baglæns...
                                     // værdien øges derfor fra 300 til 1500
-
-                                    if ((CurrentHpos < (PreviousHpos - 1500) && CurrentVpos > PreviousVpos))
+                                    if (currentHpos < (previousHpos - 1500) && currentVpos > previousVpos)
                                     {
                                         // Debug.Print("current er rykket til venstre og ned");
                                         // linieskift er indtruffet!
                                         // men har vi data?
-                                        LineCounter += 1;
-                                        Metadata = sb.ToString().Trim();
+                                        lineCounter += 1;
+                                        metadata = sb.ToString().Trim();
                                         sb.Clear();
 
-                                        if (CurrentRecordName != "" && CurrentRecordName != "00000" && Metadata != "" && Metadata.Length > 5)
+                                        if (currentRecordName != string.Empty && currentRecordName != "00000" && metadata != string.Empty && metadata.Length > 5)
                                         {
                                             // Debug.Print("Vi har data");
 
-
                                             // test for om CurrentRecordName indeholder mere end eet negativnummer!
-                                            Regex Numbers = new Regex(@"\d+\p{L}?");
-                                            string Stripped = clsLanguageLibrary.StripAll(CurrentRecordName);
-                                            string RecordName = "";
-                                            MatchCollection NumberMatches = Numbers.Matches(Stripped);
-                                            if (NumberMatches.Count > 0)
+                                            Regex numbers = new Regex(@"\d+\p{L}?");
+                                            string stripped = ClsLanguageLibrary.StripAll(currentRecordName);
+                                            string recordName = string.Empty;
+                                            MatchCollection numberMatches = numbers.Matches(stripped);
+                                            if (numberMatches.Count > 0)
                                             {
-                                                foreach (Match M in NumberMatches)
+                                                foreach (Match m in numberMatches)
                                                 {
                                                     // vi tjekker, om tallet er stort nok til at være et negativnummer
-                                                    Regex DigitsOnly = new Regex(@"\d+");
-                                                    Match DigitsMatch = DigitsOnly.Match(M.Value);
-                                                    if (DigitsMatch.Success)
+                                                    Regex digitsOnly = new Regex(@"\d+");
+                                                    Match digitsMatch = digitsOnly.Match(m.Value);
+                                                    if (digitsMatch.Success)
                                                     {
                                                         // Debug.Print($"Succes! {M.Value} = {DigitsMatch.Value}");
-                                                        if (Convert.ToInt32(DigitsMatch.Value) > MinimumRecordNumber)
+                                                        if (Convert.ToInt32(digitsMatch.Value) > minimumRecordNumber)
                                                         {
-
-                                                            RecordName = TrLibrary.ExtractRecordName(M.Value);
-                                                            Debug.Print($"Creating record: {RecordName}!");
-                                                            NewRecord = new TrRecord(RecordName, CurrentDate, Metadata, Title, P.PageNr, LineCounter);
-                                                            TempRecords.Add(NewRecord);
+                                                            recordName = TrLibrary.ExtractRecordName(m.Value);
+                                                            Debug.Print($"Creating record: {recordName}!");
+                                                            newRecord = new TrRecord(recordName, currentDate, metadata, Title, p.PageNr, lineCounter);
+                                                            tempRecords.Add(newRecord);
                                                         }
                                                     }
                                                 }
@@ -1084,503 +1149,572 @@ namespace TrClient.Core
                                     }
                                 }
 
-
-                                if (TL.HasDateTag)
+                                if (textLine.HasDateTag)
                                 {
-                                    CurrentDate = clsLanguageLibrary.StripPunctuation(TL.ExpandedText);
+                                    currentDate = ClsLanguageLibrary.StripPunctuation(textLine.ExpandedText);
+
                                     // Debug.Print($"Date!");
                                 }
-                                else if (TL.HasSpecificStructuralTag("RecordName"))
+                                else if (textLine.HasSpecificStructuralTag("RecordName"))
                                 {
-                                    CurrentRecordName = TL.ExpandedText;
+                                    currentRecordName = textLine.ExpandedText;
+
                                     // Debug.Print($"RecordName(s)!");
                                 }
                                 else
                                 {
-                                    sb.Append(TL.ExpandedText);
-                                    sb.Append(Delimiter);
+                                    sb.Append(textLine.ExpandedText);
+                                    sb.Append(delimiter);
+
                                     // Debug.Print($"Metadata!");
                                 }
                             }
                         }
                     }
                 }
+
                 // sidste linie på siden!
                 // Debug.Print("Sidst linie på siden!");
-
-                LineCounter += 1;
-                Metadata = sb.ToString().Trim();
+                lineCounter += 1;
+                metadata = sb.ToString().Trim();
                 sb.Clear();
-                if (CurrentRecordName != "" && CurrentRecordName != "00000" && Metadata != "" && Metadata.Length > 5)
+                if (currentRecordName != string.Empty && currentRecordName != "00000" && metadata != string.Empty && metadata.Length > 5)
                 {
                     // Debug.Print("Vi har data");
 
                     // test for om CurrentRecordName indeholder mere end eet negativnummer!
-                    Regex Numbers = new Regex(@"\d+\p{L}?");
-                    string Stripped = clsLanguageLibrary.StripAll(CurrentRecordName);
-                    string RecordName = "";
-                    MatchCollection NumberMatches = Numbers.Matches(Stripped);
-                    if (NumberMatches.Count > 0)
+                    Regex numbers = new Regex(@"\d+\p{L}?");
+                    string stripped = ClsLanguageLibrary.StripAll(currentRecordName);
+                    string recordName = string.Empty;
+                    MatchCollection numberMatches = numbers.Matches(stripped);
+                    if (numberMatches.Count > 0)
                     {
-                        foreach (Match M in NumberMatches)
+                        foreach (Match m in numberMatches)
                         {
                             // vi tjekker, om tallet er stort nok til at være et negativnummer
-                            Regex DigitsOnly = new Regex(@"\d+");
-                            Match DigitsMatch = DigitsOnly.Match(M.Value);
-                            if (DigitsMatch.Success)
+                            Regex digitsOnly = new Regex(@"\d+");
+                            Match digitsMatch = digitsOnly.Match(m.Value);
+                            if (digitsMatch.Success)
                             {
                                 // Debug.Print($"Succes! {M.Value} = {DigitsMatch.Value}");
-                                if (Convert.ToInt32(DigitsMatch.Value) > MinimumRecordNumber)
+                                if (Convert.ToInt32(digitsMatch.Value) > minimumRecordNumber)
                                 {
-
-                                    RecordName = TrLibrary.ExtractRecordName(M.Value);
-                                    Debug.Print($"Creating record: {RecordName}!");
-                                    NewRecord = new TrRecord(RecordName, CurrentDate, Metadata, Title, P.PageNr, LineCounter);
-                                    TempRecords.Add(NewRecord);
+                                    recordName = TrLibrary.ExtractRecordName(m.Value);
+                                    Debug.Print($"Creating record: {recordName}!");
+                                    newRecord = new TrRecord(recordName, currentDate, metadata, Title, p.PageNr, lineCounter);
+                                    tempRecords.Add(newRecord);
                                 }
                             }
                         }
                     }
                 }
-
             }
-            return TempRecords;
+
+            return tempRecords;
         }
 
-
-
-
-        public void AutoRecordTag(double PercentualLeftBorder, double PercentualRightBorder)
+        public void AutoRecordTag(double percentualLeftBorder, double percentualRightBorder)
         {
-            Regex Numbers = new Regex(@"\d+");
+            Regex numbers = new Regex(@"\d+");
 
-            foreach (TrPage P in Pages)
+            foreach (TrPage p in Pages)
             {
-                if (P.HasRegions)
+                if (p.HasRegions)
                 {
-                    foreach (TrRegion TR in P.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in p.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                if (TL.PercentualHpos >= PercentualLeftBorder && TL.PercentualHendPos <= PercentualRightBorder)
+                                if (textLine.PercentualHpos >= percentualLeftBorder && textLine.PercentualHendPos <= percentualRightBorder)
                                 {
-                                    string Stripped = clsLanguageLibrary.StripAll(TL.ExpandedText);
+                                    string stripped = ClsLanguageLibrary.StripAll(textLine.ExpandedText);
 
-                                    MatchCollection NumberMatches = Numbers.Matches(Stripped);
+                                    MatchCollection numberMatches = numbers.Matches(stripped);
 
-                                    if (NumberMatches.Count == 1)
+                                    if (numberMatches.Count == 1)
                                     {
-                                        string RecordNumber = NumberMatches[0].Value;
-                                        if (clsLanguageLibrary.ConsecutiveDigitCount(RecordNumber) >= 4)
-                                            if (Convert.ToInt32(RecordNumber) > 2000)
-                                                TL.AddStructuralTag("RecordName", true);
-                                    }
-                                    else if (NumberMatches.Count > 1)
-                                    {
-                                        Debug.Print($"Page # {P.PageNr}, Line # {TL.Number}: Too many matches");
-                                        foreach (Match M in NumberMatches)
+                                        string recordNumber = numberMatches[0].Value;
+                                        if (ClsLanguageLibrary.ConsecutiveDigitCount(recordNumber) >= 4)
                                         {
-                                            Debug.Print($"     Record: {M.Value}");
+                                            if (Convert.ToInt32(recordNumber) > 2000)
+                                            {
+                                                textLine.AddStructuralTag("RecordName", true);
+                                            }
                                         }
-
                                     }
-
+                                    else if (numberMatches.Count > 1)
+                                    {
+                                        Debug.Print($"Page # {p.PageNr}, Line # {textLine.Number}: Too many matches");
+                                        foreach (Match m in numberMatches)
+                                        {
+                                            Debug.Print($"     Record: {m.Value}");
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
             }
         }
 
-
-        public void AutoDateTag(double PercentualLeftBorder, double PercentualRightBorder)
+        public void AutoDateTag(double percentualLeftBorder, double percentualRightBorder)
         {
             // sætter datotags i den kolonne, der er defineret ved de to parametre - procentuelt!
             // NB: Kører på DOCUMENT-niveau (og ikke page), fordi "CurrentYear" kan løbe hen over sideskift.
-            int CurrentYear = 0;
-            int CurrentMonth = 0;
-            int CurrentDay = 0;
-            int Test;
-            bool SetDate = false;
+            int currentYear = 0;
+            int currentMonth = 0;
+            int currentDay = 0;
+            int test;
+            bool setDate = false;
 
-            double LeftYearBorder = 25;
-            double RightYearBorder = 75;
-            int MinYear = 1898;
-            int MaxYear = 1905;
+            double leftYearBorder = 25;
+            double rightYearBorder = 75;
+            int minYear = 1898;
+            int maxYear = 1905;
 
-            Regex Numbers = new Regex(@"\d+");
+            Regex numbers = new Regex(@"\d+");
 
-            foreach (TrPage P in Pages)
+            foreach (TrPage p in Pages)
             {
-                if (P.HasRegions)
+                if (p.HasRegions)
                 {
-                    foreach (TrRegion TR in P.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in p.Transcripts[0].Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
                                 // midlertidigt: vi sletter eksisterende datetags
-                                if (TL.HasDateTag)
-                                    TL.DeleteDateTags();
-
-                                SetDate = false;
-                                // finder et årstal på siden
-                                if (TL.PercentualHpos >= LeftYearBorder && TL.PercentualHendPos <= RightYearBorder)
+                                if (textLine.HasDateTag)
                                 {
-                                    string Stripped = clsLanguageLibrary.StripAll(TL.ExpandedText);
+                                    textLine.DeleteDateTags();
+                                }
 
-                                    if (clsLanguageLibrary.IsNumeric(Stripped))
+                                setDate = false;
+
+                                // finder et årstal på siden
+                                if (textLine.PercentualHpos >= leftYearBorder && textLine.PercentualHendPos <= rightYearBorder)
+                                {
+                                    string stripped = ClsLanguageLibrary.StripAll(textLine.ExpandedText);
+
+                                    if (ClsLanguageLibrary.IsNumeric(stripped))
                                     {
-                                        if (clsLanguageLibrary.ConsecutiveDigitCount(Stripped) == 4)
+                                        if (ClsLanguageLibrary.ConsecutiveDigitCount(stripped) == 4)
                                         {
-                                            int StrippedNumber = Convert.ToInt32(Stripped);
-                                            if (StrippedNumber >= MinYear && StrippedNumber <= MaxYear)
+                                            int strippedNumber = Convert.ToInt32(stripped);
+                                            if (strippedNumber >= minYear && strippedNumber <= maxYear)
                                             {
-                                                CurrentYear = StrippedNumber;
+                                                currentYear = strippedNumber;
+
                                                 // Debug.Print($"Page no. {P.PageNr}: Current year: {CurrentYear}");
                                             }
                                         }
                                     }
                                 }
-                                //else 
-                                if (TL.PercentualHpos >= PercentualLeftBorder && TL.PercentualHendPos <= PercentualRightBorder)
-                                {
-                                    string Stripped = clsLanguageLibrary.StripAll(TL.ExpandedText);
 
-                                    if (clsLanguageLibrary.IsPossibleDate(Stripped))
+                                //else
+                                if (textLine.PercentualHpos >= percentualLeftBorder && textLine.PercentualHendPos <= percentualRightBorder)
+                                {
+                                    string stripped = ClsLanguageLibrary.StripAll(textLine.ExpandedText);
+
+                                    if (ClsLanguageLibrary.IsPossibleDate(stripped))
                                     {
                                         // Debug.Print($"Possible date: Stripped = {Stripped}");
 
                                         // først tester vi, om der indgår et navn på en måned, dvs. formen d-MMM-yyyy / MMM-yyyy
-                                        List<string> SourceList = Stripped.Split(' ').ToList();
-                                        bool TestSource = false;
-                                        int MonthIndex = -1;
+                                        List<string> sourceList = stripped.Split(' ').ToList();
+                                        bool testSource = false;
+                                        int monthIndex = -1;
 
-                                        if (SourceList.Count > 0)
+                                        if (sourceList.Count > 0)
                                         {
-                                            for (int i = 0; i < SourceList.Count; i++)
+                                            for (int i = 0; i < sourceList.Count; i++)
                                             {
-                                                if (!TestSource)
+                                                if (!testSource)
                                                 {
-                                                    TestSource = clsLanguageLibrary.IsMonthName(SourceList[i]) || clsLanguageLibrary.IsMonthAbbreviation(SourceList[i]);
-                                                    if (TestSource)
-                                                        MonthIndex = i;
+                                                    testSource = ClsLanguageLibrary.IsMonthName(sourceList[i]) || ClsLanguageLibrary.IsMonthAbbreviation(sourceList[i]);
+                                                    if (testSource)
+                                                    {
+                                                        monthIndex = i;
+                                                    }
                                                 }
                                             }
 
                                             // hvis monthindex er 0 eller højere, er der fundet noget:
-                                            if (MonthIndex >= 0)
+                                            if (monthIndex >= 0)
                                             {
-                                                CurrentMonth = clsLanguageLibrary.GetMonthNumber(SourceList[MonthIndex]);
+                                                currentMonth = ClsLanguageLibrary.GetMonthNumber(sourceList[monthIndex]);
 
                                                 // men vi må nulstille CurrentDay, for der kan være en gammel, som nu er forkert:
-                                                CurrentDay = 0;
-                                                SetDate = true;
+                                                currentDay = 0;
+                                                setDate = true;
 
                                                 // hvis måneden ikke står i den første, kan der være en dato før
-                                                if (MonthIndex > 0)
+                                                if (monthIndex > 0)
                                                 {
-                                                    if (clsLanguageLibrary.IsNumeric(SourceList[MonthIndex - 1]))
+                                                    if (ClsLanguageLibrary.IsNumeric(sourceList[monthIndex - 1]))
                                                     {
-                                                        Test = Convert.ToInt32(SourceList[MonthIndex - 1]);
-                                                        if (Test >= 1 && Test <= 31)
-                                                            CurrentDay = Test;
+                                                        test = Convert.ToInt32(sourceList[monthIndex - 1]);
+                                                        if (test >= 1 && test <= 31)
+                                                        {
+                                                            currentDay = test;
+                                                        }
                                                     }
                                                 }
 
                                                 // hvis måneden ikke står i den sidste, kan der være et årstal bagefter
-                                                if (MonthIndex < SourceList.Count - 2)
+                                                if (monthIndex < sourceList.Count - 2)
                                                 {
-                                                    if (clsLanguageLibrary.IsNumeric(SourceList[MonthIndex + 1]))
+                                                    if (ClsLanguageLibrary.IsNumeric(sourceList[monthIndex + 1]))
                                                     {
-                                                        Test = Convert.ToInt32(SourceList[MonthIndex + 1]);
-                                                        if (Test >= 1890 && Test <= 1999)
-                                                            CurrentYear = Test;
+                                                        test = Convert.ToInt32(sourceList[monthIndex + 1]);
+                                                        if (test >= 1890 && test <= 1999)
+                                                        {
+                                                            currentYear = test;
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
 
-
                                         // hvis ikke, må det være en dato med rene tal
-                                        if (!SetDate)
+                                        if (!setDate)
                                         {
-                                            MatchCollection NumberMatches = Numbers.Matches(Stripped);
-                                            // Debug.Print($"Matches: {NumberMatches.Count}");
+                                            MatchCollection numberMatches = numbers.Matches(stripped);
 
-                                            if (NumberMatches.Count == 3)
+                                            // Debug.Print($"Matches: {NumberMatches.Count}");
+                                            if (numberMatches.Count == 3)
                                             {
                                                 // dag, måned og år?
-                                                Test = Convert.ToInt16(NumberMatches[0].Value); // dag?
-                                                if (Test >= 1 && Test <= 31)
-                                                    CurrentDay = Test;
+                                                test = Convert.ToInt16(numberMatches[0].Value); // dag?
+                                                if (test >= 1 && test <= 31)
+                                                {
+                                                    currentDay = test;
+                                                }
 
-                                                Test = Convert.ToInt16(NumberMatches[1].Value); // måned?
-                                                if (Test >= 1 && Test <= 12)
-                                                    CurrentMonth = Test;
+                                                test = Convert.ToInt16(numberMatches[1].Value); // måned?
+                                                if (test >= 1 && test <= 12)
+                                                {
+                                                    currentMonth = test;
+                                                }
 
-                                                Test = Convert.ToInt16(NumberMatches[2].Value); // måned?
-                                                if (Test >= 1890 && Test <= 1999)
-                                                    CurrentYear = Test;
+                                                test = Convert.ToInt16(numberMatches[2].Value); // måned?
+                                                if (test >= 1890 && test <= 1999)
+                                                {
+                                                    currentYear = test;
+                                                }
 
-                                                SetDate = true;
+                                                setDate = true;
                                             }
                                             else
-                                            if (NumberMatches.Count == 2)
+                                            if (numberMatches.Count == 2)
                                             {
                                                 // dag og måned?
-                                                Test = Convert.ToInt16(NumberMatches[0].Value); // dag?
-                                                if (Test >= 1 && Test <= 31)
-                                                    CurrentDay = Test;
+                                                test = Convert.ToInt16(numberMatches[0].Value); // dag?
+                                                if (test >= 1 && test <= 31)
+                                                {
+                                                    currentDay = test;
+                                                }
 
-                                                Test = Convert.ToInt16(NumberMatches[1].Value); // måned?
-                                                if (Test >= 1 && Test <= 12)
-                                                    CurrentMonth = Test;
+                                                test = Convert.ToInt16(numberMatches[1].Value); // måned?
+                                                if (test >= 1 && test <= 12)
+                                                {
+                                                    currentMonth = test;
+                                                }
 
-                                                SetDate = true;
-
+                                                setDate = true;
                                             }
                                             else
-                                            if (NumberMatches.Count == 1)
+                                            if (numberMatches.Count == 1)
                                             {
                                                 // kun dag?
-                                                Test = Convert.ToInt16(NumberMatches[0].Value); // dag?
-                                                if (Test >= 1 && Test <= 31)
-                                                    CurrentDay = Test;
+                                                test = Convert.ToInt16(numberMatches[0].Value); // dag?
+                                                if (test >= 1 && test <= 31)
+                                                {
+                                                    currentDay = test;
+                                                }
 
-                                                SetDate = true;
+                                                setDate = true;
                                             }
                                         }
 
-
-
-                                        if (SetDate)
+                                        if (setDate)
                                         {
                                             // komplet dato?
-                                            if (CurrentDay > 0 && CurrentMonth > 0)
+                                            if (currentDay > 0 && currentMonth > 0)
                                             {
-                                                int Offset = TL.TextEquiv.IndexOf(Stripped);
-                                                int Length = Stripped.Length;
+                                                int offset = textLine.TextEquiv.IndexOf(stripped);
+                                                int length = stripped.Length;
 
                                                 // af sære grunde kan man nogle gange ikke finde den - så bliver offset -1, og det går ikke.
                                                 // update: det er sandsynligvis ved abbrev-dates, hvor man i sagens natur ikke KAN finde den ...
-                                                if (Offset < 0)
+                                                if (offset < 0)
                                                 {
-                                                    Offset = 0;
-                                                    Length = 1;
+                                                    offset = 0;
+                                                    length = 1;
                                                 }
 
-                                                if (TrLibrary.IsValidDate(CurrentYear, CurrentMonth, CurrentDay))
+                                                if (TrLibrary.IsValidDate(currentYear, currentMonth, currentDay))
                                                 {
-                                                    DateTime NewDate = new DateTime(CurrentYear, CurrentMonth, CurrentDay);
-                                                    TL.AddDateTag(Offset, Length, NewDate);
+                                                    DateTime newDate = new DateTime(currentYear, currentMonth, currentDay);
+                                                    textLine.AddDateTag(offset, length, newDate);
+
                                                     // Debug.Print($"Date found: Page no. {P.PageNr}: Date: {NewDate.ToShortDateString()}");
                                                 }
                                                 else
                                                 {
-                                                    TL.AddDateTag(Offset, Length, CurrentDay, CurrentMonth, CurrentYear);
-                                                    TL.AddStructuralTag("InvalidDate", true);
+                                                    textLine.AddDateTag(offset, length, currentDay, currentMonth, currentYear);
+                                                    textLine.AddStructuralTag("InvalidDate", true);
+
                                                     // Debug.Print($"Invalid date found: Page no. {P.PageNr}: Date: {CurrentDay}-{CurrentMonth}-{CurrentYear}");
                                                 }
-
                                             }
-                                            else if (CurrentMonth > 0)
+                                            else if (currentMonth > 0)
                                             {
                                                 // inkomplet dato: kun måned; sætter tag på hele TL
-                                                TL.AddDateTag(0, TL.TextEquiv.Length, CurrentDay, CurrentMonth, CurrentYear);
-
+                                                textLine.AddDateTag(0, textLine.TextEquiv.Length, currentDay, currentMonth, currentYear);
                                             }
                                         }
-
                                     }
-
-
                                 }
                             }
                         }
                     }
                 }
-
             }
-
         }
-
-
-
 
         public int NrOfPagesWithRegions()
         {
             int temp = 0;
-            foreach (TrPage Page in Pages)
-                if (Page.HasRegions)
+            foreach (TrPage page in Pages)
+            {
+                if (page.HasRegions)
+                {
                     temp++;
+                }
+            }
+
             return temp;
         }
 
         public string GetListOfPagesWithRegions()
         {
-            string temp = "";
-            foreach (TrPage Page in Pages)
-                if (Page.HasRegions)
-                    temp = temp + Page.PageNr.ToString() + ", ";
+            string temp = string.Empty;
+            foreach (TrPage page in Pages)
+            {
+                if (page.HasRegions)
+                {
+                    temp = temp + page.PageNr.ToString() + ", ";
+                }
+            }
+
             if (temp.Length > 2)
+            {
                 return temp.Substring(0, temp.Length - 2);
+            }
             else
+            {
                 return temp;
+            }
         }
 
         public string GetListOfPagesWithOverlappingRegions()
         {
-            string temp = "";
-            bool PageOK;
-            bool BorderOK;
+            string temp = string.Empty;
+            bool pageOK;
+            bool borderOK;
 
-            foreach (TrPage Page in Pages)
-                if (Page.HasRegions)
+            foreach (TrPage page in Pages)
+            {
+                if (page.HasRegions)
                 {
-                    PageOK = true;
-                    TrTranscript Transcript = Page.Transcripts[0];
-                    if (Transcript.Regions.Count > 3) // do. - ellers bør det være 1   
+                    pageOK = true;
+                    TrTranscript transcript = page.Transcripts[0];
+                    if (transcript.Regions.Count > 3) // do. - ellers bør det være 1
                     {
                         // specifikt for at se om 3-4-5 etc. i MASTER har problemer (ellers bør det være int i = 0)
-                        for (int i = 2; i <= Transcript.Regions.Count - 2; i++) // mindre end -2, fordi den sidste (-1) bestiles som i+1
+                        for (int i = 2; i <= transcript.Regions.Count - 2; i++) // mindre end -2, fordi den sidste (-1) bestiles som i+1
                         {
-                            if (Transcript.Regions[i].BottomBorder < (Transcript.Regions[i + 1].TopBorder + 5))
-                                BorderOK = true;
+                            if (transcript.Regions[i].BottomBorder < (transcript.Regions[i + 1].TopBorder + 5))
+                            {
+                                borderOK = true;
+                            }
                             else
-                                BorderOK = false;
-                            PageOK = PageOK && BorderOK; // det sidste +5 er for at få falske positive, hvor en region er klippet over - så har de samme t/b-værdi 
-                            if (!BorderOK)
-                                Debug.WriteLine($"Page {Page.PageNr}: Region {Transcript.Regions[i].Number}, bottom: {Transcript.Regions[i].BottomBorder} - Region {Transcript.Regions[i + 1].Number}, top: {Transcript.Regions[i + 1].TopBorder}");
+                            {
+                                borderOK = false;
+                            }
+
+                            pageOK = pageOK && borderOK; // det sidste +5 er for at få falske positive, hvor en region er klippet over - så har de samme t/b-værdi
+                            if (!borderOK)
+                            {
+                                Debug.WriteLine($"Page {page.PageNr}: Region {transcript.Regions[i].Number}, bottom: {transcript.Regions[i].BottomBorder} - Region {transcript.Regions[i + 1].Number}, top: {transcript.Regions[i + 1].TopBorder}");
+                            }
                         }
-                        if (!PageOK)
+
+                        if (!pageOK)
                         {
-                            temp = temp + Page.PageNr.ToString() + ", ";
+                            temp = temp + page.PageNr.ToString() + ", ";
                         }
                     }
                 }
+            }
+
             if (temp.Length > 2)
+            {
                 return temp.Substring(0, temp.Length - 2);
+            }
             else
+            {
                 return temp;
+            }
         }
 
         public string GetListOfPagesWithoutRegionalTags()
         {
-            string temp = "";
-            foreach (TrPage Page in Pages)
+            string temp = string.Empty;
+            foreach (TrPage page in Pages)
             {
-                TrTranscript Transcript = Page.Transcripts[0];
-                if (!Transcript.HasRegionalTags)
-                    temp = temp + Page.PageNr.ToString() + ", ";
+                TrTranscript transcript = page.Transcripts[0];
+                if (!transcript.HasRegionalTags)
+                {
+                    temp = temp + page.PageNr.ToString() + ", ";
+                }
             }
+
             if (temp.Length > 2)
+            {
                 return temp.Substring(0, temp.Length - 2);
+            }
             else
+            {
                 return temp;
+            }
         }
 
-        public void DeleteLinesWithTag(string StructuralTagValue)
+        public void DeleteLinesWithTag(string structuralTagValue)
         {
-            foreach (TrPage Page in Pages)
-                Page.DeleteLinesWithTag(StructuralTagValue);
+            foreach (TrPage page in Pages)
+            {
+                page.DeleteLinesWithTag(structuralTagValue);
+            }
         }
 
-        public void DeleteLinesOtherThan(string StructuralTagValue)
+        public void DeleteLinesOtherThan(string structuralTagValue)
         {
-            foreach (TrPage Page in Pages)
-                Page.DeleteLinesOtherThan(StructuralTagValue);
+            foreach (TrPage page in Pages)
+            {
+                page.DeleteLinesOtherThan(structuralTagValue);
+            }
         }
 
-        public void DeleteRegionsWithTag(string RegionalTagValue)
+        public void DeleteRegionsWithTag(string regionalTagValue)
         {
-            foreach (TrPage Page in Pages)
-                Page.DeleteRegionsWithTag(RegionalTagValue);
+            foreach (TrPage page in Pages)
+            {
+                page.DeleteRegionsWithTag(regionalTagValue);
+            }
         }
 
-
-        public void DeleteRegionsOtherThan(string RegionalTagValue)
+        public void DeleteRegionsOtherThan(string regionalTagValue)
         {
-            foreach (TrPage Page in Pages)
-                Page.DeleteRegionsOtherThan(RegionalTagValue);
+            foreach (TrPage page in Pages)
+            {
+                page.DeleteRegionsOtherThan(regionalTagValue);
+            }
         }
 
         public void DeleteEmptyRegions()
         {
-            foreach (TrPage Page in Pages)
-                Page.DeleteEmptyRegions();
+            foreach (TrPage page in Pages)
+            {
+                page.DeleteEmptyRegions();
+            }
         }
 
         public void SimplifyBoundingBoxes()
         {
-            foreach (TrPage Page in Pages)
-                Page.SimplifyBoundingBoxes();
-        }
-
-        public void SimplifyBoundingBoxes(int MinimumHeight, int MaximumHeight)
-        {
-            foreach (TrPage Page in Pages)
-                Page.SimplifyBoundingBoxes(MinimumHeight, MaximumHeight);
-        }
-
-
-        public void DeleteShortBaseLines(TrDialogTransferSettings Settings)
-        {
-            bool ProcessThis;
-            string LogFileName = "Delete Short BaseLines";
-            TrLog Log = new TrLog(LogFileName, ParentCollection.Name, Title);
-
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Settings.AllPages)
-                    ProcessThis = true;
-                else if (Page.PageNr >= Settings.PagesFrom && Page.PageNr <= Settings.PagesTo)
-                    ProcessThis = true;
-                else
-                    ProcessThis = false;
+                page.SimplifyBoundingBoxes();
+            }
+        }
 
-                if (ProcessThis)
+        public void SimplifyBoundingBoxes(int minimumHeight, int maximumHeight)
+        {
+            foreach (TrPage page in Pages)
+            {
+                page.SimplifyBoundingBoxes(minimumHeight, maximumHeight);
+            }
+        }
+
+        public void DeleteShortBaseLines(TrDialogTransferSettings settings)
+        {
+            bool processThis;
+            string logFileName = "Delete Short BaseLines";
+            TrLog log = new TrLog(logFileName, ParentCollection.Name, Title);
+
+            foreach (TrPage page in Pages)
+            {
+                if (settings.AllPages)
                 {
-                    Log.AddLine();
-                    Page.DeleteShortBaseLines(Settings, Log);
+                    processThis = true;
+                }
+                else if (page.PageNr >= settings.PagesFrom && page.PageNr <= settings.PagesTo)
+                {
+                    processThis = true;
+                }
+                else
+                {
+                    processThis = false;
+                }
+
+                if (processThis)
+                {
+                    log.AddLine();
+                    page.DeleteShortBaseLines(settings, log);
                 }
             }
+
             // Log.Show();
-            Log.Save();
+            log.Save();
         }
 
-        public void ExtendBaseLines(TrDialogTransferSettings Settings)
+        public void ExtendBaseLines(TrDialogTransferSettings settings)
         {
             // Debug.WriteLine($"TrDocument : ExtendBaseLines");
+            bool processThis;
+            string logFileName = "Extend BaseLines";
+            TrLog log = new TrLog(logFileName, ParentCollection.Name, Title);
 
-            bool ProcessThis;
-            string LogFileName = "Extend BaseLines";
-            TrLog Log = new TrLog(LogFileName, ParentCollection.Name, Title);
-
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Settings.AllPages)
-                    ProcessThis = true;
-                else if (Page.PageNr >= Settings.PagesFrom && Page.PageNr <= Settings.PagesTo)
-                    ProcessThis = true;
-                else
-                    ProcessThis = false;
-
-                if (ProcessThis)
+                if (settings.AllPages)
                 {
-                    Log.AddLine();
-                    Page.ExtendBaseLines(Settings, Log);
+                    processThis = true;
+                }
+                else if (page.PageNr >= settings.PagesFrom && page.PageNr <= settings.PagesTo)
+                {
+                    processThis = true;
+                }
+                else
+                {
+                    processThis = false;
+                }
+
+                if (processThis)
+                {
+                    log.AddLine();
+                    page.ExtendBaseLines(settings, log);
                 }
             }
-            // Log.Show();
-            Log.Save();
-        }
 
+            // Log.Show();
+            log.Save();
+        }
 
         //public void RepairBaseLines()
         //{
@@ -1595,286 +1729,310 @@ namespace TrClient.Core
         //    Log.Show();
         //    Log.Save();
         //}
-
-        public List<string> GetExpandedText(bool Refine, bool ConvertOtrema)
+        public List<string> GetExpandedText(bool refine, bool convertOtrema)
         {
-            List<string> TempList = new List<string>();
-            List<string> PageList;
+            List<string> tempList = new List<string>();
+            List<string> pageList;
 
-            foreach (TrPage P in Pages)
+            foreach (TrPage p in Pages)
             {
-                PageList = P.GetExpandedText(Refine, ConvertOtrema);
-                foreach (string s in PageList)
-                    TempList.Add(s);
+                pageList = p.GetExpandedText(refine, convertOtrema);
+                foreach (string s in pageList)
+                {
+                    tempList.Add(s);
+                }
             }
-            return TempList;
+
+            return tempList;
         }
 
-        public List<string> GetExpandedWords(bool Refine, bool ConvertOtrema)
+        public List<string> GetExpandedWords(bool refine, bool convertOtrema)
         {
-            List<string> LineList = GetExpandedText(Refine, ConvertOtrema);
-            List<string> TempList = new List<string>();
+            List<string> lineList = GetExpandedText(refine, convertOtrema);
+            List<string> tempList = new List<string>();
 
-            foreach (string L in LineList)
+            foreach (string l in lineList)
             {
-                var WordArray = L.Split(' ').ToArray();
-                int WordCount = WordArray.Length;
-                for (int i = 0; i < WordCount; i++)
-                    TempList.Add(WordArray[i].ToString());
+                var wordArray = l.Split(' ').ToArray();
+                int wordCount = wordArray.Length;
+                for (int i = 0; i < wordCount; i++)
+                {
+                    tempList.Add(wordArray[i].ToString());
+                }
             }
-            List<string> SortedList = TempList.Distinct().ToList();
-            SortedList.Sort();
 
-            return SortedList;
+            List<string> sortedList = tempList.Distinct().ToList();
+            sortedList.Sort();
+
+            return sortedList;
         }
 
-        private TrWords _words = new TrWords();
+        private TrWords words = new TrWords();
+
         public TrWords Words
         {
             get
             {
-                foreach (TrPage P in Pages)
+                foreach (TrPage p in Pages)
                 {
-                    foreach (TrWord W in P.Words)
-                        _words.Add(W);
+                    foreach (TrWord w in p.Words)
+                    {
+                        words.Add(w);
+                    }
                 }
-                return _words;
+
+                return words;
             }
         }
 
+        private TrLemmas lemmas = new TrLemmas();
 
-        private TrLemmas _lemmas = new TrLemmas();
         public TrLemmas Lemmas
         {
             get
             {
-                if (_lemmas.Count == 0)
+                if (lemmas.Count == 0)
                 {
-                    _lemmas.Clear();
+                    lemmas.Clear();
 
-                    foreach (TrWord Word in Words)
-                        _lemmas.AddWord(Word);
+                    foreach (TrWord word in Words)
+                    {
+                        lemmas.AddWord(word);
+                    }
                 }
-                return _lemmas;
+
+                return lemmas;
             }
         }
 
-
         public List<string> GetTextualTags()
         {
-            List<string> TempList = new List<string>();
-            List<string> LineTags;
+            List<string> tempList = new List<string>();
+            List<string> lineTags;
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasRegions)
+                if (page.HasRegions)
                 {
-                    TrTranscript Transcript = Page.Transcripts[0];
-                    foreach (TrRegion TR in Transcript.Regions)
+                    TrTranscript transcript = page.Transcripts[0];
+                    foreach (TrRegion textRegion in transcript.Regions)
                     {
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
-                                if (TL.HasTags)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
+                            {
+                                if (textLine.HasTags)
                                 {
-                                    LineTags = TL.GetTextualTags();
-                                    foreach (string TagString in LineTags)
-                                        TempList.Add(TagString);
+                                    lineTags = textLine.GetTextualTags();
+                                    foreach (string tagString in lineTags)
+                                    {
+                                        tempList.Add(tagString);
+                                    }
                                 }
-
+                            }
                         }
                     }
                 }
             }
-            List<string> TagList = TempList.Distinct().ToList();
-            TagList.Sort();
 
-            foreach (string s in TagList)
+            List<string> tagList = tempList.Distinct().ToList();
+            tagList.Sort();
+
+            foreach (string s in tagList)
+            {
                 Debug.WriteLine(s);
+            }
 
-            return TagList;
+            return tagList;
         }
 
         public List<string> GetStructuralTags()
         {
-            List<string> TempList = new List<string>();
+            List<string> tempList = new List<string>();
 
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                TrTranscript Transcript = Page.Transcripts[0];
-                if (Transcript.HasStructuralTags)
+                TrTranscript transcript = page.Transcripts[0];
+                if (transcript.HasStructuralTags)
                 {
-                    foreach (TrRegion TR in Transcript.Regions)
+                    foreach (TrRegion textRegion in transcript.Regions)
                     {
-                        List<string> TagsInRegion = TR.GetStructuralTags();
-                        foreach (string s in TagsInRegion)
-                            TempList.Add(s);
-                    }
-                }
-            }
-            List<string> TagList = TempList.Distinct().ToList();
-            TagList.Sort();
-            return TagList;
-        }
-
-        public void RenameStructuralTags(string OldName, string NewName)
-        {
-            foreach (TrPage Page in Pages)
-            {
-                TrTranscript Transcript = Page.Transcripts[0];
-                if (Transcript.HasStructuralTags)
-                {
-                    foreach (TrRegion TR in Transcript.Regions)
-                    {
-                        if (TR.GetType() == typeof(TrRegion_Text))
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
-                                if (TL.HasStructuralTag)
-                                {
-                                    if (TL.StructuralTagValue == OldName)
-                                        TL.RenameStructuralTag(OldName, NewName);
-                                }
-                    }
-                }
-            }
-        }
-
-        public void OpenPages()
-        {
-            // Debug.WriteLine($"OpenPages entred");
-            if (!IsLoaded)
-            {
-                // bruges kun OFFLINE
-                string MetsFileName = Folder + "mets.xml";
-                // Debug.WriteLine($"OpenPages: Metsfile = {MetsFileName}");
-
-                XmlDocument MetsDocument = new XmlDocument();
-                MetsDocument.Load(MetsFileName);
-
-                // Filer i dokument
-                XmlNodeList FileNodes = MetsDocument.DocumentElement.SelectNodes("//*[name()='ns3:FLocat']");
-
-                // siderne behandles
-                foreach (XmlNode xn in FileNodes)
-                {
-                    string fn = xn.Attributes[3].Value;
-                    // Debug.WriteLine($"OpenPages: fn = {fn}");
-                    if (fn.Length > 20)
-                    {
-                        // så er vi inde på den enkelte side
-                        // ------------------------------------------------------------------------------------------------------------------
-                        string PageID = "";
-                        int PageNr = 0;
-                        string ImageFileName = "";
-                        string ImageURL = "";
-                        int Width = 0;
-                        int Height = 0;
-
-                        string DocumentFileName = Folder + xn.Attributes[3].Value.Replace("/", "\\");
-                        //Debug.WriteLine($"OpenPages: DocFileName = {DocumentFileName}");
-
-                        XmlDocument PageDocument = new XmlDocument();
-                        PageDocument.Load(DocumentFileName);
-
-                        XmlNamespaceManager nsmgr = new XmlNamespaceManager(PageDocument.NameTable);
-                        nsmgr.AddNamespace("tr", "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15");
-
-                        // XmlNodeList PageNodes = PageDocument.DocumentElement.SelectNodes("//tr:Page", nsmgr);
-
-
-                        // Debug.WriteLine($"OpenPages: Første foreach - leder efter TranskribusMetadata");
-                        XmlNodeList PageMetaData = PageDocument.DocumentElement.SelectNodes("//tr:TranskribusMetadata", nsmgr); // 
-                        foreach (XmlNode px in PageMetaData)
+                        List<string> tagsInRegion = textRegion.GetStructuralTags();
+                        foreach (string s in tagsInRegion)
                         {
-                            //Debug.WriteLine($"OpenPages: pxløkke");
-                            //Debug.WriteLine($"px.name = {px.Name}");
+                            tempList.Add(s);
+                        }
+                    }
+                }
+            }
 
-                            if (px.Name == "TranskribusMetadata")
+            List<string> tagList = tempList.Distinct().ToList();
+            tagList.Sort();
+            return tagList;
+        }
+
+        public void RenameStructuralTags(string oldName, string newName)
+        {
+            foreach (TrPage page in Pages)
+            {
+                TrTranscript transcript = page.Transcripts[0];
+                if (transcript.HasStructuralTags)
+                {
+                    foreach (TrRegion textRegion in transcript.Regions)
+                    {
+                        if (textRegion.GetType() == typeof(TrTextRegion))
+                        {
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                //Debug.WriteLine($"OpenPages: px er fundet trmeta");
-                                foreach (XmlAttribute pxa in px.Attributes)
+                                if (textLine.HasStructuralTag)
                                 {
-                                    string Name = pxa.Name;
-                                    string Value = pxa.Value;
-
-                                    switch (Name)
+                                    if (textLine.StructuralTagValue == oldName)
                                     {
-                                        case "pageId":
-                                            PageID = Value;
-                                            break;
-                                        case "pageNr":
-                                            PageNr = Int32.Parse(Value);
-                                            break;
-                                        case "imgUrl":
-                                            ImageURL = Value;
-                                            break;
+                                        textLine.RenameStructuralTag(oldName, newName);
                                     }
                                 }
                             }
                         }
-
-                        //Debug.WriteLine($"OpenPages: Anden foreach - leder efter PcGts");
-                        XmlNodeList PageContent = PageDocument.DocumentElement.SelectNodes("//tr:Page", nsmgr);
-                        foreach (XmlNode px in PageContent)
-                        {
-                            //Debug.WriteLine($"OpenPages: pxløkke2");
-                            //Debug.WriteLine($"px.name = {px.Name}");
-                            if (px.Name == "Page")
-                            {
-                                //Debug.WriteLine($"OpenPages: px = page");
-
-                                foreach (XmlAttribute pxa in px.Attributes)
-                                {
-                                    string Name = pxa.Name;
-                                    string Value = pxa.Value;
-
-                                    switch (Name)
-                                    {
-                                        case "imageFilename":
-                                            ImageFileName = Value;
-                                            break;
-                                        case "imageWidth":
-                                            Width = Int32.Parse(Value);
-                                            break;
-                                        case "imageHeight":
-                                            Height = Int32.Parse(Value);
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-
-                        //Debug.WriteLine($"OpenPages: burde nu være klar til at danne en ny side");
-                        //Debug.WriteLine($"PageID, PageNr, ImageFileName, Width, Height = {PageID}, {PageNr}, {ImageFileName}, {Width}, {Height}");
-
-
-                        TrPage Page = new TrPage(PageID, PageNr, ImageFileName, ImageURL, Width, Height, DocumentFileName);
-                        Pages.Add(Page);
-
-                        TrTranscript T = new TrTranscript(DocumentFileName);
-                        Page.Transcripts.Add(T);
-
-                        T.LoadPageXML();
-                        IsLoaded = true;
-
                     }
                 }
-                Pages.Sort();
             }
         }
 
-        public async Task<bool> LoadPages(HttpClient CurrentClient)
+        //public void OpenPages()
+        //{
+        //    // Debug.WriteLine($"OpenPages entred");
+        //    if (!IsLoaded)
+        //    {
+        //        // bruges kun OFFLINE
+        //        string metsFileName = Folder + "mets.xml";
+
+        //        // Debug.WriteLine($"OpenPages: Metsfile = {MetsFileName}");
+        //        XmlDocument metsDocument = new XmlDocument();
+        //        metsDocument.Load(metsFileName);
+
+        //        // Filer i dokument
+        //        XmlNodeList fileNodes = metsDocument.DocumentElement.SelectNodes("//*[name()='ns3:FLocat']");
+
+        //        // siderne behandles
+        //        foreach (XmlNode xn in fileNodes)
+        //        {
+        //            string fn = xn.Attributes[3].Value;
+
+        //            // Debug.WriteLine($"OpenPages: fn = {fn}");
+        //            if (fn.Length > 20)
+        //            {
+        //                // så er vi inde på den enkelte side
+        //                // ------------------------------------------------------------------------------------------------------------------
+        //                string pageID = string.Empty;
+        //                int pageNr = 0;
+        //                string imageFileName = string.Empty;
+        //                string imageURL = string.Empty;
+        //                int width = 0;
+        //                int height = 0;
+
+        //                string documentFileName = Folder + xn.Attributes[3].Value.Replace("/", "\\");
+
+        //                //Debug.WriteLine($"OpenPages: DocFileName = {DocumentFileName}");
+        //                XmlDocument pageDocument = new XmlDocument();
+        //                pageDocument.Load(documentFileName);
+
+        //                XmlNamespaceManager nsmgr = new XmlNamespaceManager(pageDocument.NameTable);
+        //                nsmgr.AddNamespace("tr", "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15");
+
+        //                // XmlNodeList PageNodes = PageDocument.DocumentElement.SelectNodes("//tr:Page", nsmgr);
+
+        //                // Debug.WriteLine($"OpenPages: Første foreach - leder efter TranskribusMetadata");
+        //                XmlNodeList pageMetaData = pageDocument.DocumentElement.SelectNodes("//tr:TranskribusMetadata", nsmgr);
+        //                foreach (XmlNode px in pageMetaData)
+        //                {
+        //                    //Debug.WriteLine($"OpenPages: pxløkke");
+        //                    //Debug.WriteLine($"px.name = {px.Name}");
+        //                    if (px.Name == "TranskribusMetadata")
+        //                    {
+        //                        //Debug.WriteLine($"OpenPages: px er fundet trmeta");
+        //                        foreach (XmlAttribute pxa in px.Attributes)
+        //                        {
+        //                            string name = pxa.Name;
+        //                            string value = pxa.Value;
+
+        //                            switch (name)
+        //                            {
+        //                                case "pageId":
+        //                                    pageID = value;
+        //                                    break;
+        //                                case "pageNr":
+        //                                    pageNr = Int32.Parse(value);
+        //                                    break;
+        //                                case "imgUrl":
+        //                                    imageURL = value;
+        //                                    break;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                //Debug.WriteLine($"OpenPages: Anden foreach - leder efter PcGts");
+        //                XmlNodeList pageContent = pageDocument.DocumentElement.SelectNodes("//tr:Page", nsmgr);
+        //                foreach (XmlNode px in pageContent)
+        //                {
+        //                    //Debug.WriteLine($"OpenPages: pxløkke2");
+        //                    //Debug.WriteLine($"px.name = {px.Name}");
+        //                    if (px.Name == "Page")
+        //                    {
+        //                        //Debug.WriteLine($"OpenPages: px = page");
+        //                        foreach (XmlAttribute pxa in px.Attributes)
+        //                        {
+        //                            string name = pxa.Name;
+        //                            string value = pxa.Value;
+
+        //                            switch (name)
+        //                            {
+        //                                case "imageFilename":
+        //                                    imageFileName = value;
+        //                                    break;
+        //                                case "imageWidth":
+        //                                    width = Int32.Parse(value);
+        //                                    break;
+        //                                case "imageHeight":
+        //                                    height = Int32.Parse(value);
+        //                                    break;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                //Debug.WriteLine($"OpenPages: burde nu være klar til at danne en ny side");
+        //                //Debug.WriteLine($"PageID, PageNr, ImageFileName, Width, Height = {PageID}, {PageNr}, {ImageFileName}, {Width}, {Height}");
+        //                TrPage page = new TrPage(pageID, pageNr, imageFileName, imageURL, width, height, documentFileName);
+        //                Pages.Add(page);
+
+        //                TrTranscript t = new TrTranscript(documentFileName);
+        //                page.Transcripts.Add(t);
+
+        //                t.LoadPageXML();
+        //                IsLoaded = true;
+        //            }
+        //        }
+
+        //        Pages.Sort();
+        //    }
+        //}
+
+        public async Task<bool> LoadPages(HttpClient currentClient)
         {
             // bruges kun ONLINE
             if (!IsLoaded)
             {
                 TrpPages = TrpPages.Replace("_ColID_", ParentCollection.ID);
                 TrpPages = TrpPages.Replace("_DocID_", ID);
+
                 // Debug.WriteLine(TrpPages);
 
                 // Henter de relevante pages ind i et XMLdoc
-                HttpResponseMessage PagesResponseMessage = await CurrentClient.GetAsync(TrpPages);
-                string PagesResponse = await PagesResponseMessage.Content.ReadAsStringAsync();
-                PagesAndTranscriptsMetadata.LoadXml(PagesResponse);
+                HttpResponseMessage pagesResponseMessage = await currentClient.GetAsync(TrpPages);
+                string pagesResponse = await pagesResponseMessage.Content.ReadAsStringAsync();
+                PagesAndTranscriptsMetadata.LoadXml(pagesResponse);
+
                 // Debug.WriteLine($"henter sider i dokumentet {Title}, {ID}");
                 // Debug.WriteLine($"antal sider 1 = {Pages.Count}");
 
@@ -1883,171 +2041,170 @@ namespace TrClient.Core
                 //string XMLFileName = TrLibrary.ExportFolder + ParentCollection.Name + "_" + Title + ".xml";
                 //PagesAndTranscriptsMetadata.Save(XMLFileName);
 
-
                 // Udtrækker de enkelte pages
-                XmlNodeList PageNodes = PagesAndTranscriptsMetadata.DocumentElement.SelectNodes("//pages");
-                foreach (XmlNode xnPage in PageNodes)
+                XmlNodeList pageNodes = PagesAndTranscriptsMetadata.DocumentElement.SelectNodes("//pages");
+                foreach (XmlNode xnPage in pageNodes)
                 {
-                    XmlNodeList PageMetaData = xnPage.ChildNodes;
-                    string PageID = "";
-                    int PageNr = 0;
-                    string ImageFileName = "";
-                    string ImageURL = "";
-                    int Width = 0;
-                    int Height = 0;
+                    XmlNodeList pageMetaData = xnPage.ChildNodes;
+                    string pageID = string.Empty;
+                    int pageNr = 0;
+                    string imageFileName = string.Empty;
+                    string imageURL = string.Empty;
+                    int width = 0;
+                    int height = 0;
 
-                    foreach (XmlNode xnPageMetaData in PageMetaData)
+                    foreach (XmlNode xnPageMetaData in pageMetaData)
                     {
-                        string Name = xnPageMetaData.Name;
-                        string Value = xnPageMetaData.InnerText;
+                        string name = xnPageMetaData.Name;
+                        string value = xnPageMetaData.InnerText;
 
-                        switch (Name)
+                        switch (name)
                         {
                             case "pageId":
-                                PageID = Value;
+                                pageID = value;
                                 break;
                             case "pageNr":
-                                PageNr = Int32.Parse(Value);
+                                pageNr = Int32.Parse(value);
                                 break;
                             case "imgFileName":
-                                ImageFileName = Value;
+                                imageFileName = value;
                                 break;
                             case "url":
-                                ImageURL = Value;
+                                imageURL = value;
                                 break;
                             case "width":
-                                Width = Int32.Parse(Value);
+                                width = Int32.Parse(value);
                                 break;
                             case "height":
-                                Height = Int32.Parse(Value);
+                                height = Int32.Parse(value);
                                 break;
                         }
                     }
-                    TrPage Page = new TrPage(PageID, PageNr, ImageFileName, ImageURL, Width, Height);
-                    Pages.Add(Page);
 
+                    TrPage page = new TrPage(pageID, pageNr, imageFileName, imageURL, width, height);
+                    Pages.Add(page);
                 }
+
                 // Debug.WriteLine($"antal sider 2 = {Pages.Count}");
                 Pages.Sort();
 
                 // Udtrækker de enkelte transcripts
-                XmlNodeList TranscriptNodes = PagesAndTranscriptsMetadata.DocumentElement.SelectNodes("//transcripts");
-                foreach (XmlNode xnTranscript in TranscriptNodes)
+                XmlNodeList transcriptNodes = PagesAndTranscriptsMetadata.DocumentElement.SelectNodes("//transcripts");
+                foreach (XmlNode xnTranscript in transcriptNodes)
                 {
-                    XmlNodeList TranscriptMetaData = xnTranscript.ChildNodes;
+                    XmlNodeList transcriptMetaData = xnTranscript.ChildNodes;
 
-                    string TranscriptID = "";
-                    string TranscriptKey = "";
-                    int PageNr = 0;
-                    string TranscriptStatus = "";
-                    string TranscriptUser = "";
-                    string Timestamp = "";
-                    int NumberOfRegions = 0;
-                    int NumberOfTranscribedRegions = 0;
-                    int NumberOfLines = 0;
-                    int NumberOfTranscribedLines = 0;
+                    string transcriptID = string.Empty;
+                    string transcriptKey = string.Empty;
+                    int pageNr = 0;
+                    string transcriptStatus = string.Empty;
+                    string transcriptUser = string.Empty;
+                    string timestamp = string.Empty;
+                    int numberOfRegions = 0;
+                    int numberOfTranscribedRegions = 0;
+                    int numberOfLines = 0;
+                    int numberOfTranscribedLines = 0;
 
                     // Debug.WriteLine("Henter transcripts.");
                     int temp = 0;
 
-                    foreach (XmlNode xnTranscriptMetaData in TranscriptMetaData)
+                    foreach (XmlNode xnTranscriptMetaData in transcriptMetaData)
                     {
-                        string Name = xnTranscriptMetaData.Name;
-                        string Value = xnTranscriptMetaData.InnerText;
+                        string name = xnTranscriptMetaData.Name;
+                        string value = xnTranscriptMetaData.InnerText;
                         temp++;
-                        // Debug.WriteLine($"trsc. {temp}:\t{Name}\t{Value}");
 
-                        switch (Name)
+                        // Debug.WriteLine($"trsc. {temp}:\t{Name}\t{Value}");
+                        switch (name)
                         {
                             case "tsId":
-                                TranscriptID = Value;
+                                transcriptID = value;
                                 break;
                             case "key":
-                                TranscriptKey = Value;
+                                transcriptKey = value;
                                 break;
                             case "pageNr":
-                                PageNr = Int32.Parse(Value);
+                                pageNr = Int32.Parse(value);
                                 break;
                             case "status":
-                                TranscriptStatus = Value;
+                                transcriptStatus = value;
                                 break;
                             case "userName":
-                                TranscriptUser = Value;
+                                transcriptUser = value;
                                 break;
                             case "timestamp":
-                                Timestamp = Value;
+                                timestamp = value;
                                 break;
                             case "nrOfRegions":
-                                NumberOfRegions = Int32.Parse(Value);
+                                numberOfRegions = Int32.Parse(value);
                                 break;
                             case "nrOfTranscribedRegions":
-                                NumberOfTranscribedRegions = Int32.Parse(Value);
+                                numberOfTranscribedRegions = Int32.Parse(value);
                                 break;
                             case "nrOfLines":
-                                NumberOfLines = Int32.Parse(Value);
+                                numberOfLines = Int32.Parse(value);
                                 break;
                             case "nrOfTranscribedLines":
-                                NumberOfTranscribedLines = Int32.Parse(Value);
+                                numberOfTranscribedLines = Int32.Parse(value);
                                 break;
                         }
                     }
 
-                    TrTranscript Transcript = new TrTranscript(TranscriptID, TranscriptKey, PageNr, TranscriptStatus,
-                        TranscriptUser, Timestamp);
+                    TrTranscript transcript = new TrTranscript(transcriptID, transcriptKey, pageNr, transcriptStatus,
+                        transcriptUser, timestamp);
 
-                    Transcripts.Add(Transcript);
-
+                    Transcripts.Add(transcript);
                 }
 
                 // Debug.WriteLine($"antal transcripts = {Transcripts.Count}");
 
                 // så nu fordeler vi dem på siderne
-                foreach (TrTranscript Tra in Transcripts)
+                foreach (TrTranscript tra in Transcripts)
                 {
-                    Pages.GetPageFromPageNr(Tra.PageNr).Transcripts.Add(Tra);
-
+                    Pages.GetPageFromPageNr(tra.PageNr).Transcripts.Add(tra);
                 }
+
                 // og sorterer dem - og vender dem rundt, så nyeste er først
-                foreach (TrPage Page in Pages)
+                foreach (TrPage page in Pages)
                 {
-                    Page.Transcripts.Sort();
-                    Page.Transcripts.Reverse();
+                    page.Transcripts.Sort();
+                    page.Transcripts.Reverse();
+
                     // Page.IsLoaded = true;
                     // Debug.WriteLine($"Page # {Page.PageNr}: {Page.TranscriptCount} transcripts.");
                 }
+
                 IsLoaded = true;
                 ParentCollection.NrOfDocsLoaded++;
                 Debug.WriteLine($"Document {ParentCollection.Name} / {Title} loaded!");
             }
 
             return true;
-
         }
 
-        public void Upload(HttpClient CurrentClient)
+        public void Upload(HttpClient currentClient)
         {
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasChanged)
-                    Page.Transcripts[0].Upload(CurrentClient);
+                if (page.HasChanged)
+                {
+                    page.Transcripts[0].Upload(currentClient);
+                }
             }
 
             Debug.Print($"***** RESULT: Transcripts changed: {NrOfTranscriptsChanged} - Transcripts uploaded: {NrOfTranscriptsUploaded}");
-
         }
 
         public void Save()
         {
-            foreach (TrPage Page in Pages)
+            foreach (TrPage page in Pages)
             {
-                if (Page.HasChanged)
+                if (page.HasChanged)
                 {
-                    Page.Transcripts[0].Save();
-
+                    page.Transcripts[0].Save();
                 }
             }
         }
-
 
         public bool PostLoadTestOK()
         {
@@ -2055,54 +2212,51 @@ namespace TrClient.Core
             // det undersøges:
             // 1. om regioner, liner og baselines har ulovlige koordinater (mindre end 0, større end siden)
             // 2. om nogle textlines skal trimmes for leading og trailing spaces
+            bool regionsOK = true;
+            bool linesOK = true;
+            bool baseLinesOK = true;
+            bool spacesOK = true;
 
-            bool RegionsOK = true;
-            bool LinesOK = true;
-            bool BaseLinesOK = true;
-            bool SpacesOK = true;
+            bool regionOK;
+            bool lineOK;
+            bool baseLineOK;
+            bool spaceOK;
 
-            bool RegionOK;
-            bool LineOK;
-            bool BaseLineOK;
-            bool SpaceOK;
+            bool documentOK;
 
-            bool DocumentOK;
-
-            foreach (TrPage P in Pages)
+            foreach (TrPage p in Pages)
             {
                 //Debug.Print($"Page# {P.PageNr} ----------------------------------------------------");
-
-                if (P.HasRegions)
+                if (p.HasRegions)
                 {
-                    foreach (TrRegion TR in P.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in p.Transcripts[0].Regions)
                     {
-                        RegionOK = TrLibrary.CheckCoordinates(TR.CoordsString, P.Width, P.Height);
-                        RegionsOK = RegionsOK && RegionOK;
+                        regionOK = TrLibrary.CheckCoordinates(textRegion.CoordsString, p.Width, p.Height);
+                        regionsOK = regionsOK && regionOK;
+
                         //Debug.Print($"Reg.# {TR.Number.ToString("000")}: Area {RegionOK}");
-
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                LineOK = TrLibrary.CheckCoordinates(TL.CoordsString, P.Width, P.Height);
-                                LinesOK = LinesOK && LineOK;
+                                lineOK = TrLibrary.CheckCoordinates(textLine.CoordsString, p.Width, p.Height);
+                                linesOK = linesOK && lineOK;
 
-                                BaseLineOK = TrLibrary.CheckCoordinates(TL.BaseLineCoordsString, P.Width, P.Height);
-                                BaseLinesOK = BaseLinesOK && BaseLineOK;
+                                baseLineOK = TrLibrary.CheckCoordinates(textLine.BaseLineCoordsString, p.Width, p.Height);
+                                baseLinesOK = baseLinesOK && baseLineOK;
 
-                                SpaceOK = TL.TextEquiv == TL.TextEquiv.Trim();
-                                SpacesOK = SpacesOK && SpaceOK;
+                                spaceOK = textLine.TextEquiv == textLine.TextEquiv.Trim();
+                                spacesOK = spacesOK && spaceOK;
 
                                 //Debug.Print($"Line# {TL.Number.ToString("000")}: Line {LineOK} - BaseLine {BaseLineOK} - Spaces {SpaceOK}");
-
                             }
                         }
                     }
                 }
             }
 
-            DocumentOK = RegionsOK && LinesOK && BaseLinesOK && SpacesOK;
-            return DocumentOK;
+            documentOK = regionsOK && linesOK && baseLinesOK && spacesOK;
+            return documentOK;
         }
 
         public void PostLoadFix()
@@ -2110,62 +2264,56 @@ namespace TrClient.Core
             // fixer de ting, som PostLoadTest finder:
             // 1. regioner, liner og baselines: ulovlige koordinater (mindre end 0, større end siden) fixes
             // 2. textlines trimmes for leading og trailing spaces
+            bool regionOK;
+            bool lineOK;
+            bool baseLineOK;
+            bool spaceOK;
 
-            bool RegionOK;
-            bool LineOK;
-            bool BaseLineOK;
-            bool SpaceOK;
-
-            foreach (TrPage P in Pages)
+            foreach (TrPage p in Pages)
             {
-                Debug.Print($"Page# {P.PageNr} ----------------------------------------------------");
+                Debug.Print($"Page# {p.PageNr} ----------------------------------------------------");
 
-                if (P.HasRegions)
+                if (p.HasRegions)
                 {
-                    foreach (TrRegion TR in P.Transcripts[0].Regions)
+                    foreach (TrRegion textRegion in p.Transcripts[0].Regions)
                     {
-                        RegionOK = TrLibrary.CheckCoordinates(TR.CoordsString, P.Width, P.Height);
+                        regionOK = TrLibrary.CheckCoordinates(textRegion.CoordsString, p.Width, p.Height);
 
-                        if (!RegionOK)
+                        if (!regionOK)
                         {
-                            Debug.Print($"Region# {TR.Number.ToString("000")}: Fixing coordinates");
-                            TR.FixCoordinates();
+                            Debug.Print($"Region# {textRegion.Number.ToString("000")}: Fixing coordinates");
+                            textRegion.FixCoordinates();
                         }
 
-                        if (TR.GetType() == typeof(TrRegion_Text))
+                        if (textRegion.GetType() == typeof(TrTextRegion))
                         {
-                            foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                             {
-                                LineOK = TrLibrary.CheckCoordinates(TL.CoordsString, P.Width, P.Height);
-                                if (!LineOK)
+                                lineOK = TrLibrary.CheckCoordinates(textLine.CoordsString, p.Width, p.Height);
+                                if (!lineOK)
                                 {
-                                    Debug.Print($"Line# {TL.Number.ToString("000")}: Fixing line area coordinates");
-                                    TL.FixLineCoordinates();
+                                    Debug.Print($"Line# {textLine.Number.ToString("000")}: Fixing line area coordinates");
+                                    textLine.FixLineCoordinates();
                                 }
 
-                                BaseLineOK = TrLibrary.CheckCoordinates(TL.BaseLineCoordsString, P.Width, P.Height);
-                                if (!BaseLineOK)
+                                baseLineOK = TrLibrary.CheckCoordinates(textLine.BaseLineCoordsString, p.Width, p.Height);
+                                if (!baseLineOK)
                                 {
-                                    Debug.Print($"Line# {TL.Number.ToString("000")}: Fixing baseline coordinates");
-                                    TL.FixBaseLineCoordinates();
+                                    Debug.Print($"Line# {textLine.Number.ToString("000")}: Fixing baseline coordinates");
+                                    textLine.FixBaseLineCoordinates();
                                 }
 
-                                SpaceOK = TL.TextEquiv == TL.TextEquiv.Trim();
-                                if (!SpaceOK)
+                                spaceOK = textLine.TextEquiv == textLine.TextEquiv.Trim();
+                                if (!spaceOK)
                                 {
-                                    Debug.Print($"Line# {TL.Number.ToString("000")}: Trimming line");
-                                    TL.Trim();
+                                    Debug.Print($"Line# {textLine.Number.ToString("000")}: Trimming line");
+                                    textLine.Trim();
                                 }
                             }
                         }
                     }
                 }
             }
-
         }
-
-
-
-
     }
 }

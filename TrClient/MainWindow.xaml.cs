@@ -1,49 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.IO;
-using System.Timers;
-using System.ComponentModel;
-using System.Text.RegularExpressions;
-using TrClient;
-using TrClient.Core;
-using TrClient.Dialog;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-using DanishNLP;
+﻿// <copyright file="MainWindow.xaml.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Net.Http;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Xml;
+    using System.Xml.Linq;
+    using System.Xml.Serialization;
+    using DanishNLP;
+    using TrClient.Core;
+    using TrClient.Extensions;
+    using TrClient.Helpers;
+    using TrClient.Libraries;
+    using TrClient.Settings;
+    using TrClient.Views;
+
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml.
     /// </summary>
     public partial class MainWindow : Window
     {
-        public enum deleteAction
+        public enum DeleteAction
         {
-            delete = 0,
-            preserve = 1
+            Delete = 0,
+            Preserve = 1,
         }
-
 
         public static TrUser User;
         public static readonly HttpClient Client = new HttpClient();
@@ -60,14 +52,16 @@ namespace TrClient
             {
                 if (File.Exists("User.xml"))
                 {
-                    using (var Stream = File.OpenRead("User.xml"))
+                    using (var stream = File.OpenRead("User.xml"))
                     {
-                        var Serializer = new XmlSerializer(typeof(TrUser));
-                        User = Serializer.Deserialize(Stream) as TrUser;
+                        var serializer = new XmlSerializer(typeof(TrUser));
+                        User = serializer.Deserialize(stream) as TrUser;
                     }
                 }
                 else
+                {
                     User = new TrUser();
+                }
             }
 
             Client.BaseAddress = new Uri(TrLibrary.TrpBaseAdress);
@@ -78,69 +72,68 @@ namespace TrClient
             txtUserName.Text = User.Username;
             txtPassword.Password = User.Password;
             StatusLight.DataContext = MyCollections;
-
         }
-
 
         // LOGIN
         // --------------------------------------------------------------------------------------------------------------------
-        public async void RunLoginAndGetMyCollections(string Username, string Password)
+        public async void RunLoginAndGetMyCollections(string username, string password)
         {
             // Kaldes KUN i online-mode!!
-
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-            var Credentials = new FormUrlEncodedContent(new[]
+            var credentials = new FormUrlEncodedContent(new[]
                 {
-                    new KeyValuePair<string, string>("user", Username),
-                    new KeyValuePair<string, string>("pw", Password),
+                    new KeyValuePair<string, string>("user", username),
+                    new KeyValuePair<string, string>("pw", password),
                 });
 
             try
             {
-                HttpResponseMessage LoginResponseMessage = await Client.PostAsync(TrLibrary.TrpLogin, Credentials);
+                HttpResponseMessage loginResponseMessage = await Client.PostAsync(TrLibrary.TrpLogin, credentials);
 
-                string LoginResponse = LoginResponseMessage.StatusCode.ToString();
+                string loginResponse = loginResponseMessage.StatusCode.ToString();
 
-                bool Status = (LoginResponse == "OK");
-                if (Status)
+                bool status = loginResponse == "OK";
+                if (status)
                 {
                     // Henter brugerens collections ind i et XMLdoc
-                    HttpResponseMessage CollectionsResponseMessage = await Client.GetAsync(TrLibrary.TrpCollections);
-                    string CollectionsResponse = await CollectionsResponseMessage.Content.ReadAsStringAsync();
-                    MyCollectionsDocument.LoadXml(CollectionsResponse);
+                    HttpResponseMessage collectionsResponseMessage = await Client.GetAsync(TrLibrary.TrpCollections);
+                    string collectionsResponse = await collectionsResponseMessage.Content.ReadAsStringAsync();
+                    MyCollectionsDocument.LoadXml(collectionsResponse);
 
                     // Udtrækker de enkelte collections
-                    XmlNodeList CollectionNodes = MyCollectionsDocument.DocumentElement.SelectNodes("//trpCollection");
-                    foreach (XmlNode xnCollection in CollectionNodes)
+                    XmlNodeList collectionNodes = MyCollectionsDocument.DocumentElement.SelectNodes("//trpCollection");
+                    foreach (XmlNode xnCollection in collectionNodes)
                     {
-                        XmlNodeList CollectionMetaData = xnCollection.ChildNodes;
-                        string ColID = "";
-                        string ColName = "";
-                        int NrOfDocs = 0;
+                        XmlNodeList collectionMetaData = xnCollection.ChildNodes;
+                        string colID = string.Empty;
+                        string colName = string.Empty;
+                        int nrOfDocs = 0;
 
-                        foreach (XmlNode xnCollectionMetaData in CollectionMetaData)
+                        foreach (XmlNode xnCollectionMetaData in collectionMetaData)
                         {
-                            string Name = xnCollectionMetaData.Name;
-                            string Value = xnCollectionMetaData.InnerText;
+                            string name = xnCollectionMetaData.Name;
+                            string value = xnCollectionMetaData.InnerText;
 
-                            switch (Name)
+                            switch (name)
                             {
                                 case "colId":
-                                    ColID = Value;
+                                    colID = value;
                                     break;
                                 case "colName":
-                                    ColName = Value;
+                                    colName = value;
                                     break;
                                 case "nrOfDocuments":
-                                    NrOfDocs = Int32.Parse(Value);
+                                    nrOfDocs = Int32.Parse(value);
                                     break;
                             }
                         }
-                        TrCollection Coll = new TrCollection(ColName, ColID, NrOfDocs);
-                        MyCollections.Add(Coll);
+
+                        TrCollection coll = new TrCollection(colName, colID, nrOfDocs);
+                        MyCollections.Add(coll);
                     }
                 }
+
                 MyCollections.Sort();
 
                 // fylder box op
@@ -161,7 +154,6 @@ namespace TrClient
             {
                 Debug.WriteLine($"General error! Exception message when logging in: {e.Message}");
             }
-
         }
 
         //public void OpenCollections()
@@ -189,7 +181,6 @@ namespace TrClient
         //        {
         //            DirectoryInfo diFirstDocument = diDocumentsArr.First();
         //            string FirstDocumentID = diFirstDocument.Name;          // VED export af hel collection er strukturen ID/Title
-
 
         //            string FirstDocumentIDFolder = CollectionFolder + "\\" + FirstDocumentID + "\\";
 
@@ -244,7 +235,6 @@ namespace TrClient
         //    MyCollections.IsLoaded = true;
         //}
 
-
         // EVENTS
         // --------------------------------------------------------------------------------------------------------------------
 
@@ -263,16 +253,16 @@ namespace TrClient
                 {
                     User.Username = txtUserName.Text;
                     User.Password = txtPassword.Password;
-                    using (var Stream = File.Open("User.xml", FileMode.Create))
+                    using (var stream = File.Open("User.xml", FileMode.Create))
                     {
-                        var Serializer = new XmlSerializer(typeof(TrUser));
-                        Serializer.Serialize(Stream, User);
+                        var serializer = new XmlSerializer(typeof(TrUser));
+                        serializer.Serialize(stream, User);
                     }
+
                     RunLoginAndGetMyCollections(txtUserName.Text, txtPassword.Password);
                 }
             }
         }
-
 
         // Collection valgt
         private async void LstCollections_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -282,10 +272,10 @@ namespace TrClient
             {
                 if (Current.Collection != null && Current.Collection.HasChanged)
                 {
-                    string Question = $"{Current.Collection.Name} has changed. Upload changes?";
-                    MessageBoxResult Result = AskUser(Question);
+                    string question = $"{Current.Collection.Name} has changed. Upload changes?";
+                    MessageBoxResult result = AskUser(question);
 
-                    if (Result == MessageBoxResult.Yes)
+                    if (result == MessageBoxResult.Yes)
                     {
                         if (TrLibrary.OfflineMode)
                         {
@@ -297,31 +287,31 @@ namespace TrClient
                         }
                     }
                 }
-                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
+                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
                 // rydder op
                 lstDocuments.ItemsSource = null;
                 lstPages.ItemsSource = null;
                 Current.Document = null;
 
-                Current.Collection = (lstCollections.SelectedItem as TrCollection);
+                Current.Collection = lstCollections.SelectedItem as TrCollection;
                 txtCurrentCollection.DataContext = Current.Collection;
                 txtCurrentDocument.DataContext = Current.Document;
 
-                dlgProgressLoadDocs Progress = new dlgProgressLoadDocs(Current.Collection.NrOfDocs);
-                Progress.Owner = this;
-                Progress.DataContext = Current.Collection;
-                Progress.Show();
+                ProgressLoadDocs progress = new ProgressLoadDocs(Current.Collection.NrOfDocs);
+                progress.Owner = this;
+                progress.DataContext = Current.Collection;
+                progress.Show();
 
                 if (TrLibrary.OfflineMode)
                 {
-                    Current.Collection.OpenDocuments();
+                    // Current.Collection.OpenDocuments();
                 }
                 else
                 {
-                    Task<bool> Loaded = Current.Collection.LoadDocuments(Client);
-                    bool OK = await Loaded;
+                    Task<bool> loaded = Current.Collection.LoadDocuments(Client);
+                    bool oK = await loaded;
                 }
 
                 // fylder box op
@@ -330,106 +320,101 @@ namespace TrClient
                 if (!TrLibrary.OfflineMode)
                 {
                     // henter sider
-                    foreach (TrDocument Doc in Current.Collection.Documents)
+                    foreach (TrDocument doc in Current.Collection.Documents)
                     {
                         try
                         {
-                            Task<bool> PagesLoaded = Doc.LoadPages(Client);
-                            bool PagesOK = await PagesLoaded;
+                            Task<bool> pagesLoaded = doc.LoadPages(Client);
+                            bool pagesOK = await pagesLoaded;
                         }
                         catch (System.Threading.Tasks.TaskCanceledException eDocLoaded)
                         {
                             Debug.WriteLine($"Exception message: {eDocLoaded.Message}");
                         }
                     }
-
                 }
 
-                Progress.Hide();
+                progress.Hide();
 
                 Mouse.OverrideCursor = null;
             }
         }
 
-        private async void LstSecondaryCollections_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            {
-                ListBox lb = sender as ListBox;
-                if (lstSecondaryCollections.SelectedItem != null)
-                {
-                    if (Secondary.Collection != null && Secondary.Collection.HasChanged)
-                    {
-                        string Question = $"{Secondary.Collection.Name} has changed. Upload changes?";
-                        MessageBoxResult Result = AskUser(Question);
+        //private async void LstSecondaryCollections_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    {
+        //        ListBox lb = sender as ListBox;
+        //        if (lstSecondaryCollections.SelectedItem != null)
+        //        {
+        //            if (Secondary.Collection != null && Secondary.Collection.HasChanged)
+        //            {
+        //                string question = $"{Secondary.Collection.Name} has changed. Upload changes?";
+        //                MessageBoxResult result = AskUser(question);
 
-                        if (Result == MessageBoxResult.Yes)
-                        {
-                            if (TrLibrary.OfflineMode)
-                            {
+        //                if (result == MessageBoxResult.Yes)
+        //                {
+        //                    if (TrLibrary.OfflineMode)
+        //                    {
+        //                    }
+        //                    else
+        //                    {
+        //                        Secondary.Collection.Upload(Client);
+        //                    }
+        //                }
+        //            }
 
-                            }
-                            else
-                            {
-                                Secondary.Collection.Upload(Client);
-                            }
-                        }
-                    }
-                    Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+        //            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
+        //            // rydder op
+        //            lstSecondaryDocuments.ItemsSource = null;
+        //            lstSecondaryPages.ItemsSource = null;
+        //            Secondary.Document = null;
 
-                    // rydder op
-                    lstSecondaryDocuments.ItemsSource = null;
-                    lstSecondaryPages.ItemsSource = null;
-                    Secondary.Document = null;
+        //            Secondary.Collection = lstSecondaryCollections.SelectedItem as TrCollection;
+        //            txtSecondaryCollection.DataContext = Secondary.Collection;
+        //            txtSecondaryDocument.DataContext = Secondary.Document;
 
-                    Secondary.Collection = (lstSecondaryCollections.SelectedItem as TrCollection);
-                    txtSecondaryCollection.DataContext = Secondary.Collection;
-                    txtSecondaryDocument.DataContext = Secondary.Document;
+        //            ProgressLoadDocs progress = new ProgressLoadDocs(Secondary.Collection.NrOfDocs);
+        //            progress.Owner = this;
+        //            progress.DataContext = Secondary.Collection;
+        //            progress.Show();
 
-                    dlgProgressLoadDocs Progress = new dlgProgressLoadDocs(Secondary.Collection.NrOfDocs);
-                    Progress.Owner = this;
-                    Progress.DataContext = Secondary.Collection;
-                    Progress.Show();
+        //            if (TrLibrary.OfflineMode)
+        //            {
+        //                // Secondary.Collection.OpenDocuments();
+        //            }
+        //            else
+        //            {
+        //                Task<bool> loaded = Secondary.Collection.LoadDocuments(Client);
+        //                bool oK = await loaded;
+        //            }
 
-                    if (TrLibrary.OfflineMode)
-                    {
-                        Secondary.Collection.OpenDocuments();
-                    }
-                    else
-                    {
-                        Task<bool> Loaded = Secondary.Collection.LoadDocuments(Client);
-                        bool OK = await Loaded;
-                    }
+        //            // fylder box op
+        //            lstSecondaryDocuments.ItemsSource = Secondary.Collection.Documents;
 
-                    // fylder box op
-                    lstSecondaryDocuments.ItemsSource = Secondary.Collection.Documents;
+        //            if (!TrLibrary.OfflineMode)
+        //            {
+        //                // henter sider
+        //                foreach (TrDocument doc in Secondary.Collection.Documents)
+        //                {
+        //                    try
+        //                    {
+        //                        Task<bool> pagesLoaded = doc.LoadPages(Client);
+        //                        bool pagesOK = await pagesLoaded;
+        //                    }
+        //                    catch (System.Threading.Tasks.TaskCanceledException eDocLoaded)
+        //                    {
+        //                        Debug.WriteLine($"Exception message: {eDocLoaded.Message}");
+        //                    }
+        //                }
+        //            }
 
-                    if (!TrLibrary.OfflineMode)
-                    {
-                        // henter sider
-                        foreach (TrDocument Doc in Secondary.Collection.Documents)
-                        {
-                            try
-                            {
-                                Task<bool> PagesLoaded = Doc.LoadPages(Client);
-                                bool PagesOK = await PagesLoaded;
-                            }
-                            catch (System.Threading.Tasks.TaskCanceledException eDocLoaded)
-                            {
-                                Debug.WriteLine($"Exception message: {eDocLoaded.Message}");
-                            }
-                        }
+        //            progress.Hide();
 
-                    }
-
-                    Progress.Hide();
-
-                    Mouse.OverrideCursor = null;
-                }
-
-            }
-
-        }
+        //            Mouse.OverrideCursor = null;
+        //        }
+        //    }
+        //}
 
         // Dokument valgt
         private async void LstDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -439,43 +424,46 @@ namespace TrClient
             {
                 if (Current.Document != null && Current.Document.HasChanged)
                 {
-                    string Question = $"{Current.Document.Title} has changed. Upload changes?";
-                    MessageBoxResult Result = AskUser(Question);
+                    string question = $"{Current.Document.Title} has changed. Upload changes?";
+                    MessageBoxResult result = AskUser(question);
 
-                    if (Result == MessageBoxResult.Yes)
+                    if (result == MessageBoxResult.Yes)
+                    {
                         if (TrLibrary.OfflineMode)
                         {
-                            Current.Document.Save();
+                            // Current.Document.Save();
                         }
                         else
                         {
                             Current.Document.Upload(Client);
                         }
+                    }
                 }
 
                 // rydder op
                 lstPages.ItemsSource = null;
 
-                Current.Document = (lstDocuments.SelectedItem as TrDocument);
+                Current.Document = lstDocuments.SelectedItem as TrDocument;
                 Debug.WriteLine($"Current.Document er valgt: ID = {Current.Document.ID}, Title = {Current.Document.Title}, Pages = {Current.Document.NrOfPages}");
 
                 txtCurrentDocument.DataContext = Current.Document;
 
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-                dlgProgressLoadPages Progress = new dlgProgressLoadPages(Current.Document.NrOfPages);
-                Progress.Owner = this;
-                Progress.DataContext = Current.Document;
-                Progress.Show();
+                ProgressLoadPages progress = new ProgressLoadPages(Current.Document.NrOfPages);
+                progress.Owner = this;
+                progress.DataContext = Current.Document;
+                progress.Show();
 
                 if (TrLibrary.OfflineMode)
                 {
                     // OFFLINE MODE
-                    Current.Document.OpenPages();
+                    // Current.Document.OpenPages();
+
                     //Debug.WriteLine($"OpenPages er kaldt! Current.Document.Title = {Current.Document.Title}");
 
                     // fylder box op
-                    lstPages.ItemsSource = Current.Document.Pages;
+                    // lstPages.ItemsSource = Current.Document.Pages;
                 }
                 else
                 {   // ONLINE MODE
@@ -483,107 +471,111 @@ namespace TrClient
                     lstPages.ItemsSource = Current.Document.Pages;
 
                     // henter transcripts for hver side - NB: ALLE transcripts (vha. i = 0 to transcript.count - 1)
-                    foreach (TrPage Page in Current.Document.Pages)
+                    foreach (TrPage page in Current.Document.Pages)
                     {
                         // TrTranscript Tra;
                         if (TrLibrary.LoadOnlyNewestTranscript)
                         {
                             // Henter kun det NYESTE transcript
-                            Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
-                            bool OK = await Loaded;
+                            Task<bool> loaded = page.Transcripts[0].LoadTranscript(Client);
+                            bool oK = await loaded;
                         }
                         else
                         {
                             // Henter ALLE transcripts - hvis man har brug for at reverte eller hente gamle tabeller
-                            for (int i = 0; i < Page.TranscriptCount; i++)
+                            for (int i = 0; i < page.TranscriptCount; i++)
                             {
-                                Task<bool> Loaded = Page.Transcripts[i].LoadTranscript(Client);
-                                bool OK = await Loaded;
+                                Task<bool> loaded = page.Transcripts[i].LoadTranscript(Client);
+                                bool oK = await loaded;
                             }
                         }
-
-
                     }
                 }
-                Progress.Hide();
+
+                progress.Hide();
                 Mouse.OverrideCursor = null;
 
                 if (Current.Document.HasFormerTables)
                 {
-                    string Question = $"WARNING! {Current.Document.Title} has possibly 'forgotten' tables in old transcripts. You should copy tables to newest transcript and convert them to ordinary regions!";
-                    TellUser(Question);
+                    string question = $"WARNING! {Current.Document.Title} has possibly 'forgotten' tables in old transcripts. You should copy tables to newest transcript and convert them to ordinary regions!";
+                    TellUser(question);
                 }
 
                 if (!Current.Document.PostLoadTestOK())
                 {
-                    string Question = $"WARNING! {Current.Document.Title} has problems with coordinates and/or non-trimmed strings! Do you want to fix it?";
-                    MessageBoxResult Result = AskUser(Question);
-                    if (Result == MessageBoxResult.Yes)
-                        Current.Document.PostLoadFix();
-                }
-            }
-        }
-
-        private async void LstSecondaryDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ListBox lb = sender as ListBox;
-            if (lstSecondaryDocuments.SelectedItem != null)
-            {
-                if (Secondary.Document != null && Secondary.Document.HasChanged)
-                {
-                    string Question = $"{Secondary.Document.Title} has changed. Upload changes?";
-                    MessageBoxResult Result = AskUser(Question);
-
-                    if (Result == MessageBoxResult.Yes)
-                        if (TrLibrary.OfflineMode)
-                        {
-
-                        }
-                        else
-                        {
-                            Secondary.Document.Upload(Client);
-                        }
-                }
-
-                // rydder op
-                lstSecondaryPages.ItemsSource = null;
-
-                Secondary.Document = (lstSecondaryDocuments.SelectedItem as TrDocument);
-                Debug.WriteLine($"Secondary.Document er valgt: Title = {Secondary.Document.Title}, Pages = {Secondary.Document.NrOfPages}");
-
-                txtSecondaryDocument.DataContext = Secondary.Document;
-
-                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-
-                dlgProgressLoadPages Progress = new dlgProgressLoadPages(Secondary.Document.NrOfPages);
-                Progress.Owner = this;
-                Progress.DataContext = Secondary.Document;
-                Progress.Show();
-
-                if (TrLibrary.OfflineMode)
-                {
-                    Secondary.Document.OpenPages();
-                    //Debug.WriteLine($"OpenPages er kaldt! Current.Document.Title = {Current.Document.Title}");
-
-                    // fylder box op
-                    lstSecondaryPages.ItemsSource = Secondary.Document.Pages;
-                }
-                else
-                {
-                    // fylder box op
-                    lstSecondaryPages.ItemsSource = Secondary.Document.Pages;
-                    // henter nyeste transcript for hver side - nb: kun NYESTE 
-                    foreach (TrPage Page in Secondary.Document.Pages)
+                    string question = $"WARNING! {Current.Document.Title} has problems with coordinates and/or non-trimmed strings! Do you want to fix it?";
+                    MessageBoxResult result = AskUser(question);
+                    if (result == MessageBoxResult.Yes)
                     {
-                        Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
-                        bool OK = await Loaded;
+                        Current.Document.PostLoadFix();
                     }
                 }
-                Progress.Hide();
-                Mouse.OverrideCursor = null;
             }
-
         }
+
+        //private async void LstSecondaryDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    ListBox lb = sender as ListBox;
+        //    if (lstSecondaryDocuments.SelectedItem != null)
+        //    {
+        //        if (Secondary.Document != null && Secondary.Document.HasChanged)
+        //        {
+        //            string question = $"{Secondary.Document.Title} has changed. Upload changes?";
+        //            MessageBoxResult result = AskUser(question);
+
+        //            if (result == MessageBoxResult.Yes)
+        //            {
+        //                if (TrLibrary.OfflineMode)
+        //                {
+        //                }
+        //                else
+        //                {
+        //                    Secondary.Document.Upload(Client);
+        //                }
+        //            }
+        //        }
+
+        //        // rydder op
+        //        lstSecondaryPages.ItemsSource = null;
+
+        //        Secondary.Document = lstSecondaryDocuments.SelectedItem as TrDocument;
+        //        Debug.WriteLine($"Secondary.Document er valgt: Title = {Secondary.Document.Title}, Pages = {Secondary.Document.NrOfPages}");
+
+        //        txtSecondaryDocument.DataContext = Secondary.Document;
+
+        //        Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+        //        ProgressLoadPages progress = new ProgressLoadPages(Secondary.Document.NrOfPages);
+        //        progress.Owner = this;
+        //        progress.DataContext = Secondary.Document;
+        //        progress.Show();
+
+        //        if (TrLibrary.OfflineMode)
+        //        {
+        //            // Secondary.Document.OpenPages();
+
+        //            //Debug.WriteLine($"OpenPages er kaldt! Current.Document.Title = {Current.Document.Title}");
+
+        //            // fylder box op
+        //            // lstSecondaryPages.ItemsSource = Secondary.Document.Pages;
+        //        }
+        //        else
+        //        {
+        //            // fylder box op
+        //            lstSecondaryPages.ItemsSource = Secondary.Document.Pages;
+
+        //            // henter nyeste transcript for hver side - nb: kun NYESTE
+        //            foreach (TrPage page in Secondary.Document.Pages)
+        //            {
+        //                Task<bool> loaded = page.Transcripts[0].LoadTranscript(Client);
+        //                bool oK = await loaded;
+        //            }
+        //        }
+
+        //        progress.Hide();
+        //        Mouse.OverrideCursor = null;
+        //    }
+        //}
 
         private void MenuItem_UploadCollection_Click(object sender, RoutedEventArgs e)
         {
@@ -594,7 +586,6 @@ namespace TrClient
                 Mouse.OverrideCursor = null;
             }
         }
-
 
         private void MenuItem_UploadDocument_Click(object sender, RoutedEventArgs e)
         {
@@ -610,24 +601,28 @@ namespace TrClient
         {
             if (MyCollections.HasChanged)
             {
-                string Question = "Your collections has changed. Upload changes?";
-                MessageBoxResult Result = AskUser(Question);
+                string question = "Your collections has changed. Upload changes?";
+                MessageBoxResult result = AskUser(question);
 
-                if (Result == MessageBoxResult.Yes)
-                    foreach (TrCollection Coll in MyCollections)
-                        Coll.Upload(Client);
+                if (result == MessageBoxResult.Yes)
+                {
+                    foreach (TrCollection coll in MyCollections)
+                    {
+                        coll.Upload(Client);
+                    }
+                }
             }
-            this.Close();
-        }
 
+            Close();
+        }
 
         private void MenuItem_CreateTopLevelRegion_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Create Top-Level Region on all pages in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Create Top-Level Region on all pages in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
                     Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                     Current.Document.CreateTopLevelRegions();
@@ -635,18 +630,19 @@ namespace TrClient
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
-
 
         private void CreateHorizontalRegions_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Create three horizontal regions on all pages in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
+                string question = $"Create three horizontal regions on all pages in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
 
-                if (Result == MessageBoxResult.Yes)
+                if (result == MessageBoxResult.Yes)
                 {
                     Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
@@ -658,87 +654,86 @@ namespace TrClient
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
-
+            }
         }
 
         private void CreateVerticalRegions_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void MenuItem_ShowRegionalTags_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowTags ShowTags = new dlgShowTags("Regional Tags in Document:");
-                ShowTags.Owner = this;
-                ShowTags.lstTags.ItemsSource = Current.Document.GetRegionalTags();
-                ShowTags.ShowDialog();
+                ShowTags showTags = new ShowTags("Regional Tags in Document:");
+                showTags.Owner = this;
+                showTags.lstTags.ItemsSource = Current.Document.GetRegionalTags();
+                showTags.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
 
         private void MenuItem_DeleteRegions_Click(object sender, RoutedEventArgs e)
         {
-            string ChosenRegionalTag;
-            deleteAction DeleteAction;
+            string chosenRegionalTag;
+            DeleteAction deleteAction;
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgDeleteRegions DeleteRegions = new dlgDeleteRegions();
-                DeleteRegions.Owner = this;
-                DeleteRegions.txtRegionalTag.ItemsSource = Current.Document.GetRegionalTags();
-                DeleteRegions.ShowDialog();
-                if (DeleteRegions.DialogResult == true)
+                DeleteRegions deleteRegions = new DeleteRegions();
+                deleteRegions.Owner = this;
+                deleteRegions.txtRegionalTag.ItemsSource = Current.Document.GetRegionalTags();
+                deleteRegions.ShowDialog();
+                if (deleteRegions.DialogResult == true)
                 {
-                    ChosenRegionalTag = DeleteRegions.TagName;
-                    DeleteAction = DeleteRegions.DeleteAction;
+                    chosenRegionalTag = deleteRegions.TagName;
+                    deleteAction = deleteRegions.DeleteAction;
 
-                    if (DeleteAction == deleteAction.preserve)
+                    if (deleteAction == DeleteAction.Preserve)
                     {
-                        string Question = $"Delete Other Regions Than \"{ChosenRegionalTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
-                        MessageBoxResult Result = AskUser(Question);
+                        string question = $"Delete Other Regions Than \"{chosenRegionalTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
+                        MessageBoxResult result = AskUser(question);
 
-                        if (Result == MessageBoxResult.Yes)
+                        if (result == MessageBoxResult.Yes)
                         {
                             //Debug.WriteLine($"Preserve chosen to be: {ChosenRegionalTag}");
                             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-                            Current.Document.DeleteRegionsOtherThan(ChosenRegionalTag);
+                            Current.Document.DeleteRegionsOtherThan(chosenRegionalTag);
                             Mouse.OverrideCursor = null;
                         }
-
                     }
-                    else if (DeleteAction == deleteAction.delete)
+                    else if (deleteAction == DeleteAction.Delete)
                     {
-                        string Question = $"Delete Regions With Tag \"{ChosenRegionalTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
-                        MessageBoxResult Result = AskUser(Question);
+                        string question = $"Delete Regions With Tag \"{chosenRegionalTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
+                        MessageBoxResult result = AskUser(question);
 
-                        if (Result == MessageBoxResult.Yes)
+                        if (result == MessageBoxResult.Yes)
                         {
                             //Debug.WriteLine($"Deleten chosen to be: {ChosenRegionalTag}");
                             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-                            Current.Document.DeleteRegionsWithTag(ChosenRegionalTag);
+                            Current.Document.DeleteRegionsWithTag(chosenRegionalTag);
                             Mouse.OverrideCursor = null;
                         }
-
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
 
         private void MenuItem_RepairBaseLines_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgRepairBaseLines RepairBaseLines = new dlgRepairBaseLines(Current.Document, Client);
-                RepairBaseLines.Owner = this;
-                RepairBaseLines.ShowDialog();
+                RepairBaseLines repairBaseLines = new RepairBaseLines(Current.Document, Client);
+                repairBaseLines.Owner = this;
+                repairBaseLines.ShowDialog();
 
                 // GAMMEL IMPLEMENTERING
                 //string Question = $"Repair all Base Lines in {Current.Collection.Name} / {Current.Document.Title}?";
@@ -752,37 +747,40 @@ namespace TrClient
                 //}
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
-
 
         private void MenuItem_EditBaseLines_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                TrDialogTransferSettings Settings = new TrDialogTransferSettings();
-                dlgEditBaseLines dlgBaseLines = new dlgEditBaseLines(Current.Document, Client, Settings);
-                dlgBaseLines.Owner = this;
-                dlgBaseLines.ShowDialog();
+                TrDialogTransferSettings settings = new TrDialogTransferSettings();
+                EditBaseLines DlgBaseLines = new EditBaseLines(Current.Document, Client, settings);
+                DlgBaseLines.Owner = this;
+                DlgBaseLines.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
-
 
         private void MenuItem_ShowStructuralTags_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowTags ShowTags = new dlgShowTags("Structural Tags in Document:");
-                ShowTags.Owner = this;
-                ShowTags.lstTags.ItemsSource = Current.Document.GetStructuralTags();
-                ShowTags.ShowDialog();
+                ShowTags showTags = new ShowTags("Structural Tags in Document:");
+                showTags.Owner = this;
+                showTags.lstTags.ItemsSource = Current.Document.GetStructuralTags();
+                showTags.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
-
 
         private void MenuItem_EditStructuralTags_Click(object sender, RoutedEventArgs e)
         {
@@ -790,80 +788,85 @@ namespace TrClient
             {
                 if (Current.Document.HasRegions)
                 {
-                    dlgEditStructuralTags EditTags = new dlgEditStructuralTags(Current.Document, Client);
+                    EditStructuralTags editTags = new EditStructuralTags(Current.Document, Client);
+
                     // EditTags.cmbRegion.ItemsSource = Current.Document.GetListOfPossibleRegions();
-                    EditTags.Owner = this;
-                    EditTags.ShowDialog();
+                    editTags.Owner = this;
+                    editTags.ShowDialog();
                 }
                 else
+                {
                     TellUser("The current document has no text regions!");
+                }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
 
         private void MenuItem_TagLinesByPosition_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgFilterLinesByLocation FilterLines = new dlgFilterLinesByLocation(Current.Document, Client);
-                FilterLines.Owner = this;
-                FilterLines.ShowDialog();
+                FilterLinesByLocation filterLines = new FilterLinesByLocation(Current.Document, Client);
+                filterLines.Owner = this;
+                filterLines.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
-
 
         private void MenuItem_ExportWords_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
-            {   // TrLibrary.ExportFolder + 
-                string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
+            {   // TrLibrary.ExportFolder +
+                string fileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                 + "Words_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
 
-
-                using (StreamWriter TextFile = new StreamWriter(FileName, true))
+                using (StreamWriter textFile = new StreamWriter(fileName, true))
                 {
-                    TextFile.WriteLine("Words from " + Current.Collection.Name + " - " + Current.Document.Title);
-                    List<string> DocWords = Current.Document.GetExpandedWords(false, false);
+                    textFile.WriteLine("Words from " + Current.Collection.Name + " - " + Current.Document.Title);
+                    List<string> docWords = Current.Document.GetExpandedWords(false, false);
 
-                    foreach (string s in DocWords)
-                        TextFile.WriteLine(s);
+                    foreach (string s in docWords)
+                    {
+                        textFile.WriteLine(s);
+                    }
                 }
-
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_CountPagesWithRegions_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                int Count = Current.Document.NrOfPagesWithRegions();
-                string Message = $"Document {Current.Document.Title} has {Count} pages (out of {Current.Document.NrOfPages}) with regions: \n\n"
+                int count = Current.Document.NrOfPagesWithRegions();
+                string message = $"Document {Current.Document.Title} has {count} pages (out of {Current.Document.NrOfPages}) with regions: \n\n"
                     + Current.Document.GetListOfPagesWithRegions();
-                MessageBox.Show(Message, TrLibrary.AppName, MessageBoxButton.OK);
+                MessageBox.Show(message, TrLibrary.AppName, MessageBoxButton.OK);
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
 
-
-
-        public MessageBoxResult AskUser(string Question)
+        public MessageBoxResult AskUser(string question)
         {
-            MessageBoxResult Result = MessageBox.Show(Question, TrLibrary.AppName, MessageBoxButton.YesNo, MessageBoxImage.Question);
-            return Result;
+            MessageBoxResult result = MessageBox.Show(question, TrLibrary.AppName, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            return result;
         }
 
-        public void TellUser(string Information)
+        public void TellUser(string information)
         {
-            MessageBox.Show(Information, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            MessageBox.Show(information, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         private void MenuItem_ListPagesWORegionalTags_Click(object sender, RoutedEventArgs e)
@@ -874,63 +877,65 @@ namespace TrClient
         private void MenuItem_ListPagesWithOverlappingRegions_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show(Current.Document.Title + ": pages " + Current.Document.GetListOfPagesWithOverlappingRegions() + " have overlapping regions.");
-
         }
 
         private void MenuItem_ShowTextualTags_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowTags ShowTags = new dlgShowTags("ALL Tags in Document:");
-                ShowTags.Owner = this;
-                ShowTags.lstTags.ItemsSource = Current.Document.GetTextualTags();
-                ShowTags.ShowDialog();
+                ShowTags showTags = new ShowTags("ALL Tags in Document:");
+                showTags.Owner = this;
+                showTags.lstTags.ItemsSource = Current.Document.GetTextualTags();
+                showTags.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_ShowExpandedText_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowTags ShowTags = new dlgShowTags("Expanded text:");
-                ShowTags.Owner = this;
-                ShowTags.lstTags.ItemsSource = Current.Document.GetExpandedText(true, false);
-                ShowTags.ShowDialog();
+                ShowTags showTags = new ShowTags("Expanded text:");
+                showTags.Owner = this;
+                showTags.lstTags.ItemsSource = Current.Document.GetExpandedText(true, false);
+                showTags.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_FindAndReplaceText_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgFindReplace FindReplace = new dlgFindReplace(Current.Document, Client);
-                FindReplace.Owner = this;
-                FindReplace.ShowDialog();
+                FindReplace findReplace = new FindReplace(Current.Document, Client);
+                findReplace.Owner = this;
+                findReplace.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
-
+            }
         }
 
         private void MenuItem_ShowParagraphs_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowTags ShowTags = new dlgShowTags("Paragraphs:");
-                ShowTags.Owner = this;
-                ShowTags.lstTags.ItemsSource = Current.Document.GetExpandedText(true, false);
-                ShowTags.ShowDialog();
+                ShowTags showTags = new ShowTags("Paragraphs:");
+                showTags.Owner = this;
+                showTags.lstTags.ItemsSource = Current.Document.GetExpandedText(true, false);
+                showTags.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void LstPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -938,65 +943,67 @@ namespace TrClient
             ListBox lb = sender as ListBox;
             if (lstPages.SelectedItem != null)
             {
-                Current.Page = (lstPages.SelectedItem as TrPage);
-                dlgShowParagraphs ShowParagraphs = new dlgShowParagraphs(Current.Page);
-                ShowParagraphs.Owner = this;
-                ShowParagraphs.ShowDialog();
+                Current.Page = lstPages.SelectedItem as TrPage;
+                ShowParagraphs showParagraphs = new ShowParagraphs(Current.Page);
+                showParagraphs.Owner = this;
+                showParagraphs.ShowDialog();
             }
-
         }
 
-        private void LstSecondaryPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ListBox lb = sender as ListBox;
-            if (lstSecondaryPages.SelectedItem != null)
-            {
-                Secondary.Page = (lstSecondaryPages.SelectedItem as TrPage);
-                dlgShowParagraphs ShowParagraphs = new dlgShowParagraphs(Secondary.Page);
-                ShowParagraphs.Owner = this;
-                ShowParagraphs.ShowDialog();
-            }
-
-        }
-
-
+        //private void LstSecondaryPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    ListBox lb = sender as ListBox;
+        //    if (lstSecondaryPages.SelectedItem != null)
+        //    {
+        //        Secondary.Page = lstSecondaryPages.SelectedItem as TrPage;
+        //        ShowParagraphs showParagraphs = new ShowParagraphs(Secondary.Page);
+        //        showParagraphs.Owner = this;
+        //        showParagraphs.ShowDialog();
+        //    }
+        //}
 
         private void MenuItem_ShowAndExportPages_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowAndExportPages ShowExportPages = new dlgShowAndExportPages(Current.Document, Client);
-                ShowExportPages.Owner = this;
-                ShowExportPages.ShowDialog();
+                ShowAndExportPages showExportPages = new ShowAndExportPages(Current.Document, Client);
+                showExportPages.Owner = this;
+                showExportPages.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
 
         private void MenuItem_ExportAsPlainText_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
-            {   // TrLibrary.ExportFolder + 
-                string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
+            {   // TrLibrary.ExportFolder +
+                string fileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                     + "PlainText_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".txt";
-                using (StreamWriter TextFile = new StreamWriter(FileName, true))
+                using (StreamWriter textFile = new StreamWriter(fileName, true))
                 {
-                    TextFile.WriteLine("Plain text from " + Current.Collection.Name + " - " + Current.Document.Title);
+                    textFile.WriteLine("Plain text from " + Current.Collection.Name + " - " + Current.Document.Title);
 
-                    List<string> Lines = new List<string>();
-                    foreach (TrPage P in Current.Document.Pages)
+                    List<string> lines = new List<string>();
+                    foreach (TrPage p in Current.Document.Pages)
                     {
-                        TextFile.WriteLine("------------------------------------------------------------------------------------");
-                        TextFile.WriteLine("Page nr. " + P.PageNr.ToString());
+                        textFile.WriteLine("------------------------------------------------------------------------------------");
+                        textFile.WriteLine("Page nr. " + p.PageNr.ToString());
 
-                        Lines = P.GetExpandedText(true, false);
-                        foreach (string s in Lines)
-                            TextFile.WriteLine(s);
+                        lines = p.GetExpandedText(true, false);
+                        foreach (string s in lines)
+                        {
+                            textFile.WriteLine(s);
+                        }
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
 
         private async void MenuItem_LoadAllDocsInCurrentCollection_Click(object sender, RoutedEventArgs e)
@@ -1005,14 +1012,13 @@ namespace TrClient
             {
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-                foreach (TrDocument Doc in Current.Collection.Documents)
+                foreach (TrDocument doc in Current.Collection.Documents)
                 {
                     // Current.Document = Doc;
-
-                    dlgProgressLoadPages Progress = new dlgProgressLoadPages(Doc.NrOfPages);
-                    Progress.Owner = this;
-                    Progress.DataContext = Doc;
-                    Progress.Show();
+                    ProgressLoadPages progress = new ProgressLoadPages(doc.NrOfPages);
+                    progress.Owner = this;
+                    progress.DataContext = doc;
+                    progress.Show();
 
                     // fylder box op
                     // lstPages.ItemsSource = Current.Document.Pages;
@@ -1020,29 +1026,25 @@ namespace TrClient
                     // henter nyeste transcript for hver side
                     if (TrLibrary.OfflineMode)
                     {
-                        Doc.OpenPages();
+                        // doc.OpenPages();
                     }
                     else
                     {
-                        foreach (TrPage Page in Doc.Pages)
+                        foreach (TrPage page in doc.Pages)
                         {
-                            Task<bool> Loaded = Page.Transcripts[0].LoadTranscript(Client);
-                            bool OK = await Loaded;
+                            Task<bool> loaded = page.Transcripts[0].LoadTranscript(Client);
+                            bool oK = await loaded;
                         }
-
                     }
 
-
-                    Progress.Hide();
+                    progress.Hide();
                     Mouse.OverrideCursor = null;
                 }
-
-
-
             }
             else
+            {
                 TellUser("You have to choose a collection !");
-
+            }
         }
 
         //private void MenuItem_SetRowNumbers_Click(object sender, RoutedEventArgs e)
@@ -1066,114 +1068,113 @@ namespace TrClient
         //        TellUser("You have to choose a collection AND a document!");
 
         //}
-
-
         private void MenuItem_MoveRegions_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgMoveRegions MoveRegions = new dlgMoveRegions(Current.Document, Client);
-                MoveRegions.Owner = this;
-                MoveRegions.ShowDialog();
+                MoveRegions moveRegions = new MoveRegions(Current.Document, Client);
+                moveRegions.Owner = this;
+                moveRegions.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
 
         private void BtnCopyDocument_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null && Secondary.Collection != null && Secondary.Document != null)
             {
-                string Question = $"Copy content from \n{Secondary.Collection.Name} / {Secondary.Document.Title} \nto\n{Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Copy content from \n{Secondary.Collection.Name} / {Secondary.Document.Title} \nto\n{Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
                     CopyFromSecondaryDocument(Secondary.Document, Current.Document);
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document in both primary and secondary!");
-
+            }
         }
 
         private void BtnCopyCollection_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Secondary.Collection != null)
             {
-                string Question = $"Copy content from ALL documents in \n{Secondary.Collection.Name} \nto\n{Current.Collection.Name}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Copy content from ALL documents in \n{Secondary.Collection.Name} \nto\n{Current.Collection.Name}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrDocument CurrentDoc in Current.Collection.Documents)
-                        CurrentDoc.OpenPages();
-                    foreach (TrDocument SecondaryDoc in Secondary.Collection.Documents)
-                        SecondaryDoc.OpenPages();
+                    foreach (TrDocument currentDoc in Current.Collection.Documents)
+                    {
+                        // currentDoc.OpenPages();
+                    }
 
+                    foreach (TrDocument secondaryDoc in Secondary.Collection.Documents)
+                    {
+                        // secondaryDoc.OpenPages();
+                    }
 
                     CopyFromSecondaryCollection(Secondary.Collection, Current.Collection);
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection in both primary and secondary!");
+            }
         }
 
-
-        public void CopyFromSecondaryDocument(TrDocument SourceDocument, TrDocument DestinationDocument)
+        public void CopyFromSecondaryDocument(TrDocument sourceDocument, TrDocument destinationDocument)
         {
-
             Debug.WriteLine($"*** CopyFromSecondaryDocument ***");
-            foreach (TrPage SourcePage in SourceDocument.Pages)
+            foreach (TrPage sourcePage in sourceDocument.Pages)
             {
-                string SourceFileName = SourcePage.ImageFileName;
+                string sourceFileName = sourcePage.ImageFileName;
 
                 // Debug.WriteLine($"SourceFileName: {SourceFileName}");
-
-                foreach (TrPage DestinationPage in DestinationDocument.Pages)
+                foreach (TrPage destinationPage in destinationDocument.Pages)
                 {
-                    string DestinationFileName = DestinationPage.ImageFileName;
+                    string destinationFileName = destinationPage.ImageFileName;
+
                     // Debug.WriteLine($"DestinationFileName: {DestinationFileName}");
-
-                    if (SourceFileName == DestinationFileName)
+                    if (sourceFileName == destinationFileName)
                     {
-                        Debug.WriteLine($"Filename match!!! (page nr. {DestinationPage.PageNr}): {DestinationPage.ImageFileName}");
-                        TrRegions SourceRegions = SourcePage.Transcripts[0].Regions;
+                        Debug.WriteLine($"Filename match!!! (page nr. {destinationPage.PageNr}): {destinationPage.ImageFileName}");
+                        TrRegions sourceRegions = sourcePage.Transcripts[0].Regions;
 
-                        foreach (TrRegion SourceRegion in SourceRegions)
+                        foreach (TrRegion sourceRegion in sourceRegions)
                         {
                             // Debug.WriteLine($"Sourceregion # {SourceRegion.Number}");
-                            DestinationPage.AppendRegion(SourceRegion);
+                            destinationPage.AppendRegion(sourceRegion);
                         }
                     }
                 }
             }
-
         }
 
-        public void CopyFromSecondaryCollection(TrCollection SourceColl, TrCollection DestinationColl)
+        public void CopyFromSecondaryCollection(TrCollection sourceColl, TrCollection destinationColl)
         {
             Debug.WriteLine($"*** CopyFromSecondaryCollection ***");
-            foreach (TrDocument SourceDocument in SourceColl.Documents)
+            foreach (TrDocument sourceDocument in sourceColl.Documents)
             {
-                string SourceDocumentName = SourceDocument.Title;
+                string sourceDocumentName = sourceDocument.Title;
+
                 // Debug.WriteLine($"SourceDocumentName: {SourceDocumentName}");
                 {
-                    foreach (TrDocument DestinationDocument in DestinationColl.Documents)
+                    foreach (TrDocument destinationDocument in destinationColl.Documents)
                     {
-                        string DestinationDocumentName = DestinationDocument.Title;
+                        string destinationDocumentName = destinationDocument.Title;
+
                         // Debug.WriteLine($"DestinationDocumentName: {DestinationDocumentName}");
-
-                        if (SourceDocumentName == DestinationDocumentName)
+                        if (sourceDocumentName == destinationDocumentName)
                         {
-                            Debug.WriteLine($"Document match!!! Title: {DestinationDocumentName}");
+                            Debug.WriteLine($"Document match!!! Title: {destinationDocumentName}");
 
-                            CopyFromSecondaryDocument(SourceDocument, DestinationDocument);
-
+                            CopyFromSecondaryDocument(sourceDocument, destinationDocument);
                         }
-
                     }
-
                 }
             }
         }
@@ -1184,298 +1185,314 @@ namespace TrClient
             {
                 Current.Document.Save();
             }
-
         }
 
         private void MenuItem_SaveCurrentCollection_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null)
             {
-                foreach (TrDocument Doc in Current.Collection.Documents)
-                    Doc.Save();
+                foreach (TrDocument doc in Current.Collection.Documents)
+                {
+                    doc.Save();
+                }
             }
-
         }
 
         private void MenuItem_ExpandAllText_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                foreach (TrPage P in Current.Document.Pages)
-                    P.KOBACC_ExpandText();
+                foreach (TrPage p in Current.Document.Pages)
+                {
+                    p.KOBACC_ExpandText();
+                }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_AutoTagging_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                foreach (TrPage P in Current.Document.Pages)
-                    P.Elfelt_AutoTag();
+                foreach (TrPage p in Current.Document.Pages)
+                {
+                    p.Elfelt_AutoTag();
+                }
+
                 // P.KOBACC_AutoTag();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void AddRegionalTagsOnEmpty_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Add <_NoTag> tag to all non-tagged regions in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Add <_NoTag> tag to all non-tagged regions in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage TP in Current.Document.Pages)
+                    foreach (TrPage tP in Current.Document.Pages)
                     {
-                        TP.Transcripts[0].SetRegionalTagsOnNonTaggedRegions("_NoTag");
+                        tP.Transcripts[0].SetRegionalTagsOnNonTaggedRegions("_NoTag");
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_RenumberRegionsHorizontally_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Renumber all regions horizontally in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Renumber all regions horizontally in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage TP in Current.Document.Pages)
+                    foreach (TrPage tP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
-                        TP.RenumberRegionsHorizontally();
+                        tP.RenumberRegionsHorizontally();
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_RenumberRegionsVertically_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Renumber all regions vertically in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Renumber all regions vertically in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage TP in Current.Document.Pages)
+                    foreach (TrPage tP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
-                        TP.RenumberRegionsVertically();
+                        tP.RenumberRegionsVertically();
                     }
                 }
             }
             else
-                TellUser("You have to choose a collection AND a document!");
-
-        }
-
-        private void MenuItem_GetAllAccNos_Click(object sender, RoutedEventArgs e)
-        {
-            if (Current.Collection != null) // && Current.Document != null)
             {
-                string Question = $"Get (export) all ACC-Nos in {Current.Collection.Name} ?"; // / {Current.Document.Title}
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
-                {
-                    XDocument xAccessions = Current.Collection.KOBACC_ExportAccessions(); // Current.Document.KOBACC_ExportAccessions();
-                    // TrLibrary.ExportFolder + 
-                    string FileName = @"AccNos\" + "Accessions_" + Current.Collection.Name + ".xml";
-
-                    xAccessions.Save(FileName);
-
-                }
+                TellUser("You have to choose a collection AND a document!");
             }
-            else
-                TellUser("You have to choose a collection!"); // AND a document
-
         }
+
+        //private void MenuItem_GetAllAccNos_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (Current.Collection != null) // && Current.Document != null)
+        //    {
+        //        string question = $"Get (export) all ACC-Nos in {Current.Collection.Name} ?"; // / {Current.Document.Title}
+        //        MessageBoxResult result = AskUser(question);
+        //        if (result == MessageBoxResult.Yes)
+        //        {
+        //            XDocument xAccessions = Current.Collection.KOBACC_ExportAccessions(); // Current.Document.KOBACC_ExportAccessions();
+
+        //            // TrLibrary.ExportFolder +
+        //            string fileName = @"AccNos\" + "Accessions_" + Current.Collection.Name + ".xml";
+
+        //            xAccessions.Save(fileName);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        TellUser("You have to choose a collection!"); // AND a document
+        //    }
+        //}
 
         private void MenuItem_SimplifyBoundingBoxes_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgSimplifyBoundingBoxes SimplifyBoundingBoxes = new dlgSimplifyBoundingBoxes(Current.Document, Client);
-                SimplifyBoundingBoxes.Owner = this;
-                SimplifyBoundingBoxes.ShowDialog();
+                SimplifyBoundingBoxes simplifyBoundingBoxes = new SimplifyBoundingBoxes(Current.Document, Client);
+                simplifyBoundingBoxes.Owner = this;
+                simplifyBoundingBoxes.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
 
         private void MenuItem_RenumberLinesHorizontally_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Renumber all lines horizontally in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Renumber all lines horizontally in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage TP in Current.Document.Pages)
+                    foreach (TrPage tP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
-                        foreach (TrRegion_Text TR in TP.Transcripts[0].Regions)
+                        foreach (TrTextRegion textRegion in tP.Transcripts[0].Regions)
                         {
-                            if (TR.GetType() == typeof(TrRegion_Text))
-                                (TR as TrRegion_Text).TextLines.ReNumberHorizontally();
+                            if (textRegion.GetType() == typeof(TrTextRegion))
+                            {
+                                (textRegion as TrTextRegion).TextLines.ReNumberHorizontally();
+                            }
                         }
-
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_RenumberLinesVertically_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Renumber all lines vertically in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Renumber all lines vertically in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage TP in Current.Document.Pages)
+                    foreach (TrPage tP in Current.Document.Pages)
                     {
                         // Debug.WriteLine($"Page nr. {TP.PageNr}");
-                        foreach (TrRegion TR in TP.Transcripts[0].Regions)
+                        foreach (TrRegion textRegion in tP.Transcripts[0].Regions)
                         {
-                            if (TR.GetType() == typeof(TrRegion_Text))
-                                (TR as TrRegion_Text).TextLines.ReNumberVertically();
+                            if (textRegion.GetType() == typeof(TrTextRegion))
+                            {
+                                (textRegion as TrTextRegion).TextLines.ReNumberVertically();
+                            }
                         }
-
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_RenumberLinesLogically_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Renumber all lines logically in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Renumber all lines logically in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    dlgChoosePageRange ChoosePageRange = new dlgChoosePageRange(Current.Document);
-                    ChoosePageRange.Owner = this;
-                    ChoosePageRange.ShowDialog();
+                    ChoosePageRange choosePageRange = new ChoosePageRange(Current.Document);
+                    choosePageRange.Owner = this;
+                    choosePageRange.ShowDialog();
 
-                    if (ChoosePageRange.DialogResult == true)
+                    if (choosePageRange.DialogResult == true)
                     {
-                        int StartPage = ChoosePageRange.StartPage;
-                        int EndPage = ChoosePageRange.EndPage;
-                        int LinePixelLimit = 40;    // 60 er bedst til Elfelt - måske til håndskrift generelt. Og mindre til maskinskrift?
-                        foreach (TrPage TP in Current.Document.Pages)
+                        int startPage = choosePageRange.StartPage;
+                        int endPage = choosePageRange.EndPage;
+                        int linePixelLimit = 40;    // 60 er bedst til Elfelt - måske til håndskrift generelt. Og mindre til maskinskrift?
+                        foreach (TrPage tP in Current.Document.Pages)
                         {
-                            if (TP.PageNr >= StartPage && TP.PageNr <= EndPage)
+                            if (tP.PageNr >= startPage && tP.PageNr <= endPage)
                             {
-                                Debug.WriteLine($"Page nr. {TP.PageNr}");
-                                foreach (TrRegion TR in TP.Transcripts[0].Regions)
+                                Debug.WriteLine($"Page nr. {tP.PageNr}");
+                                foreach (TrRegion textRegion in tP.Transcripts[0].Regions)
                                 {
-                                    if (TR.GetType() == typeof(TrRegion_Text))
-                                        (TR as TrRegion_Text).TextLines.ReNumberLogically(LinePixelLimit);
+                                    if (textRegion.GetType() == typeof(TrTextRegion))
+                                    {
+                                        (textRegion as TrTextRegion).TextLines.ReNumberLogically(linePixelLimit);
+                                    }
                                 }
                             }
                         }
-
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_ShowImages_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                TrPage TestPage = Current.Document.Pages[1];
+                TrPage testPage = Current.Document.Pages[1];
 
-                dlgShowPage ShowPage = new dlgShowPage(TestPage, Client);
-                ShowPage.Owner = this;
-                ShowPage.ShowDialog();
-
+                ShowPage showPage = new ShowPage(testPage, Client);
+                showPage.Owner = this;
+                showPage.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_ShowLemmas_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowLemmas ShowLemmas = new dlgShowLemmas(Current.Document);
-                ShowLemmas.Owner = this;
-                ShowLemmas.ShowDialog();
-
+                ShowLemmas showLemmas = new ShowLemmas(Current.Document);
+                showLemmas.Owner = this;
+                showLemmas.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_DeleteLines_Click(object sender, RoutedEventArgs e)
         {
-            string ChosenStructuralTag;
-            deleteAction DeleteAction;
+            string chosenStructuralTag;
+            DeleteAction deleteAction;
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgDeleteLines DeleteLines = new dlgDeleteLines();
-                DeleteLines.Owner = this;
-                DeleteLines.txtStructuralTag.ItemsSource = Current.Document.GetStructuralTags();
-                DeleteLines.ShowDialog();
-                if (DeleteLines.DialogResult == true)
+                DeleteLines deleteLines = new DeleteLines();
+                deleteLines.Owner = this;
+                deleteLines.txtStructuralTag.ItemsSource = Current.Document.GetStructuralTags();
+                deleteLines.ShowDialog();
+                if (deleteLines.DialogResult == true)
                 {
-                    ChosenStructuralTag = DeleteLines.TagName;
-                    DeleteAction = DeleteLines.DeleteAction;
+                    chosenStructuralTag = deleteLines.TagName;
+                    deleteAction = deleteLines.DeleteAction;
 
-                    if (DeleteAction == deleteAction.preserve)
+                    if (deleteAction == DeleteAction.Preserve)
                     {
-                        string Question = $"Delete Other Lines Than \"{ChosenStructuralTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
-                        MessageBoxResult Result = AskUser(Question);
+                        string question = $"Delete Other Lines Than \"{chosenStructuralTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
+                        MessageBoxResult result = AskUser(question);
 
-                        if (Result == MessageBoxResult.Yes)
+                        if (result == MessageBoxResult.Yes)
                         {
                             //Debug.WriteLine($"Preserve chosen to be: {ChosenStructuralTag}");
                             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-                            Current.Document.DeleteLinesOtherThan(ChosenStructuralTag);
+                            Current.Document.DeleteLinesOtherThan(chosenStructuralTag);
 
                             Mouse.OverrideCursor = null;
                         }
-
                     }
-                    else if (DeleteAction == deleteAction.delete)
+                    else if (deleteAction == DeleteAction.Delete)
                     {
-                        string Question = $"Delete Lines With Tag \"{ChosenStructuralTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
-                        MessageBoxResult Result = AskUser(Question);
+                        string question = $"Delete Lines With Tag \"{chosenStructuralTag}\" in {Current.Collection.Name} / {Current.Document.Title}?";
+                        MessageBoxResult result = AskUser(question);
 
-                        if (Result == MessageBoxResult.Yes)
+                        if (result == MessageBoxResult.Yes)
                         {
                             //Debug.WriteLine($"Deleten chosen to be: {ChosenStructuralTag}");
                             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-                            Current.Document.DeleteLinesWithTag(ChosenStructuralTag);
+                            Current.Document.DeleteLinesWithTag(chosenStructuralTag);
 
                             Mouse.OverrideCursor = null;
                         }
@@ -1486,40 +1503,41 @@ namespace TrClient
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_DeleteEmptyRegions_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Delete Empty Regions in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Delete Empty Regions in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
                     Current.Document.DeleteEmptyRegions();
                 }
-
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_CheckTableSituation_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                foreach (TrPage TP in Current.Document.Pages)
+                foreach (TrPage tP in Current.Document.Pages)
                 {
-                    Debug.Print($"Page # {TP.PageNr} : Current tables? {TP.HasTables.ToString()} - Former tables? {TP.HasFormerTables.ToString()}");
+                    Debug.Print($"Page # {tP.PageNr} : Current tables? {tP.HasTables.ToString()} - Former tables? {tP.HasFormerTables.ToString()}");
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
-
+            }
         }
 
         private void MenuItem_ConvertTablesToTextRegions_Click(object sender, RoutedEventArgs e)
@@ -1528,27 +1546,29 @@ namespace TrClient
             {
                 if (Current.Document.HasTables)
                 {
-                    string Question = $"Convert tables to text regions in {Current.Collection.Name} / {Current.Document.Title}?";
-                    MessageBoxResult Result = AskUser(Question);
-                    if (Result == MessageBoxResult.Yes)
+                    string question = $"Convert tables to text regions in {Current.Collection.Name} / {Current.Document.Title}?";
+                    MessageBoxResult result = AskUser(question);
+                    if (result == MessageBoxResult.Yes)
                     {
-                        dlgChoosePageRange ChoosePageRange = new dlgChoosePageRange(Current.Document);
-                        ChoosePageRange.Owner = this;
-                        ChoosePageRange.ShowDialog();
+                        ChoosePageRange choosePageRange = new ChoosePageRange(Current.Document);
+                        choosePageRange.Owner = this;
+                        choosePageRange.ShowDialog();
 
-                        if (ChoosePageRange.DialogResult == true)
-                            Current.Document.ConvertTablesToRegions(ChoosePageRange.StartPage, ChoosePageRange.EndPage);
+                        if (choosePageRange.DialogResult == true)
+                        {
+                            Current.Document.ConvertTablesToRegions(choosePageRange.StartPage, choosePageRange.EndPage);
+                        }
                     }
                 }
                 else
                 {
                     TellUser("The current document has no tables!");
                 }
-
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_CopyForgottenTables_Click(object sender, RoutedEventArgs e)
@@ -1557,9 +1577,9 @@ namespace TrClient
             {
                 if (Current.Document.HasFormerTables)
                 {
-                    string Question = $"Copy tables from former transcripts in {Current.Collection.Name} / {Current.Document.Title}?";
-                    MessageBoxResult Result = AskUser(Question);
-                    if (Result == MessageBoxResult.Yes)
+                    string question = $"Copy tables from former transcripts in {Current.Collection.Name} / {Current.Document.Title}?";
+                    MessageBoxResult result = AskUser(question);
+                    if (result == MessageBoxResult.Yes)
                     {
                         Current.Document.CopyOldTablesToNewestTranscript();
                     }
@@ -1568,267 +1588,277 @@ namespace TrClient
                 {
                     TellUser("The current document has no old tables!");
                 }
-
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_MergeAllToTopLevel_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Merge All Regions to Top Level Region in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Merge All Regions to Top Level Region in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    dlgChoosePageRange ChoosePageRange = new dlgChoosePageRange(Current.Document);
-                    ChoosePageRange.Owner = this;
-                    ChoosePageRange.ShowDialog();
+                    ChoosePageRange choosePageRange = new ChoosePageRange(Current.Document);
+                    choosePageRange.Owner = this;
+                    choosePageRange.ShowDialog();
 
-                    if (ChoosePageRange.DialogResult == true)
-                        Current.Document.MergeAllRegionsToTopLevelRegion(ChoosePageRange.StartPage, ChoosePageRange.EndPage);
+                    if (choosePageRange.DialogResult == true)
+                    {
+                        Current.Document.MergeAllRegionsToTopLevelRegion(choosePageRange.StartPage, choosePageRange.EndPage);
+                    }
                 }
-
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_AutoAddAbbrevTags_Repetitions_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Auto-Tag with <abbrev> at Repetitions in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Auto-Tag with <abbrev> at Repetitions in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage P in Current.Document.Pages)
-                        P.AutoAbbrevTagRepetitions();
+                    foreach (TrPage p in Current.Document.Pages)
+                    {
+                        p.AutoAbbrevTagRepetitions();
+                    }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
 
         private void MenuItem_AutoTagRomanNumerals_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Auto-Tag roman numerals in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Auto-Tag roman numerals in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage P in Current.Document.Pages)
-                        P.AutoTagRomanNumerals();
+                    foreach (TrPage p in Current.Document.Pages)
+                    {
+                        p.AutoTagRomanNumerals();
+                    }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
-
 
         private void MenuItem_ExportPseudoTables_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                int MinimumRecordNumber = 0;
+                int minimumRecordNumber = 0;
 
-                dlgChooseMinMaxNumbers Choose = new dlgChooseMinMaxNumbers();
-                Choose.Owner = this;
-                Choose.ShowDialog();
+                ChooseMinMaxNumbers choose = new ChooseMinMaxNumbers();
+                choose.Owner = this;
+                choose.ShowDialog();
 
-                if (Choose.DialogResult == true)
+                if (choose.DialogResult == true)
                 {
-                    if (Choose.Minimum != 0)
-                        MinimumRecordNumber = Choose.Minimum;
-                    // TrLibrary.ExportFolder + 
-                    string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
-                        + "PseudoTableRecords_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".csv";
-                    using (StreamWriter TextFile = new StreamWriter(FileName, true, Encoding.UTF8))
+                    if (choose.Minimum != 0)
                     {
-                        Debug.Print($"Exporting pseudo table text from {Current.Collection.Name} - {Current.Document.Title} - Minimum = {MinimumRecordNumber}");
-
-                        List<TrRecord> PageRecords = Current.Document.GetPseudoTableText(MinimumRecordNumber);
-
-                        Debug.Print($"Result: {PageRecords.Count} records in this doc! Writing to file.");
-
-                        foreach (TrRecord PageRec in PageRecords)
-                            TextFile.WriteLine(PageRec.ToString());
-
-
+                        minimumRecordNumber = choose.Minimum;
                     }
 
+                    // TrLibrary.ExportFolder +
+                    string fileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
+                        + "PseudoTableRecords_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".csv";
+                    using (StreamWriter textFile = new StreamWriter(fileName, true, Encoding.UTF8))
+                    {
+                        Debug.Print($"Exporting pseudo table text from {Current.Collection.Name} - {Current.Document.Title} - Minimum = {minimumRecordNumber}");
+
+                        List<TrRecord> pageRecords = Current.Document.GetPseudoTableText(minimumRecordNumber);
+
+                        Debug.Print($"Result: {pageRecords.Count} records in this doc! Writing to file.");
+
+                        foreach (TrRecord pageRec in pageRecords)
+                        {
+                            textFile.WriteLine(pageRec.ToString());
+                        }
+                    }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_AutoAddDateTags_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Auto-Tag with <date> in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Auto-Tag with <date> in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    int Left = 0;
-                    int Right = 30;
-                    Current.Document.AutoDateTag(Left, Right);
+                    int left = 0;
+                    int right = 30;
+                    Current.Document.AutoDateTag(left, right);
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_TagEmptyTextLines_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Tag empty textlines in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Tag empty textlines in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
                     Current.Document.TagEmptyTextLines();
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_MarkEmptyAbbrevTags_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Mark (tag) empty abbrev-tags in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Mark (tag) empty abbrev-tags in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
                     Current.Document.TagEmptyAbbrevTags();
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_AutoAddRecordTags_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Auto-Tag with structural tag <RecordName> in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Auto-Tag with structural tag <RecordName> in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    double Left = 70;
-                    double Right = 100;
-                    Current.Document.AutoRecordTag(Left, Right);
+                    double left = 70;
+                    double right = 100;
+                    Current.Document.AutoRecordTag(left, right);
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_ElfeltRecordCheck_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Check lines with structural tag <RecordName> in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Check lines with structural tag <RecordName> in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
                     // TrLibrary.ExportFolder +
-                    string FileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
+                    string fileName = Current.Collection.Name + "_" + Current.Document.Title + "_"
                         + "ElfeltRecordCheck_" + DateTime.Now.ToString("yyyy-MM-dd_hh-mm") + ".csv";
-                    using (StreamWriter TextFile = new StreamWriter(FileName, true, Encoding.UTF8))
+                    using (StreamWriter textFile = new StreamWriter(fileName, true, Encoding.UTF8))
                     {
                         // TextFile.WriteLine("Pseudo table text from " + Current.Collection.Name + " - " + Current.Document.Title);
+                        List<string> records = Current.Document.CheckElfeltRecordNumbers();
 
-                        List<string> Records = Current.Document.CheckElfeltRecordNumbers();
-
-                        foreach (string Record in Records)
-                            TextFile.WriteLine(Record);
+                        foreach (string record in records)
+                        {
+                            textFile.WriteLine(record);
+                        }
                     }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
 
         private void MenuItem_WrapSuperAndSubscriptWithSpaces_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Wrap super- and subscript with spaces in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Wrap super- and subscript with spaces in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
                     Current.Document.WrapSuperAndSubscriptWithSpaces();
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
+            }
         }
-
 
         private void MenuItem_CurrentTestModule_Click(object sender, RoutedEventArgs e)
         {
-            double SumHpos = 0;
-            double SumHendPos = 0;
-            double minHpos = 100;
-            double maxHpos = 0;
-            double minHendPos = 100;
-            double maxHendPos = 0;
-            int LineCount = 0;
-
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Check what-ever :) ... in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Check what-ever :) ... in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    Regex Numbers = new Regex(@"\d{4,}\p{L}?");
-                    Regex YearOnly = new Regex(@"^\d{4}(?!(\-|\d))|^\d{4}$");
+                    Regex numbers = new Regex(@"\d{4,}\p{L}?");
+                    Regex yearOnly = new Regex(@"^\d{4}(?!(\-|\d))|^\d{4}$");
 
-                    foreach (TrPage P in Current.Document.Pages)
+                    foreach (TrPage p in Current.Document.Pages)
                     {
                         //if (P.PageNr >= 3 && P.PageNr <= 10)
                         {
-                            Debug.Print($"Page# {P.PageNr} ----------------------------------------------------");
+                            Debug.Print($"Page# {p.PageNr} ----------------------------------------------------");
+
                             //bool RegionOK;
                             //int i = 0;
-                            foreach (TrRegion TR in P.Transcripts[0].Regions)
-                                if (TR.GetType() == typeof(TrRegion_Text))
+                            foreach (TrRegion textRegion in p.Transcripts[0].Regions)
+                            {
+                                if (textRegion.GetType() == typeof(TrTextRegion))
                                 {
-                                    foreach (TrTextLine TL in (TR as TrRegion_Text).TextLines)
+                                    foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
                                     {
-                                        bool Found = false;
                                         //MatchCollection NumberMatches = Numbers.Matches(TL.ExpandedText);
-                                        MatchCollection YearOnlyMatches = YearOnly.Matches(TL.ExpandedText);
-                                        if (YearOnlyMatches.Count > 0)
+                                        MatchCollection yearOnlyMatches = yearOnly.Matches(textLine.ExpandedText);
+                                        if (yearOnlyMatches.Count > 0)
+
                                         //if (NumberMatches.Count > 0)
                                         {
                                             int i = 0;
-                                            int DigitValue = 0;
-                                            foreach (Match M in YearOnlyMatches)
+                                            int digitValue = 0;
+                                            foreach (Match m in yearOnlyMatches)
+
                                             //foreach (Match M in NumberMatches)
                                             {
-                                                string Content = clsLanguageLibrary.StripPunctuation(M.Value);
-                                                if (clsLanguageLibrary.IsNumeric(Content))
+                                                string content = ClsLanguageLibrary.StripPunctuation(m.Value);
+                                                if (ClsLanguageLibrary.IsNumeric(content))
                                                 {
-                                                    DigitValue = Convert.ToInt32(Content);
-
+                                                    digitValue = Convert.ToInt32(content);
                                                 }
 
                                                 //char LastChar = M.Value[M.Value.Length - 1];
@@ -1847,14 +1877,13 @@ namespace TrClient
                                                 //    DigitValue = Convert.ToInt32(M.Value.Substring(0, DigitCount));
 
                                                 //}
-                                                if (DigitValue < 2000)
+                                                if (digitValue < 2000)
                                                 {
                                                     i++;
-                                                    Debug.WriteLine($"Line# {TL.Number}: Match# {i}: found {Content}");
-                                                    Found = true;
+                                                    Debug.WriteLine($"Line# {textLine.Number}: Match# {i}: found {content}");
                                                 }
-
                                             }
+
                                             //if (Found)
                                             //{
                                             //    if (!TL.HasSpecificStructuralTag("RecordName"))
@@ -1864,7 +1893,6 @@ namespace TrClient
 
                                             //}
                                         }
-
                                     }
 
                                     //do
@@ -1901,11 +1929,9 @@ namespace TrClient
                                     //}
                                     //while (!RegionOK);
                                 }
-
-
-
-
+                            }
                         }
+
                         //foreach (TrRegion TR in P.Transcripts[0].Regions)
                         //{
                         //    //Debug.Print($"Region# {TR.Number} ----------");
@@ -1927,7 +1953,6 @@ namespace TrClient
                         //        //    //TL.WrapSuperAndSubscriptWithSpaces();
                         //        //} // end TEXTLINE
 
-
                         //    } // end IF TEXTREGION
                         //} // end REGION
                     } // end PAGE
@@ -1938,110 +1963,118 @@ namespace TrClient
                     //Debug.Print($"avg.Hpos: { averageHpos}, avg.HendPos: { averageHendPos}");
                     //Debug.Print($"min. Hpos {minHpos},  max. Hpos {maxHpos}");
                     //Debug.Print($"min. Hendpos {minHendPos},  max. Hendpos {maxHendPos}");
-
-
                 } // end DO IT
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_TagLinesByRegex_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgFilterLinesByRegex FilterLines = new dlgFilterLinesByRegex(Current.Document, Client);
-                FilterLines.Owner = this;
-                FilterLines.ShowDialog();
+                FilterLinesByRegex filterLines = new FilterLinesByRegex(Current.Document, Client);
+                filterLines.Owner = this;
+                filterLines.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_FilterLines_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgFilterLines FilterLines = new dlgFilterLines(Current.Document);
-                FilterLines.Owner = this;
-                FilterLines.ShowDialog();
+                FilterLines filterLines = new FilterLines(Current.Document);
+                filterLines.Owner = this;
+                filterLines.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
 
         private void MenuItem_AutoAddAbbrevTags_NumericIntervals_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Auto-Tag with <abbrev> at numeric intervals in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Auto-Tag with <abbrev> at numeric intervals in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    string TagName = "RecordName";
+                    string tagName = "RecordName";
+
                     // vælg hvilket struct-tag, der skal bestemme det
-                    foreach (TrPage P in Current.Document.Pages)
-                        P.AutoAbbrevTagNumericIntervals(TagName);
+                    foreach (TrPage p in Current.Document.Pages)
+                    {
+                        p.AutoAbbrevTagNumericIntervals(tagName);
+                    }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_AutoAddAbbrevTags_PlaceNames_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Auto-Tag with <abbrev> in place names in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Auto-Tag with <abbrev> in place names in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage P in Current.Document.Pages)
-                        P.AutoAbbrevTagPlaceNames();
+                    foreach (TrPage p in Current.Document.Pages)
+                    {
+                        p.AutoAbbrevTagPlaceNames();
+                    }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
 
         private void MenuItem_AutoTagFloorNumbers_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                string Question = $"Auto-Tag floor numbers with superscript in {Current.Collection.Name} / {Current.Document.Title}?";
-                MessageBoxResult Result = AskUser(Question);
-                if (Result == MessageBoxResult.Yes)
+                string question = $"Auto-Tag floor numbers with superscript in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
                 {
-                    foreach (TrPage P in Current.Document.Pages)
-                        P.AutoTagFloorNumberSuperScript();
+                    foreach (TrPage p in Current.Document.Pages)
+                    {
+                        p.AutoTagFloorNumberSuperScript();
+                    }
                 }
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
-
 
         // Histogram
         private void MenuItem_ShowHistogram_Click(object sender, RoutedEventArgs e)
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                dlgShowHistogram Histogram = new dlgShowHistogram(Current.Document);
-                Histogram.Owner = this;
-                Histogram.ShowDialog();
+                ShowHistogram histogram = new ShowHistogram(Current.Document);
+                histogram.Owner = this;
+                histogram.ShowDialog();
             }
             else
+            {
                 TellUser("You have to choose a collection AND a document!");
-
+            }
         }
     }
-
-
 }

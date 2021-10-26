@@ -1,25 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrCoord.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System;
+    using System.Diagnostics;
+
     public class TrCoord : IComparable
     {
         public int X { get; set; }
+
         public int Y { get; set; }
 
         public TrCoord(int newX, int newY)
@@ -28,27 +19,27 @@ namespace TrClient.Core
             Y = newY;
         }
 
-        public TrCoord(string CommaSeparatedXYpair)
+        public TrCoord(string commaSeparatedXYpair)
         {
-            int CommaPos = CommaSeparatedXYpair.IndexOf(",");
-            if (CommaPos > 0)
+            int commaPos = commaSeparatedXYpair.IndexOf(",");
+            if (commaPos > 0)
             {
-                X = (int)Convert.ToInt32(CommaSeparatedXYpair.Substring(0, CommaPos));
-                Y = (int)Convert.ToInt32(CommaSeparatedXYpair.Substring(CommaPos + 1));
+                X = (int)Convert.ToInt32(commaSeparatedXYpair.Substring(0, commaPos));
+                Y = (int)Convert.ToInt32(commaSeparatedXYpair.Substring(commaPos + 1));
             }
             else
+            {
                 Debug.WriteLine("ugyldigt argument til trcoord - tom string i commaseparatepair");
-
+            }
         }
 
-        public TrCoord SubtractOffset(int LeftBorder, int TopBorder, TrCoord Offset)
+        public TrCoord SubtractOffset(int leftBorder, int topBorder, TrCoord offset)
         {
-            int NewX = X - LeftBorder + Offset.X;
-            int NewY = Y - TopBorder + Offset.Y;
+            int newX = X - leftBorder + offset.X;
+            int newY = Y - topBorder + offset.Y;
 
-
-            TrCoord Temp = new TrCoord(NewX, NewY);
-            return Temp;
+            TrCoord temp = new TrCoord(newX, newY);
+            return temp;
         }
 
         public int CompareTo(object obj)

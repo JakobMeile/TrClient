@@ -1,249 +1,278 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Net.Http;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.Xml.Serialization;
-using System.IO;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrRegion.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Windows.Media;
+    using System.Xml.Linq;
+    using TrClient.Core.Tags;
+    using TrClient.Extensions;
+    using TrClient.Helpers;
+    using TrClient.Libraries;
+
     public abstract class TrRegion : IComparable, INotifyPropertyChanged
     {
         public TrRegions ParentContainer;
         public TrTranscript ParentTranscript;
 
         public string Type { get; set; }
+
         public string ID { get; set; }
+
         public float Orientation { get; set; }
+
         public string CoordsString { get; set; }
+
         public bool MarkToDeletion = false;
 
         public string TagString { get; set; }
-        public TrTags Tags = new TrTags();
-        public TrTag_Structural StructuralTag;
 
-        private int _readingOrder;
+        public TrTags Tags = new TrTags();
+        public TrTagStructural StructuralTag;
+
+        private int readingOrder;
+
         public int ReadingOrder
         {
-            get { return _readingOrder; }
+            get
+            {
+                return readingOrder;
+            }
+
             set
             {
                 if (HasReadingOrderTag)
                 {
                     //Debug.Print($"TrRegion: set RO: HAS RO-tag: Delete it! Count before: {Tags.Count}");
                     DeleteReadingOrderTag();
+
                     //Debug.Print($"Count after: {Tags.Count}");
                 }
 
-                _readingOrder = value;
-                TrTag_ReadingOrder ROTag = new TrTag_ReadingOrder(_readingOrder);
-                Tags.Add(ROTag);
-                //Debug.Print($"TrRegion: Added new RO-tag: Count now: {Tags.Count}");
+                readingOrder = value;
+                TrTagReadingOrder rOTag = new TrTagReadingOrder(readingOrder);
+                Tags.Add(rOTag);
             }
         }
 
         // ABSTRACT PROPERTIES ----------------------------------------------------------
+        protected bool changesUploaded = false;
 
-        protected bool _changesUploaded = false;
         public abstract bool ChangesUploaded { get; set; }
 
         // protected bool _hasLines;
         public abstract bool HasLines { get; }
 
-        protected TrWords _words = new TrWords();
+        protected TrWords words = new TrWords();
+
         public abstract TrWords Words { get; }
+
         public abstract int NumberOfLines { get; }
 
         // ABSTRACT METHODS
-
         public abstract List<string> GetStructuralTags();
-        public abstract void Move(int Horizontally, int Vertically);
-        public abstract bool DeleteShortBaselines(int Limit, TrLog Log);
-        public abstract void SimplifyBoundingBoxes();
-        public abstract void SimplifyBoundingBoxes(int MinimumHeight, int MaximumHeight);
-        public abstract List<string> GetExpandedText(bool Refine, bool ConvertOtrema);
-        public abstract void ExtendBaseLines(TrDialogTransferSettings Settings, TrLog Log);
-        
 
+        public abstract void Move(int horizontally, int vertically);
+
+        public abstract bool DeleteShortBaselines(int limit, TrLog log);
+
+        public abstract void SimplifyBoundingBoxes();
+
+        public abstract void SimplifyBoundingBoxes(int minimumHeight, int maximumHeight);
+
+        public abstract List<string> GetExpandedText(bool refine, bool convertOtrema);
+
+        public abstract void ExtendBaseLines(TrDialogTransferSettings settings, TrLog log);
 
         public abstract XElement ToXML();
 
         // -----------------------
-
         public void FixCoordinates()
         {
-            int PageWidth = ParentTranscript.ParentPage.Width;
-            int PageHeigth = ParentTranscript.ParentPage.Height;
+            int pageWidth = ParentTranscript.ParentPage.Width;
+            int pageHeigth = ParentTranscript.ParentPage.Height;
 
-            TrCoords Coords = new TrCoords(CoordsString);
+            TrCoords coords = new TrCoords(CoordsString);
 
             // ændrer punkter med negative koordinater eller større end siden
-            foreach (TrCoord C in Coords)
+            foreach (TrCoord c in coords)
             {
-                if (C.X < 0)
+                if (c.X < 0)
                 {
-                    C.X = 0;
+                    c.X = 0;
                     HasChanged = true;
                 }
 
-                if (C.X > PageWidth)
+                if (c.X > pageWidth)
                 {
-                    C.X = PageWidth;
+                    c.X = pageWidth;
                     HasChanged = true;
                 }
 
-                if (C.Y < 0)
+                if (c.Y < 0)
                 {
-                    C.Y = 0;
+                    c.Y = 0;
                     HasChanged = true;
                 }
 
-                if (C.Y > PageHeigth)
+                if (c.Y > pageHeigth)
                 {
-                    C.Y = PageHeigth;
+                    c.Y = pageHeigth;
                     HasChanged = true;
                 }
             }
 
             if (HasChanged)
-                CoordsString = Coords.ToString();
+            {
+                CoordsString = coords.ToString();
+            }
         }
-
 
         private void DeleteReadingOrderTag()
         {
-            bool FoundTag = false;
+            bool foundTag = false;
 
             if (HasReadingOrderTag)
             {
-                FoundTag = true;
-                foreach (TrTag T in Tags)
+                foundTag = true;
+                foreach (TrTag t in Tags)
                 {
-                    if (T.GetType() == typeof(TrTag_ReadingOrder))
-                        T.MarkToDeletion = true;
+                    if (t.GetType() == typeof(TrTagReadingOrder))
+                    {
+                        t.MarkToDeletion = true;
+                    }
                 }
             }
 
-            if (FoundTag)
+            if (foundTag)
             {
                 for (int i = Tags.Count - 1; i >= 0; i--)
                 {
                     if (Tags[i].MarkToDeletion)
+                    {
                         Tags.RemoveAt(i);
+                    }
                 }
+
                 HasChanged = true;
             }
         }
 
-        
+        private int number;
 
-        private int _number;
         public int Number
         {
             get
             {
                 if (ParentContainer.IsZeroBased)
-                    _number = ReadingOrder + 1;
+                {
+                    number = ReadingOrder + 1;
+                }
                 else
-                    _number = ReadingOrder;
-                return _number;
+                {
+                    number = ReadingOrder;
+                }
+
+                return number;
             }
         }
-               
-        private bool _hasChanged = false;
+
+        private bool hasChanged = false;
+
         public bool HasChanged
         {
-            get { return _hasChanged; }
+            get
+            {
+                return hasChanged;
+            }
+
             set
             {
-                _hasChanged = value;
-                if (_hasChanged)
+                hasChanged = value;
+                if (hasChanged)
+                {
                     StatusColor = Brushes.Orange;
+                }
+
                 NotifyPropertyChanged("HasChanged");
                 ParentTranscript.HasChanged = value;
             }
         }
 
-        
-        
+        private SolidColorBrush statusColor = Brushes.Red;
 
-
-
-        private SolidColorBrush _statusColor = Brushes.Red;
         public SolidColorBrush StatusColor
         {
-            get { return _statusColor; }
+            get
+            {
+                return statusColor;
+            }
+
             set
             {
-                if (_statusColor != value)
+                if (statusColor != value)
                 {
-                    _statusColor = value;
+                    statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
         }
 
-        private bool _hasStructuralTag;
+        private bool hasStructuralTag;
+
         public bool HasStructuralTag
         {
             get
             {
-                _hasStructuralTag = false;
+                hasStructuralTag = false;
 
-                foreach (TrTag T in Tags)
+                foreach (TrTag t in Tags)
                 {
-                    _hasStructuralTag = _hasStructuralTag || (T.GetType() == typeof(TrTag_Structural));
+                    hasStructuralTag = hasStructuralTag || (t.GetType() == typeof(TrTagStructural));
                 }
-                return _hasStructuralTag;
 
+                return hasStructuralTag;
             }
         }
 
-        private bool _hasReadingOrderTag;
+        private bool hasReadingOrderTag;
+
         public bool HasReadingOrderTag
         {
             get
             {
-                _hasReadingOrderTag = false;
+                hasReadingOrderTag = false;
 
-                foreach (TrTag T in Tags)
+                foreach (TrTag t in Tags)
                 {
-                    _hasReadingOrderTag = _hasReadingOrderTag || (T.GetType() == typeof(TrTag_ReadingOrder));
+                    hasReadingOrderTag = hasReadingOrderTag || (t.GetType() == typeof(TrTagReadingOrder));
                 }
-                return _hasReadingOrderTag;
 
+                return hasReadingOrderTag;
             }
         }
-               
-        private string _structuralTagValue;
+
+        private string structuralTagValue;
+
         public string StructuralTagValue
         {
             get
             {
                 if (HasStructuralTag)
-                    _structuralTagValue = StructuralTag.SubType;
+                {
+                    structuralTagValue = StructuralTag.SubType;
+                }
                 else
-                    _structuralTagValue = "";
-                return _structuralTagValue;
-            }
+                {
+                    structuralTagValue = string.Empty;
+                }
 
+                return structuralTagValue;
+            }
         }
 
         //public List<string> GetStructuralTags()
@@ -258,148 +287,151 @@ namespace TrClient.Core
         //    TagList.Sort();
         //    return TagList;
         //}
+        private int leftBorder;
 
-
-
-        private int _leftBorder;
         public int LeftBorder
         {
             get
             {
-                _leftBorder = TrLibrary.GetLeftMostXcoord(CoordsString);
-                return _leftBorder;
+                leftBorder = TrLibrary.GetLeftMostXcoord(CoordsString);
+                return leftBorder;
             }
         }
 
-        private int _rightBorder;
+        private int rightBorder;
+
         public int RightBorder
         {
             get
             {
-                _rightBorder = TrLibrary.GetRightMostXcoord(CoordsString);
-                return _rightBorder;
+                rightBorder = TrLibrary.GetRightMostXcoord(CoordsString);
+                return rightBorder;
             }
         }
 
-        private int _topBorder;
+        private int topBorder;
+
         public int TopBorder
         {
             get
             {
-                _topBorder = TrLibrary.GetTopYcoord(CoordsString);
-                return _topBorder;
+                topBorder = TrLibrary.GetTopYcoord(CoordsString);
+                return topBorder;
             }
         }
 
+        private int bottomBorder;
 
-        private int _bottomBorder;
         public int BottomBorder
         {
             get
             {
-                _bottomBorder = TrLibrary.GetBottomYcoord(CoordsString);
-                return _bottomBorder;
+                bottomBorder = TrLibrary.GetBottomYcoord(CoordsString);
+                return bottomBorder;
             }
         }
 
+        private int hPos;
 
-        private int _hPos;
         public int Hpos
         {
             get
             {
-                _hPos = LeftBorder;
-                return _hPos;
+                hPos = LeftBorder;
+                return hPos;
             }
         }
 
+        private int vPos;
 
-        private int _vPos;
         public int Vpos
         {
             get
             {
-                _vPos = TrLibrary.GetAverageYcoord(CoordsString);
-                return _vPos;
+                vPos = TrLibrary.GetAverageYcoord(CoordsString);
+                return vPos;
             }
         }
 
-        private int _horizontalOrder;
+        private int horizontalOrder;
+
         public int HorizontalOrder
         {
             get
             {
-                _horizontalOrder = Hpos * 10_000 + Vpos;
-                return _horizontalOrder;
+                horizontalOrder = (Hpos * 10_000) + Vpos;
+                return horizontalOrder;
             }
         }
 
-        private int _verticalOrder;
+        private int verticalOrder;
+
         public int VerticalOrder
         {
             get
             {
-                _verticalOrder = Vpos * 10_000 + Hpos;
-                return _verticalOrder;
+                verticalOrder = (Vpos * 10_000) + Hpos;
+                return verticalOrder;
             }
         }
 
+        private XElement regionRef;
 
-        private XElement _regionRef;
         public XElement RegionRef
         {
             get
             {
-                _regionRef = new XElement(TrLibrary.xmlns + "RegionRefIndexed",
+                regionRef = new XElement(
+                    TrLibrary.Xmlns + "RegionRefIndexed",
                     new XAttribute("index", ReadingOrder),
                     new XAttribute("regionRef", ID));
-                return _regionRef;
-
+                return regionRef;
             }
         }
 
         // CONSTRUCTORS ---------------------------------------------------------------------------------------
-        
 
         // constructor ved indlæsning af XDoc
-        public TrRegion(string rType, string rID, string rTags, float rOrientation, string rCoords)
+        public TrRegion(string rType, string rID, string rTags, float rOrientation, string rCoords, TrRegions parentContainer)
         {
             //Debug.Print("-----------------------------------------------------------------------------");
             //Debug.Print($"New TrRegion in the making! tags count = {Tags.Count}");
-
             Type = rType;
             ID = rID;
             TagString = rTags;
             ReadingOrder = TrLibrary.GetReadingOrder(TagString);
             CoordsString = rCoords;
             Orientation = rOrientation;
+            ParentContainer = parentContainer;
+            ParentTranscript = parentContainer.ParentTranscript;
+
             //TextLines.ParentRegion = this;
             //Tags.ParentRegion = this;
-
             Tags.LoadFromCustomAttribute(rTags);
+
             //Debug.Print($"New TrRegion! RO = {ReadingOrder}, tags count = {Tags.Count}");
-
-
             if (Tags.Count > 0)
             {
-                foreach (TrTag Tag in Tags)
+                foreach (TrTag tag in Tags)
                 {
-                    if (Tag.GetType() == typeof(TrTag_Structural))
+                    if (tag.GetType() == typeof(TrTagStructural))
                     {
-                        StructuralTag = (TrTag_Structural)Tag;
+                        StructuralTag = (TrTagStructural)tag;
                     }
                 }
             }
         }
 
         // constructor ved skabelse af ny region
-        public TrRegion(int rOrder, float rOrientation, string rCoords)
+        public TrRegion(int rOrder, float rOrientation, string rCoords, TrRegions parentContainer)
         {
-            Type = "";
+            Type = string.Empty;
             ID = "region_" + TrLibrary.GetNewTimeStamp().ToString();
             ReadingOrder = rOrder;
             CoordsString = rCoords;
             Orientation = rOrientation;
+            ParentContainer = parentContainer;
+            ParentTranscript = parentContainer.ParentTranscript;
 
             //TextLines.ParentRegion = this;
             //Tags.ParentRegion = this;
@@ -407,22 +439,20 @@ namespace TrClient.Core
             // Debug.WriteLine($"Region (empty) constructed! ID = {ID}, RO = {ReadingOrder}, Coords = {CoordsString}");
         }
 
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void NotifyPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
+            }
         }
-        
+
         public int CompareTo(object obj)
         {
-            var region = obj as TrRegion_Text;
+            var region = obj as TrTextRegion;
             return ReadingOrder.CompareTo(region.ReadingOrder);
         }
-
-
-
     }
 }

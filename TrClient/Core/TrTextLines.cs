@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using TrClient;
-using TrClient.Core;
-using TrClient.Extensions;
-using TrClient.Helpers;
-using TrClient.Libraries;
-using TrClient.Settings;
-using TrClient.Tags;
-
+﻿// <copyright file="TrTextLines.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace TrClient.Core
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using TrClient.Extensions;
+    using TrClient.Helpers;
+
     public class TrTextLines : IEnumerable
     {
         public enum SortType
@@ -23,69 +18,80 @@ namespace TrClient.Core
             LineNumber,
             Vertically,
             Horizontally,
-            Logically
+            Logically,
         }
 
-        private SortType _sortMethod = SortType.LineNumber;
+        private SortType sortMethod = SortType.LineNumber;
+
         public SortType SortMethod
         {
             get
             {
-                return _sortMethod;
+                return sortMethod;
             }
-                set
+
+            set
             {
-                if (_sortMethod != value)
-                    _sortMethod = value;
+                if (sortMethod != value)
+                {
+                    sortMethod = value;
+                }
             }
         }
 
-        private List<TrTextLine> Lines;
-        public int Count { get => Lines.Count; }
+        private List<TrTextLine> lines;
 
-        public TrRegion_Text ParentRegion;
+        public int Count { get => lines.Count; }
 
-        private bool _isZeroBased;
+        public TrTextRegion ParentRegion;
+
+        private bool isZeroBased;
+
         public bool IsZeroBased
         {
             get
             {
                 // Debug.WriteLine($"TrTextLines : IsZeroBased: Count = {Count}");
                 if (Count > 0)
-                    _isZeroBased = (Lines[0].ReadingOrder == 0);
+                {
+                    isZeroBased = lines[0].ReadingOrder == 0;
+                }
                 else
-                    _isZeroBased = true;
-                return _isZeroBased;
+                {
+                    isZeroBased = true;
+                }
+
+                return isZeroBased;
             }
         }
 
-
-        public void Add(TrTextLine Line)
+        public void Add(TrTextLine line)
         {
-            Lines.Add(Line);
-            Line.ParentContainer = this;
-            Line.ParentRegion = this.ParentRegion;
+            lines.Add(line);
+            line.ParentContainer = this;
+            line.ParentRegion = ParentRegion;
+
             // Debug.WriteLine($"TrTextLine: Line added. Number = {Line.Number}, ParentRegion = {Line.ParentRegion.Number}");
         }
 
-        public void Delete(TrTextLine Line)
-        {
-            Lines.Remove(Line);
-        }
-        
+        // bør IKKE hedde DELETE men REMOVE
+        //public void Delete(TrTextLine Line)
+        //{
+        //    Lines.Remove(Line);
+        //}
         public void Clear()
         {
-            Lines.Clear();
+            lines.Clear();
         }
 
         public void Sort()
         {
-            Lines.Sort();
+            lines.Sort();
         }
 
         public void RemoveAt(int i)
         {
-            Lines.RemoveAt(i);
+            lines.RemoveAt(i);
             ParentRegion.HasChanged = true;
         }
 
@@ -93,28 +99,25 @@ namespace TrClient.Core
         {
             get
             {
-                //int Temp;
-                //if (IsZeroBased)
-                //    Temp = index;
-                //else
-                //    Temp = index - 1;
-                //return Lines[Temp];
-                return Lines[index];
+                return lines[index];
             }
-            set { Lines[index] = value; }
+
+            set
+            {
+                lines[index] = value;
+            }
         }
 
-
-        public TrTextLine GetLineFromID(string Search)
+        public TrTextLine GetLineFromID(string search)
         {
-            var Line = Lines.Where(r => r.ID == Search).FirstOrDefault();
-            return Line;
+            var line = lines.Where(r => r.ID == search).FirstOrDefault();
+            return line;
         }
 
-        public TrTextLine GetLineFromReadingOrder(int Search)
+        public TrTextLine GetLineFromReadingOrder(int search)
         {
-            var Line = Lines.Where(r => r.ReadingOrder == Search).FirstOrDefault();
-            return Line;
+            var line = lines.Where(r => r.ReadingOrder == search).FirstOrDefault();
+            return line;
         }
 
         //public TrTextLine GetLineByNumber(int Number)
@@ -128,81 +131,76 @@ namespace TrClient.Core
         //    }
         //    return temp;
         //}
-
-
         public void ReNumberHorizontally()
         {
             // NB: ReadingOrder er det centrale - Number dannes af Reading Order
+            TrPairOrderIDs pairs = new TrPairOrderIDs();
 
-            TrPairOrderIDs Pairs = new TrPairOrderIDs();
-
-            foreach (TrTextLine TL in Lines)
+            foreach (TrTextLine textLine in lines)
             {
                 // Debug.WriteLine($"Current ID: {TR.ID} - Current reading order: {TR.ReadingOrder} - " +
                 //    $"Current Hpos: {TR.Hpos} - Current Vpos: {TR.Vpos}");
-
-                TrPairOrderID Pair = new TrPairOrderID(TL.HorizontalOrder, TL.ID);
-                Pairs.Add(Pair);
+                TrPairOrderID pair = new TrPairOrderID(textLine.HorizontalOrder, textLine.ID);
+                pairs.Add(pair);
             }
 
-            Pairs.Sort();
+            pairs.Sort();
 
             int i = 0;
-            foreach (TrPairOrderID Pair in Pairs)
+            foreach (TrPairOrderID pair in pairs)
             {
-                TrTextLine CurrentLine = GetLineFromID(Pair.ID);
-                CurrentLine.ReadingOrder = i;
-                CurrentLine.HasChanged = true;
+                TrTextLine currentLine = GetLineFromID(pair.ID);
+                currentLine.ReadingOrder = i;
+                currentLine.HasChanged = true;
+
                 // Debug.WriteLine($"Sorted ID: {CurrentRegion.ID} - Sorted reading order: {CurrentRegion.ReadingOrder} - " +
                 // $"Sorted Hpos: {CurrentRegion.Hpos} - Sorted Vpos: {CurrentRegion.Vpos}");
                 i++;
-
             }
-            Lines.Sort();
-        }
 
+            lines.Sort();
+        }
 
         public void ReNumberVertically()
         {
             // NB: ReadingOrder er det centrale - Number dannes af Reading Order
+            TrPairOrderIDs pairs = new TrPairOrderIDs();
 
-            TrPairOrderIDs Pairs = new TrPairOrderIDs();
-
-            foreach (TrTextLine TL in Lines)
+            foreach (TrTextLine textLine in lines)
             {
                 // Debug.WriteLine($"Current ID: {TR.ID} - Current reading order: {TR.ReadingOrder} - " +
                 // $"Current Hpos: {TR.Hpos} - Current Vpos: {TR.Vpos}");
-
-                TrPairOrderID Pair = new TrPairOrderID(TL.VerticalOrder, TL.ID);
-                Pairs.Add(Pair);
+                TrPairOrderID pair = new TrPairOrderID(textLine.VerticalOrder, textLine.ID);
+                pairs.Add(pair);
             }
 
-            Pairs.Sort();
+            pairs.Sort();
 
             int i = 0;
-            foreach (TrPairOrderID Pair in Pairs)
+            foreach (TrPairOrderID pair in pairs)
             {
-                TrTextLine CurrentLine = GetLineFromID(Pair.ID);
-                CurrentLine.ReadingOrder = i;
-                CurrentLine.HasChanged = true;
+                TrTextLine currentLine = GetLineFromID(pair.ID);
+                currentLine.ReadingOrder = i;
+                currentLine.HasChanged = true;
+
                 // Debug.WriteLine($"Sorted ID: {CurrentRegion.ID} - Sorted reading order: {CurrentRegion.ReadingOrder} - " +
                 // $"Sorted Hpos: {CurrentRegion.Hpos} - Sorted Vpos: {CurrentRegion.Vpos}");
                 i++;
-
             }
-            Lines.Sort();
+
+            lines.Sort();
         }
 
-        public void ReNumberLogically(int Limit)
+        public void ReNumberLogically(int limit)
         {
             // ordner efter de linier, som mennesker opfatter: kræver at betydningen af vpos mindskes
             // sætter også TL.RowNumber og
             // fylder Region.Rows herefter
+            int currentVpos = 0;
+            int previousVpos = 0;
+            int difference = 0;
+            int rowCount = 0;
 
-            int CurrentVpos = 0;
-            int PreviousVpos = 0;
-            int Difference = 0;
-            int RowCount = 0;
             // string RowTag = "";
 
             // kræver at linjer først er ordnet helt traditionelt, dvs. vertikalt:
@@ -210,36 +208,38 @@ namespace TrClient.Core
 
             // dernæst gennemløbes alle linier: hvis aktuel vPos er tæt på den forrige linies vPos, sættes aktuel vPos = forrige.vPos
             // "tæt på" defineres som mindre end Limit, sat ovenfor
-            foreach (TrTextLine TL in Lines)
+            foreach (TrTextLine textLine in lines)
             {
-
                 // den første linie bruges som udgangspunkt og sammenlignes IKKE
-                if (TL.Number == 1)
+                if (textLine.Number == 1)
                 {
                     // Debug.WriteLine($"Line number = {TL.Number}: Vpos = {TL.Vpos} - Previous = {PreviousVpos} - Current = {CurrentVpos}");
-                    PreviousVpos = TL.Vpos;
+                    previousVpos = textLine.Vpos;
                 }
                 else
                 {
-                    CurrentVpos = TL.Vpos;
-                    Difference = Math.Abs(CurrentVpos - PreviousVpos);
+                    currentVpos = textLine.Vpos;
+                    difference = Math.Abs(currentVpos - previousVpos);
+
                     // Debug.WriteLine($"Line number = {TL.Number}: Vpos = {TL.Vpos} - Previous = {PreviousVpos} - Current = {CurrentVpos} - Difference = {Difference}");
-                    if (Difference < Limit)
+                    if (difference < limit)
                     {
                         // samme række
-                        TL.Vpos = PreviousVpos;
+                        textLine.Vpos = previousVpos;
+
                         // Debug.WriteLine($"Vpos set!");
                     }
                     else
                     {
                         // ny række
-                        RowCount++;
+                        rowCount++;
                     }
-                    PreviousVpos = TL.Vpos;
+
+                    previousVpos = textLine.Vpos;
                 }
 
-                TL.RowNumber = RowCount;
-                
+                textLine.RowNumber = rowCount;
+
                 //RowTag = "Row_" + RowCount.ToString("000");
                 //TL.AddStructuralTag(RowTag, true);
             }
@@ -247,20 +247,21 @@ namespace TrClient.Core
             // herefter vil VerticalOrder være mere afhængig af hPos end før - og ved en simpel vertikal renummerering, er det fixet
             ReNumberVertically();
 
-            // nu er der orden i sagerne; RowCount = antal rækker minus 1; Alle TL har fået sat RowNumber; nu danner vi det nødvendige antal Rows 
-            for (int i = 0; i <= RowCount; i++)
+            // nu er der orden i sagerne; RowCount = antal rækker minus 1; Alle TL har fået sat RowNumber; nu danner vi det nødvendige antal Rows
+            for (int i = 0; i <= rowCount; i++)
             {
-                TrRow NewRow = new TrRow(i);
-                ParentRegion.Rows.Add(NewRow);
+                TrRow newRow = new TrRow(i);
+                ParentRegion.Rows.Add(newRow);
             }
 
             // herefter kan alle linierne gennemgås og fordeles på de respektive rows
-            foreach (TrTextLine TL in Lines)
+            foreach (TrTextLine textLine in lines)
             {
-                ParentRegion.Rows[TL.RowNumber].AddCell(TL);
+                ParentRegion.Rows[textLine.RowNumber].AddCell(textLine);
             }
 
-            int MaxCells = ParentRegion.Rows.MaxCellCount;
+            int maxCells = ParentRegion.Rows.MaxCellCount;
+
             // så må vi heller lige teste...
             //foreach (TrRow Row in ParentRegion.Rows)
             //{
@@ -269,45 +270,50 @@ namespace TrClient.Core
             //}
         }
 
+        //public void TestSort()
+        //{
+        //    SortMethod = SortType.Logically;
+        //    Lines.Sort();
 
-        public void TestSort()
-        {
-            SortMethod = SortType.Logically;
-            Lines.Sort();
-
-            int i = 0;
-            foreach (TrTextLine CurrentLine in Lines)
-            {
-                CurrentLine.ReadingOrder = i;
-                CurrentLine.HasChanged = true;
-                // Debug.WriteLine($"Sorted ID: {CurrentRegion.ID} - Sorted reading order: {CurrentRegion.ReadingOrder} - " +
-                // $"Sorted Hpos: {CurrentRegion.Hpos} - Sorted Vpos: {CurrentRegion.Vpos}");
-                i++;
-            }
-            SortMethod = SortType.LineNumber;
-        }
-
+        //    int i = 0;
+        //    foreach (TrTextLine CurrentLine in Lines)
+        //    {
+        //        CurrentLine.ReadingOrder = i;
+        //        CurrentLine.HasChanged = true;
+        //        // Debug.WriteLine($"Sorted ID: {CurrentRegion.ID} - Sorted reading order: {CurrentRegion.ReadingOrder} - " +
+        //        // $"Sorted Hpos: {CurrentRegion.Hpos} - Sorted Vpos: {CurrentRegion.Vpos}");
+        //        i++;
+        //    }
+        //    SortMethod = SortType.LineNumber;
+        //}
         public IEnumerator GetEnumerator()
         {
-            return ((IEnumerable)Lines).GetEnumerator();
+            return ((IEnumerable)lines).GetEnumerator();
         }
 
-        private bool _changesUploaded = false;
+        private bool changesUploaded = false;
+
         public bool ChangesUploaded
         {
-            get { return _changesUploaded; }
+            get
+            {
+                return changesUploaded;
+            }
+
             set
             {
-                _changesUploaded = value;
-                foreach (TrTextLine TL in Lines)
-                    TL.ChangesUploaded = value;
+                changesUploaded = value;
+                foreach (TrTextLine textLine in lines)
+                {
+                    textLine.ChangesUploaded = value;
+                }
             }
         }
 
         // constructor
         public TrTextLines()
         {
-            Lines = new List<TrTextLine>();
+            lines = new List<TrTextLine>();
         }
     }
 }
