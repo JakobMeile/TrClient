@@ -1,5 +1,5 @@
-﻿// <copyright file="TrCoords.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrCoords.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -25,10 +25,10 @@ namespace TrClient.Core
             coords.Sort();
         }
 
-        public void Clear()
-        {
-            coords.Clear();
-        }
+        //public void Clear()
+        //{
+        //    coords.Clear();
+        //}
 
         public TrCoord this[int index]
         {

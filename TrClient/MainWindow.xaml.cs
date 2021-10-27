@@ -1,5 +1,5 @@
-﻿// <copyright file="MainWindow.xaml.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="MainWindow.xaml.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient
@@ -31,21 +31,50 @@ namespace TrClient
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public enum DeleteAction
         {
+            /// <summary>
+            /// Makes...
+            /// </summary>
             Delete = 0,
+            /// <summary>
+            /// Makes...
+            /// </summary>
             Preserve = 1,
         }
-
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public static TrUser User;
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public static readonly HttpClient Client = new HttpClient();
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public static XmlDocument MyCollectionsDocument = new XmlDocument();
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public static TrCollections MyCollections = new TrCollections();
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public static TrCurrent Current = new TrCurrent();
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public static TrCurrent Secondary = new TrCurrent();    // bruges til at kopiere FRA
 
         // MAIN
         // --------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public MainWindow()
         {
             if (User == null)
@@ -76,6 +105,9 @@ namespace TrClient
 
         // LOGIN
         // --------------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public async void RunLoginAndGetMyCollections(string username, string password)
         {
             // Kaldes KUN i online-mode!!
@@ -858,12 +890,18 @@ namespace TrClient
             }
         }
 
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public MessageBoxResult AskUser(string question)
         {
             MessageBoxResult result = MessageBox.Show(question, TrLibrary.AppName, MessageBoxButton.YesNo, MessageBoxImage.Question);
             return result;
         }
 
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public void TellUser(string information)
         {
             MessageBox.Show(information, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -1126,6 +1164,9 @@ namespace TrClient
             }
         }
 
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public void CopyFromSecondaryDocument(TrDocument sourceDocument, TrDocument destinationDocument)
         {
             Debug.WriteLine($"*** CopyFromSecondaryDocument ***");
@@ -1154,6 +1195,9 @@ namespace TrClient
             }
         }
 
+        /// <summary>
+        /// Makes...
+        /// </summary>
         public void CopyFromSecondaryCollection(TrCollection sourceColl, TrCollection destinationColl)
         {
             Debug.WriteLine($"*** CopyFromSecondaryCollection ***");

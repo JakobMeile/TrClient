@@ -1,5 +1,5 @@
-﻿// <copyright file="TrCollections.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrCollections.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -114,48 +114,48 @@ namespace TrClient.Core
             collections.Sort();
         }
 
-        public void Clear()
-        {
-            collections.Clear();
-        }
+        //public void Clear()
+        //{
+        //    collections.Clear();
+        //}
 
-        public TrCollection this[int index]
-        {
-            get { return collections[index]; }
-            set { collections[index] = value; }
-        }
+        //public TrCollection this[int index]
+        //{
+        //    get { return collections[index]; }
+        //    set { collections[index] = value; }
+        //}
 
         public IEnumerator GetEnumerator()
         {
             return ((IEnumerable)collections).GetEnumerator();
         }
 
-        public TrCollection GetCollectionFromName(string search)
-        {
-            var coll = collections.Where(c => c.Name == search).FirstOrDefault();
-            return coll;
-        }
+        //public TrCollection GetCollectionFromName(string search)
+        //{
+        //    var coll = collections.Where(c => c.Name == search).FirstOrDefault();
+        //    return coll;
+        //}
 
-        public TrCollection GetCollectionFromID(string search)
-        {
-            var coll = collections.Where(c => c.ID == search).FirstOrDefault();
-            return coll;
-        }
+        //public TrCollection GetCollectionFromID(string search)
+        //{
+        //    var coll = collections.Where(c => c.ID == search).FirstOrDefault();
+        //    return coll;
+        //}
 
-        public string GetIDFromName(string searchName)
-        {
-            string temp = string.Empty;
-            foreach (TrCollection coll in collections)
-            {
-                if (coll.Name == searchName)
-                {
-                    temp = coll.ID;
-                    break;
-                }
-            }
+        //public string GetIDFromName(string searchName)
+        //{
+        //    string temp = string.Empty;
+        //    foreach (TrCollection coll in collections)
+        //    {
+        //        if (coll.Name == searchName)
+        //        {
+        //            temp = coll.ID;
+        //            break;
+        //        }
+        //    }
 
-            return temp;
-        }
+        //    return temp;
+        //}
 
         public event PropertyChangedEventHandler PropertyChanged;
 

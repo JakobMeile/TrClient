@@ -1,5 +1,5 @@
-﻿// <copyright file="TrCells.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrCells.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -33,27 +33,27 @@ namespace TrClient.Core
         //{
         //    Cells.Remove(Cell);
         //}
-        public void Clear()
-        {
-            cells.Clear();
-        }
+        //public void Clear()
+        //{
+        //    cells.Clear();
+        //}
 
-        public void Sort()
-        {
-            cells.Sort();
-        }
+        //public void Sort()
+        //{
+        //    cells.Sort();
+        //}
 
-        public void RemoveAt(int i)
-        {
-            cells.RemoveAt(i);
-            ParentRegion.HasChanged = true;
-        }
+        //public void RemoveAt(int i)
+        //{
+        //    cells.RemoveAt(i);
+        //    ParentRegion.HasChanged = true;
+        //}
 
-        public TrCell this[int index]
-        {
-            get { return cells[index]; }
-            set { cells[index] = value; }
-        }
+        //public TrCell this[int index]
+        //{
+        //    get { return cells[index]; }
+        //    set { cells[index] = value; }
+        //}
 
         public IEnumerator GetEnumerator()
         {

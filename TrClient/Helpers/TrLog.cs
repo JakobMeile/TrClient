@@ -1,5 +1,5 @@
-﻿// <copyright file="TrLog.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrLog.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Helpers

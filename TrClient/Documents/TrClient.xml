@@ -1,0 +1,983 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TrClient</name>
+    </assembly>
+    <members>
+        <member name="T:TrClient.Core.TrBase">
+            <summary>
+            Base class for all items (via <see cref="T:TrClient.Core.TrItem"/>) and all containers (via <see cref="T:TrClient.Core.TrContainer"/>).
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrBase.statusColor">
+            <summary>
+            Holds a color value indicating the status of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrBase.isLoaded">
+            <summary>
+            Holds a boolean flag indicating whether the item is loaded from the server.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrBase.hasChanged">
+            <summary>
+            Holds a boolean flag indicating whether the item has changed since it was loaded (saved).
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrBase.isChangesUploaded">
+            <summary>
+            Holds a boolean flag indicating whether any changes to the item has has been uploaded.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrClient.Core.TrBase"/> class.
+            Default constructor.
+            </summary>
+        </member>
+        <member name="E:TrClient.Core.TrBase.PropertyChanged">
+            <summary>
+            Raises when a property changes.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrBase.NotifyPropertyChanged(System.String)">
+            <summary>
+            Implementation regarding INotifyPropertyChanged
+            Raises a new event, telling that the property in question has changed.
+            </summary>
+            <param name="propName">The name of the property that has changed.</param>
+        </member>
+        <member name="P:TrClient.Core.TrBase.StatusColor">
+            <summary>
+            Gets or sets a color value indicating the status of the item.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrBase.IsLoaded">
+            <summary>
+            Gets or sets a value indicating whether the item is loaded from the server.
+            </summary>
+        </member>
+        <member name="T:TrClient.Core.TrCollection2">
+            <summary>
+            Item class for a collection.
+            Inherits <see cref="T:TrClient.Core.TrItem"/>.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrCollection2.#ctor(TrClient.Core.TrContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrClient.Core.TrCollection2"/> class.
+            Default constructor.
+            </summary>
+            <param name="parentContainer">The collection's parent container: No item can be instantiated without a known parent container.</param>
+        </member>
+        <member name="M:TrClient.Core.TrCollection2.CompareTo(System.Object)">
+            <summary>
+            Implementation regarding IComparable: Compares this item with another item of the same kind.
+            </summary>
+            <param name="obj">The other item to be compared with.</param>
+            <returns>An integer with value.... ??????</returns>
+        </member>
+        <member name="P:TrClient.Core.TrCollection2.Name">
+            <summary>
+            Gets or sets the name of the collection.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrCollection2.LineCount">
+            <summary>
+            Gets the number of lines of the item; from Collection-wide (returns many) down to single TrTextLine (returns 1).
+            When the item is below TrTextLine-level, LineCount returns 0.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrCollection2.Previous">
+            <summary>
+            Gets the previous item of its kind.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrCollection2.Next">
+            <summary>
+            Gets the next item of its kind.
+            </summary>
+        </member>
+        <member name="T:TrClient.Core.TrCollections2">
+            <summary>
+            Container class for collections.
+            Inherits <see cref="T:TrClient.Core.TrContainer"/>.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrCollections2.#ctor(TrClient.Core.TrItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrClient.Core.TrCollections2"/> class.
+            Default constructor.
+            </summary>
+            <param name="parentItem">The collections parent item: No container can be instantiated without a known parent item.</param>
+        </member>
+        <member name="T:TrClient.Core.TrContainer">
+            <summary>
+            Base class for all collections of items. 
+            Inherits <see cref="T:TrClient.Core.TrBase"/>.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrContainer.parentItem">
+            <summary>
+            Holds the container's parent item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrContainer.itemList">
+            <summary>
+            Holds the container's internal list of items.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.#ctor(TrClient.Core.TrItem)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrClient.Core.TrContainer"/> class.
+            Default constructor.
+            </summary>
+            <param name="parentItem">The container's parent item: No container can be instantiated without a known parent item.</param>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.GetEnumerator">
+            <summary>
+            Implementation regarding IEnumerable.
+            </summary>
+            <returns>Returns the enumerator.</returns>
+        </member>
+        <member name="P:TrClient.Core.TrContainer.ParentItem">
+            <summary>
+            Gets or sets the container's parent item (of type TrItem or derived).
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
+        </member>
+        <member name="P:TrClient.Core.TrContainer.HasChanged">
+            <summary>
+            Gets or sets a value indicating whether the container has changed since it was loaded (saved).
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrContainer.IsChangesUploaded">
+            <summary>
+            Gets or sets a value indicating whether any changes to the container has has been uploaded.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrContainer.Count">
+            <summary>
+            Gets the number of items in the container.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrContainer.Item(System.Int32)">
+            <summary>
+            Returns a TrItem element via the indexer.
+            </summary>
+            <param name="index">The index of the item in question.</param>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.Contains(TrClient.Core.TrItem)">
+            <summary>
+            Determines whether an element TrItem is in the container.
+            </summary>
+            <param name="item">The item in question.</param>
+            <returns>true, if the element is found in the list; otherwise false.</returns>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.Add(TrClient.Core.TrItem)">
+            <summary>
+            Adds an item to the end of the list.
+            </summary>
+            <param name="item">The item to be added.</param>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.Remove(TrClient.Core.TrItem)">
+            <summary>
+            Removes the first occurrence of the item from the list.
+            </summary>
+            <param name="item">The item to be removed.</param>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.RemoveAt(System.Int32)">
+            <summary>
+            Removes the item at the specified index.
+            </summary>
+            <param name="i">The specified index.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">Throws an exception if the index is out of range.</exception>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.Sort">
+            <summary>
+            Sorts the items in the list, using the default comparer.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Throws an exception if the operation can't be done.</exception>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.Clear">
+            <summary>
+            Removes all items from the list.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrContainer.GetItemFromID(System.String)">
+            <summary>
+            Searches the container for an item with a certain ID number.
+            </summary>
+            <param name="searchID">The ID number to search for.</param>
+            <returns>An item that matches this ID.</returns>
+            <exception cref="T:System.ArgumentException">Throws exception when an item with this ID isn't in the container.</exception>
+        </member>
+        <member name="T:TrClient.Core.TrItem">
+            <summary>
+            Base class for all items via <see cref="T:TrClient.Core.TrMainItem"/> or <see cref="T:TrClient.Core.TrPageLevelItem"/>.
+            Inherits <see cref="T:TrClient.Core.TrBase"/>.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrItem.parentContainer">
+            <summary>
+            Holds the item's parent container.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrItem.idNumber">
+            <summary>
+            Holds the item's ID number (access via <see cref="!:ID"/>).
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrItem.#ctor(TrClient.Core.TrContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrClient.Core.TrItem"/> class.
+            Default constructor.
+            </summary>
+            <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
+        </member>
+        <member name="M:TrClient.Core.TrItem.CompareTo(System.Object)">
+            <summary>
+            Implementation regarding IComparable: Compares this item with another item of the same kind.
+            </summary>
+            <param name="obj">The other item to be compared with.</param>
+            <returns>An integer with value.... ??????</returns>
+        </member>
+        <member name="P:TrClient.Core.TrItem.ParentContainer">
+            <summary>
+            Gets or sets the item's parent container (of type TrContainer or derived).
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
+        </member>
+        <member name="P:TrClient.Core.TrItem.IDNumber">
+            <summary>
+            Gets or sets the item's ID number (as used by Transkribus).
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
+            <exception cref="T:System.ArgumentException">Throws exception if set to empty string.</exception>
+        </member>
+        <member name="P:TrClient.Core.TrItem.HasChanged">
+            <summary>
+            Gets or sets a value indicating whether the item has changed since it was loaded (saved).
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrItem.IsChangesUploaded">
+            <summary>
+            Gets or sets a value indicating whether any changes to the item has has been uploaded.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrItem.LineCount">
+            <summary>
+            Gets the number of lines of the item; from Collection-wide (returns many) down to single TrTextLine (returns 1).
+            When the item is below TrTextLine-level, LineCount returns 0.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrItem.Previous">
+            <summary>
+            Gets the previous item of its kind.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrItem.Next">
+            <summary>
+            Gets the next item of its kind.
+            </summary>
+        </member>
+        <member name="T:TrClient.Core.TrMainItem">
+            <summary>
+            Base class for all items on page level and above: TrCollection, TrDocument, TrPage.
+            Inherits <see cref="T:TrClient.Core.TrItem"/>.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrMainItem.#ctor(TrClient.Core.TrContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrClient.Core.TrMainItem"/> class.
+            Default constructor.
+            </summary>
+            <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
+        </member>
+        <member name="T:TrClient.Core.TrPageLevelItem">
+            <summary>
+            Base class for all items below page level, which have a position and hence coordinates,
+            i.e. TrRegion (TrTextRegion and TrTableRegion), TrTextLine, TrCell.
+            Inherits <see cref="T:TrClient.Core.TrItem"/>.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.coordinatesString">
+            <summary>
+            Holds the string with coordinates.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.markToDeletion">
+            <summary>
+            Holds a boolean flag indicating whether the item can be deleted.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.hasCoordinates">
+            <summary>
+            Holds a boolean flag indicating whether the item has coordinates.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.horizontalPosition">
+            <summary>
+            Holds a value indicating the horizontal position of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.horizontalEndPosition">
+            <summary>
+            Holds a value indicating the horizontal end position of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.verticalPosition">
+            <summary>
+            Holds a value indicating the vertical position of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.width">
+            <summary>
+            Holds a value indicating the width of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.leftBorder">
+            <summary>
+            Holds a value indicating the left border of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.rightBorder">
+            <summary>
+            Holds a value indicating the right border of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.topBorder">
+            <summary>
+            Holds a value indicating the top border of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.bottomBorder">
+            <summary>
+            Holds a value indicating the bottom border of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.horizontalOrder">
+            <summary>
+            Holds a value indicating the horizontal order of the item.
+            </summary>
+        </member>
+        <member name="F:TrClient.Core.TrPageLevelItem.verticalOrder">
+            <summary>
+            Holds a value indicating the vertial order of the item.
+            </summary>
+        </member>
+        <member name="M:TrClient.Core.TrPageLevelItem.#ctor(TrClient.Core.TrContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TrClient.Core.TrPageLevelItem"/> class.
+            Default constructor.
+            </summary>
+            <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.CoordinatesString">
+            <summary>
+            Gets or sets the string with coordinates.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
+            <exception cref="T:System.ArgumentException">Throws exception if set to empty string.</exception>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.MarkToDeletion">
+            <summary>
+            Gets or sets a value indicating whether the item can be deleted.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.HasCoordinates">
+            <summary>
+            Gets a value indicating whether the item has got coordinates.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.HorizontalPosition">
+            <summary>
+            Gets the horizontal starting position of the item.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.HorizontalEndPosition">
+            <summary>
+            Gets the horizontal ending position of the item.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.VerticalPosition">
+            <summary>
+            Gets the <b>average</b> vertical position of the item.
+            </summary>
+            <remarks>
+            Remember that vertical zero is on top of page!
+            </remarks>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.Width">
+            <summary>
+            Gets the width of the item.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.LeftBorder">
+            <summary>
+            Gets the left border of the item.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.RightBorder">
+            <summary>
+            Gets the right border of the item.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.TopBorder">
+            <summary>
+            Gets the top border of the item.
+            </summary>
+            <remarks>
+            Remember that vertical zero is on top of page!
+            </remarks>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.BottomBorder">
+            <summary>
+            Gets the bottom border of the item.
+            </summary>
+            <remarks>
+            Remember that vertical zero is on top of page!
+            </remarks>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.HorizontalOrder">
+            <summary>
+            Gets an arbitrary and calculated number, that expresses the horizontal order of the item.
+            </summary>
+        </member>
+        <member name="P:TrClient.Core.TrPageLevelItem.VerticalOrder">
+            <summary>
+            Gets an arbitrary and calculated number, that expresses the vertical order of the item.
+            </summary>
+        </member>
+        <member name="T:TrClient.Core.TrRegion2">
+            <summary>
+            Base class for TrTextRegion and TrTableRegion.
+            Inherits <see cref="T:TrClient.Core.TrPageLevelItem"/>.
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowHistogram">
+            <summary>
+            Interaction logic for ShowHistogram.xaml.
+            </summary>
+            <summary>
+            ShowHistogram
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowHistogram.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.CopyFromCollection">
+            <summary>
+            Interaction logic for CopyFromCollection.xaml.
+            </summary>
+            <summary>
+            CopyFromCollection
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.CopyFromCollection.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.EditLemma">
+            <summary>
+            Interaction logic for EditLemma.xaml.
+            </summary>
+            <summary>
+            EditLemma
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.EditLemma.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.FindReplace">
+            <summary>
+            Interaction logic for FindReplace.xaml.
+            </summary>
+            <summary>
+            FindReplace
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.FindReplace.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowLemmas">
+            <summary>
+            Interaction logic for ShowLemmas.xaml.
+            </summary>
+            <summary>
+            ShowLemmas
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowLemmas.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowParagraphs">
+            <summary>
+            Interaction logic for ShowParagraphs.xaml.
+            </summary>
+            <summary>
+            ShowParagraphs
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowParagraphs.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowAndExportPages">
+            <summary>
+            Interaction logic for ShowAndExportPages.xaml.
+            </summary>
+            <summary>
+            ShowAndExportPages
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowAndExportPages.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.FilterLines">
+            <summary>
+            Interaction logic for FilterLines.xaml.
+            </summary>
+            <summary>
+            FilterLines
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.FilterLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.FilterLinesByLocation">
+            <summary>
+            Interaction logic for FilterLinesByLocation.xaml.
+            </summary>
+            <summary>
+            FilterLinesByLocation
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.FilterLinesByLocation.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.FilterLinesByRegex">
+            <summary>
+            Interaction logic for FilterLinesByRegex.xaml.
+            </summary>
+            <summary>
+            FilterLinesByRegex
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.FilterLinesByRegex.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ChooseMinMaxNumbers">
+            <summary>
+            Interaction logic for ChooseMinMaxNumbers.xaml.
+            </summary>
+            <summary>
+            ChooseMinMaxNumbers
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ChooseMinMaxNumbers.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ChoosePageRange">
+            <summary>
+            Interaction logic for ChoosePageRange.xaml.
+            </summary>
+            <summary>
+            ChoosePageRange
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ChoosePageRange.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.DeleteLines">
+            <summary>
+            Interaction logic for DeleteLines.xaml.
+            </summary>
+            <summary>
+            DeleteLines
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.DeleteLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.EditBaseLines">
+            <summary>
+            Interaction logic for EditBaseLines.xaml.
+            </summary>
+            <summary>
+            EditBaseLines
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.EditBaseLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.EditTextLine">
+            <summary>
+            Interaction logic for EditTextLine.xaml.
+            </summary>
+            <summary>
+            EditTextLine
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.EditTextLine.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.RepairBaseLines">
+            <summary>
+            Interaction logic for RepairBaseLines.xaml.
+            </summary>
+            <summary>
+            RepairBaseLines
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.RepairBaseLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowTextLine">
+            <summary>
+            Interaction logic for ShowTextLine.xaml.
+            </summary>
+            <summary>
+            ShowTextLine
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowTextLine.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.SimplifyBoundingBoxes">
+            <summary>
+            Interaction logic for SimplifyBoundingBoxes.xaml.
+            </summary>
+            <summary>
+            SimplifyBoundingBoxes
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.SimplifyBoundingBoxes.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowLog">
+            <summary>
+            Interaction logic for ShowLog.xaml.
+            </summary>
+            <summary>
+            ShowLog
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowLog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowPage">
+            <summary>
+            Interaction logic for ShowPage.xaml.
+            </summary>
+            <summary>
+            ShowPage
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowPage.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ProgressCopy">
+            <summary>
+            Interaction logic for ProgressCopy.xaml.
+            </summary>
+            <summary>
+            ProgressCopy
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ProgressCopy.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ProgressLoadDocs">
+            <summary>
+            Interaction logic for ProgressLoadDocs.xaml.
+            </summary>
+            <summary>
+            ProgressLoadDocs
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ProgressLoadDocs.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ProgressLoadPages">
+            <summary>
+            Interaction logic for ProgressLoadPages.xaml.
+            </summary>
+            <summary>
+            ProgressLoadPages
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ProgressLoadPages.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.DeleteRegions">
+            <summary>
+            Interaction logic for DeleteRegions.xaml.
+            </summary>
+            <summary>
+            DeleteRegions
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.DeleteRegions.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.MoveRegions">
+            <summary>
+            Interaction logic for MoveRegions.xaml.
+            </summary>
+            <summary>
+            MoveRegions
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.MoveRegions.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.EditStructuralTags">
+            <summary>
+            Interaction logic for EditStructuralTags.xaml.
+            </summary>
+            <summary>
+            EditStructuralTags
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.EditStructuralTags.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.RenameTags">
+            <summary>
+            Interaction logic for RenameTags.xaml.
+            </summary>
+            <summary>
+            RenameTags
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.RenameTags.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ShowTags">
+            <summary>
+            Interaction logic for ShowTags.xaml.
+            </summary>
+            <summary>
+            ShowTags
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ShowTags.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.App">
+            <summary>
+            Interaction logic for App.xaml.
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:TrClient.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:TrClient.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:TrClient.MainWindow">
+            <summary>
+            Interaction logic for MainWindow.xaml.
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="T:TrClient.MainWindow.DeleteAction">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.DeleteAction.Delete">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.DeleteAction.Preserve">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.User">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.Client">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.MyCollectionsDocument">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.MyCollections">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.Current">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TrClient.MainWindow.Secondary">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TrClient.MainWindow.#ctor">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TrClient.MainWindow.RunLoginAndGetMyCollections(System.String,System.String)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TrClient.MainWindow.AskUser(System.String)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TrClient.MainWindow.TellUser(System.String)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TrClient.MainWindow.CopyFromSecondaryDocument(TrClient.Core.TrDocument,TrClient.Core.TrDocument)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TrClient.MainWindow.CopyFromSecondaryCollection(TrClient.Core.TrCollection,TrClient.Core.TrCollection)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TrClient.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.MonthNames">
+             <summary>
+               Looks up a localized string similar to januar
+            februar
+            marts
+            april
+            maj
+            juni
+            juli
+            august
+            september
+            oktober
+            november
+            december
+            jan
+            feb
+            febr
+            mar
+            apr
+            jun
+            jul
+            aug
+            sep
+            sept
+            okt
+            oktbr
+            nov
+            novbr
+            dec
+            decbr
+            .
+             </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrClient">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+    </members>
+</doc>

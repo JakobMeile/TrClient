@@ -1,0 +1,634 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class TrTagTextual
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class TrTagTextual
+   ">
+    <meta name="generator" content="docfx 2.58.5.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="TrClient.Core.Tags.TrTagTextual">
+  
+  
+  <h1 id="TrClient_Core_Tags_TrTagTextual" data-uid="TrClient.Core.Tags.TrTagTextual" class="text-break">Class TrTagTextual
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><a class="xref" href="TrClient.Core.Tags.TrTag.html">TrTag</a></div>
+    <div class="level2"><span class="xref">TrTagTextual</span></div>
+      <div class="level3"><a class="xref" href="TrClient.Core.Tags.TrTagTextualAbbrev.html">TrTagTextualAbbrev</a></div>
+      <div class="level3"><a class="xref" href="TrClient.Core.Tags.TrTagTextualComment.html">TrTagTextualComment</a></div>
+      <div class="level3"><a class="xref" href="TrClient.Core.Tags.TrTagTextualDate.html">TrTagTextualDate</a></div>
+      <div class="level3"><a class="xref" href="TrClient.Core.Tags.TrTagTextualRomanNumeral.html">TrTagTextualRomanNumeral</a></div>
+      <div class="level3"><a class="xref" href="TrClient.Core.Tags.TrTagTextualSic.html">TrTagTextualSic</a></div>
+      <div class="level3"><a class="xref" href="TrClient.Core.Tags.TrTagTextualStyle.html">TrTagTextualStyle</a></div>
+      <div class="level3"><a class="xref" href="TrClient.Core.Tags.TrTagTextualUnclear.html">TrTagTextualUnclear</a></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IComparable</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_Type">TrTag.Type</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_Properties">TrTag.Properties</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_ParentContainer">TrTag.ParentContainer</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_ParentRegion">TrTag.ParentRegion</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_ParentLine">TrTag.ParentLine</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_MarkToDeletion">TrTag.MarkToDeletion</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_DeltaOffset">TrTag.DeltaOffset</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_DeltaLength">TrTag.DeltaLength</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_isEmpty">TrTag.isEmpty</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_sortKey">TrTag.sortKey</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_CompareTo_System_Object_">TrTag.CompareTo(Object)</a>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TrClient.Core.Tags.html">TrClient.Core.Tags</a></h6>
+  <h6><strong>Assembly</strong>: TrClient.dll</h6>
+  <h5 id="TrClient_Core_Tags_TrTagTextual_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class TrTagTextual : TrTag, IComparable</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual__ctor_" data-uid="TrClient.Core.Tags.TrTagTextual.#ctor*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual__ctor" data-uid="TrClient.Core.Tags.TrTagTextual.#ctor">TrTagTextual()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTagTextual()</code></pre>
+  </div>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual__ctor_" data-uid="TrClient.Core.Tags.TrTagTextual.#ctor*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual__ctor_System_String_System_Int32_System_Int32_" data-uid="TrClient.Core.Tags.TrTagTextual.#ctor(System.String,System.Int32,System.Int32)">TrTagTextual(String, Int32, Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTagTextual(string sType, int sOffset, int sLength)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">sType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">sOffset</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">sLength</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual__ctor_" data-uid="TrClient.Core.Tags.TrTagTextual.#ctor*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual__ctor_System_String_System_String_" data-uid="TrClient.Core.Tags.TrTagTextual.#ctor(System.String,System.String)">TrTagTextual(String, String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTagTextual(string sType, string sProperties)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">sType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">sProperties</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_EndPosition_" data-uid="TrClient.Core.Tags.TrTagTextual.EndPosition*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_EndPosition" data-uid="TrClient.Core.Tags.TrTagTextual.EndPosition">EndPosition</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int EndPosition { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_HasOverlappingDateTag_" data-uid="TrClient.Core.Tags.TrTagTextual.HasOverlappingDateTag*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_HasOverlappingDateTag" data-uid="TrClient.Core.Tags.TrTagTextual.HasOverlappingDateTag">HasOverlappingDateTag</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasOverlappingDateTag { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_IsAbbrev_" data-uid="TrClient.Core.Tags.TrTagTextual.IsAbbrev*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_IsAbbrev" data-uid="TrClient.Core.Tags.TrTagTextual.IsAbbrev">IsAbbrev</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsAbbrev { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_IsDate_" data-uid="TrClient.Core.Tags.TrTagTextual.IsDate*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_IsDate" data-uid="TrClient.Core.Tags.TrTagTextual.IsDate">IsDate</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsDate { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_IsEmpty_" data-uid="TrClient.Core.Tags.TrTagTextual.IsEmpty*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_IsEmpty" data-uid="TrClient.Core.Tags.TrTagTextual.IsEmpty">IsEmpty</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool IsEmpty { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_IsEmpty">TrTag.IsEmpty</a></div>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_IsFull_" data-uid="TrClient.Core.Tags.TrTagTextual.IsFull*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_IsFull" data-uid="TrClient.Core.Tags.TrTagTextual.IsFull">IsFull</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsFull { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_IsSic_" data-uid="TrClient.Core.Tags.TrTagTextual.IsSic*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_IsSic" data-uid="TrClient.Core.Tags.TrTagTextual.IsSic">IsSic</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsSic { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_IsStrikethrough_" data-uid="TrClient.Core.Tags.TrTagTextual.IsStrikethrough*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_IsStrikethrough" data-uid="TrClient.Core.Tags.TrTagTextual.IsStrikethrough">IsStrikethrough</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsStrikethrough { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_IsUnclear_" data-uid="TrClient.Core.Tags.TrTagTextual.IsUnclear*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_IsUnclear" data-uid="TrClient.Core.Tags.TrTagTextual.IsUnclear">IsUnclear</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsUnclear { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_Length_" data-uid="TrClient.Core.Tags.TrTagTextual.Length*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_Length" data-uid="TrClient.Core.Tags.TrTagTextual.Length">Length</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Length { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_Offset_" data-uid="TrClient.Core.Tags.TrTagTextual.Offset*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_Offset" data-uid="TrClient.Core.Tags.TrTagTextual.Offset">Offset</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int Offset { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_SortKey_" data-uid="TrClient.Core.Tags.TrTagTextual.SortKey*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_SortKey" data-uid="TrClient.Core.Tags.TrTagTextual.SortKey">SortKey</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SortKey { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_GetOverlappingDateTag_" data-uid="TrClient.Core.Tags.TrTagTextual.GetOverlappingDateTag*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_GetOverlappingDateTag" data-uid="TrClient.Core.Tags.TrTagTextual.GetOverlappingDateTag">GetOverlappingDateTag()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTagTextualDate GetOverlappingDateTag()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TrClient.Core.Tags.TrTagTextualDate.html">TrTagTextualDate</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_Tags_TrTagTextual_ToString_" data-uid="TrClient.Core.Tags.TrTagTextual.ToString*"></a>
+  <h4 id="TrClient_Core_Tags_TrTagTextual_ToString" data-uid="TrClient.Core.Tags.TrTagTextual.ToString">ToString()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override string ToString()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.Tags.TrTag.html#TrClient_Core_Tags_TrTag_ToString">TrTag.ToString()</a></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IComparable</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

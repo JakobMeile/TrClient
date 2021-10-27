@@ -1,5 +1,5 @@
-﻿// <copyright file="ChoosePageRange.xaml.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="ChoosePageRange.xaml.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Views

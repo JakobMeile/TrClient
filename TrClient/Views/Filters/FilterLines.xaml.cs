@@ -1,5 +1,5 @@
-﻿// <copyright file="FilterLines.xaml.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="FilterLines.xaml.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Views
@@ -584,7 +584,8 @@ namespace TrClient.Views
 
             lblTagName.IsEnabled = false;
             cmbTagName.IsEnabled = false;
-            txtTag.Text = string.Empty;
+            
+            //cmbNewTag.SelectedItem = string.Empty;
 
             chkTextSize.IsChecked = false;
 
@@ -645,6 +646,8 @@ namespace TrClient.Views
             lnLeft.IsEnabled = false;
             lnRight.IsEnabled = false;
 
+            cmbNewTag.ItemsSource = listOfTags;
+
             //lstLines.ItemsSource = CurrentDocument.GetFilteredLines(FilterSettings);
             GetLines();
         }
@@ -686,7 +689,7 @@ namespace TrClient.Views
         {
             //Region = GetNumber(cmbRegion.Text);
             //Line = GetNumber(cmbLine.Text);
-            tagName = txtTag.Text;
+            tagName = cmbNewTag.SelectedItem.ToString().Trim();
 
             if (tagName != string.Empty)
             {
@@ -696,7 +699,8 @@ namespace TrClient.Views
                 }
             }
 
-            txtTag.Text = string.Empty;
+            cmbNewTag.SelectedItem = null;
+            //txtTag.Text = string.Empty;
         }
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)

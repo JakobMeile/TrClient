@@ -1,5 +1,5 @@
-﻿// <copyright file="TrTextLine.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrTextLine.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -50,7 +50,7 @@ namespace TrClient.Core
 
         public int RowNumber { get; set; }
 
-        public int ColumnNumber { get; set; }
+        //public int ColumnNumber { get; set; }
 
         private int readingOrder;
 
@@ -726,14 +726,14 @@ namespace TrClient.Core
 
         private Int32Rect boundingBoxSmall;
 
-        public Int32Rect BoundingBoxSmall
-        {
-            get
-            {
-                boundingBoxSmall = new Int32Rect(LeftBorder, TopBorder, BoundingBoxWidth, BoundingBoxHeight);
-                return boundingBoxSmall;
-            }
-        }
+        //public Int32Rect BoundingBoxSmall
+        //{
+        //    get
+        //    {
+        //        boundingBoxSmall = new Int32Rect(LeftBorder, TopBorder, BoundingBoxWidth, BoundingBoxHeight);
+        //        return boundingBoxSmall;
+        //    }
+        //}
 
         private TrCoord boundingBoxOffsetSmall;
 
@@ -1206,22 +1206,22 @@ namespace TrClient.Core
             }
         }
 
-        public bool IsOKwithBaseLineFilter(TrBaseLineFilter currentFilter)
-        {
-            bool temp;
+        //public bool IsOKwithBaseLineFilter(TrBaseLineFilter currentFilter)
+        //{
+        //    bool temp;
 
-            bool positiveCheck;
-            bool straightCheck;
-            bool directionCheck;
+        //    bool positiveCheck;
+        //    bool straightCheck;
+        //    bool directionCheck;
 
-            positiveCheck = IsCoordinatesPositive == currentFilter.CoordinatesPositive;
-            straightCheck = IsBaseLineStraight == currentFilter.BaseLineStraight;
-            directionCheck = IsBaseLineDirectionOK == currentFilter.BaseLineDirectionOK;
+        //    positiveCheck = IsCoordinatesPositive == currentFilter.CoordinatesPositive;
+        //    straightCheck = IsBaseLineStraight == currentFilter.BaseLineStraight;
+        //    directionCheck = IsBaseLineDirectionOK == currentFilter.BaseLineDirectionOK;
 
-            temp = positiveCheck && straightCheck && directionCheck;
+        //    temp = positiveCheck && straightCheck && directionCheck;
 
-            return temp;
-        }
+        //    return temp;
+        //}
 
         public bool MeetsFilterConditions(TrLineFilterSettings currentFilter)
         {

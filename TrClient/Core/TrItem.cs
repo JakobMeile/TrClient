@@ -1,73 +1,127 @@
-﻿// <copyright file="TrItem.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrItem.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Beskrivelse ... / Hjælpeklasse for ...
+/// Contains public abstract class TrItem.
 /// </summary>
 
-//
-// Class KlasseNavn
-//
-// Arver:       ingen
-// Base for:    ingen
-//
-// Versionshistorik m.v. - testet? fungerer? dato?
 namespace TrClient.Core
 {
     using System;
     using System.ComponentModel;
     using System.Windows.Media;
 
-    public abstract class TrItem : IComparable, INotifyPropertyChanged
+    /// <summary>
+    /// Base class for all items via <see cref="TrMainItem"/> or <see cref="TrPageLevelItem"/>.
+    /// Inherits <see cref="TrBase"/>.
+    /// </summary>
+    public abstract class TrItem : TrBase, IComparable
     {
         // ------------------------------------------------------------------------------------------------------------------------
-        // enums                                                                                                              enums
+        // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // abstract properties                                                                                  abstract properties
-        public abstract TrItem Previous { get; }
+        // 2. Fields 
 
-        public abstract TrItem Next { get; }
+        /// <summary>
+        /// Holds the item's parent container.
+        /// </summary>
+        private protected TrContainer parentContainer;
 
-        public abstract int LineCount { get; }
+        /// <summary>
+        /// Holds the item's ID number (access via <see cref="ID"/>).
+        /// </summary>
+        private protected string idNumber;
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // public properties                                                                                      public properties
-        public TrContainer ParentContainer { get; set; }
+        // 3. Constructors 
 
-        public string ID { get; set; }
-
-        private bool isLoaded = false;
-
-        public bool IsLoaded
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TrItem"/> class.
+        /// Default constructor.
+        /// </summary>
+        /// <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
+        public TrItem(TrContainer parentContainer)
         {
-            get
+            ParentContainer = parentContainer;
+        }
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 4. Finalizers 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 5. Delegates 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 6. Events 
+        
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 7. Enums 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 8. Interface implementations 
+
+        /// <summary>
+        /// Implementation regarding IComparable: Compares this item with another item of the same kind.
+        /// </summary>
+        /// <param name="obj">The other item to be compared with.</param>
+        /// <returns>An integer with value.... ??????</returns>
+        public abstract int CompareTo(object obj);
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 9. Properties 
+
+        /// <summary>
+        /// Gets or sets the item's parent container (of type TrContainer or derived).
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Throws exception if set to null.</exception>
+        public TrContainer ParentContainer 
+        { 
+            get 
             {
-                return isLoaded;
+                return parentContainer;
             }
 
             set
             {
-                if (isLoaded != value)
+                parentContainer = value;
+                if (parentContainer == null)
                 {
-                    isLoaded = value;
-                    NotifyPropertyChanged("IsLoaded");
-                    switch (isLoaded)
-                    {
-                        case true:
-                            StatusColor = Brushes.LimeGreen;
-                            break;
-                        case false:
-                            StatusColor = Brushes.Red;
-                            break;
-                    }
+                    throw new ArgumentNullException("An item's parent container can't be null.");
                 }
             }
         }
 
-        private bool hasChanged = false;
+        /// <summary>
+        /// Gets or sets the item's ID number (as used by Transkribus).
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Throws exception if set to null.</exception>
+        /// <exception cref="ArgumentException">Throws exception if set to empty string.</exception>
+        public string IDNumber
+        {
+            get
+            {
+                return idNumber;
+            }
 
+            set
+            {
+                idNumber = value;
+                if (idNumber == null)
+                {
+                    throw new ArgumentNullException("An item's ID can't be null.");
+                }
+                else if (idNumber == string.Empty)
+                {
+                    throw new ArgumentException("An item's ID can't be an empty string.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the item has changed since it was loaded (saved).
+        /// </summary>
         public bool HasChanged
         {
             get
@@ -88,103 +142,55 @@ namespace TrClient.Core
             }
         }
 
-        private bool changesUploaded = false;
-
-        public bool ChangesUploaded
+        /// <summary>
+        /// Gets or sets a value indicating whether any changes to the item has has been uploaded.
+        /// </summary>
+        public bool IsChangesUploaded
         {
             get
             {
-                return changesUploaded;
+                return isChangesUploaded;
             }
 
             set
             {
-                changesUploaded = value;
-                NotifyPropertyChanged("ChangesUploaded");
-                if (changesUploaded)
+                isChangesUploaded = value;
+                NotifyPropertyChanged("IsChangesUploaded");
+                if (isChangesUploaded)
                 {
                     StatusColor = Brushes.DarkViolet;
                 }
 
-                ParentContainer.ChangesUploaded = value;
+                ParentContainer.IsChangesUploaded = value;
             }
-        }
-
-        private SolidColorBrush statusColor = Brushes.Red;
-
-        public SolidColorBrush StatusColor
-        {
-            get
-            {
-                return statusColor;
-            }
-
-            set
-            {
-                if (statusColor != value)
-                {
-                    statusColor = value;
-                    NotifyPropertyChanged("StatusColor");
-                }
-            }
-        }
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // protected properties                                                                                protected properties
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // private properties                                                                                    private properties
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // events                                                                                                            events
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // constructors                                                                                                constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TrItem"/> class.
-        /// Default constructor.
-        /// </summary>
-        public TrItem()
-        {
         }
 
         /// <summary>
-        /// Non-default constructor.
+        /// Gets the number of lines of the item; from Collection-wide (returns many) down to single TrTextLine (returns 1).
+        /// When the item is below TrTextLine-level, LineCount returns 0.
         /// </summary>
-        // ------------------------------------------------------------------------------------------------------------------------
-        // interface-implementing methods                                                            interface-implementing methods
-        public void NotifyPropertyChanged(string propName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-            }
-        }
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // abstract methods                                                                                        abstract methods
-        public abstract int CompareTo(object obj);
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // public override methods                                                                          public override methods
+        public abstract int LineCount { get; }
 
         /// <summary>
-        /// Override af ToString()
+        /// Gets the previous item of its kind.
         /// </summary>
-        /// <returns>
-        /// Ingenting (ikke implementeret)
-        /// </returns>
-        //public override string ToString()
-        //{
-        //    return "";
-        //}
+        public abstract TrItem Previous { get; }
+
+        /// <summary>
+        /// Gets the next item of its kind.
+        /// </summary>
+        public abstract TrItem Next { get; }
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // public methods                                                                                            public methods
+        // 10. Indexers 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // private methods                                                                                          private methods
+        // 11. Methods 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 12. Structs 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 13. Classes 
     }
 }

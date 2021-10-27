@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="TrClient.Core.TrBase">
+    <Position X="3" Y="0.75" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>IAgAAAAAAAAAAIAIAAAACAAAgAAAAACAAAAAAAAIAAA=</HashCode>
+      <FileName>Core\TrBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TrClient.Core.TrContainer">
+    <Position X="3" Y="4" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAJAAAAAAAAAABCAKAFQBAQAAAAAAAAACAAAAABQAAA=</HashCode>
+      <FileName>Core\TrContainer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TrClient.Core.TrItem">
+    <Position X="6.25" Y="0.75" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AkAAAAAABAAAQgSAIAAAAAQAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Core\TrItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="TrClient.Core.TrMainItem">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\TrMainItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrClient.Core.TrPageLevelItem">
+    <Position X="9.5" Y="0.75" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAEACABJAEhBwQBQQwoAEBICAFAGgABAAAgAAAAAAA=</HashCode>
+      <FileName>Core\TrPageLevelItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrClient.Core.TrRegion2" Collapsed="true">
+    <Position X="9.5" Y="6.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\TrRegion2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrClient.Core.TrCollection2">
+    <Position X="6.25" Y="6.5" Width="2.5" />
+    <Members>
+      <Method Name="TrCollection2" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAgQAAAAAAAQAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\TrCollection2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TrClient.Core.TrCollections2">
+    <Position X="3" Y="8.75" Width="2.5" />
+    <Members>
+      <Method Name="TrCollections2" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\TrCollections2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

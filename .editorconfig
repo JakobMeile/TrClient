@@ -14,3 +14,15 @@ dotnet_diagnostic.SA1121.severity = suggestion
 
 # SA1101: Prefix local calls with this
 dotnet_diagnostic.SA1101.severity = none
+
+# SA1636: File header copyright text should match
+dotnet_diagnostic.SA1636.severity = none
+
+# SA1629: Documentation text should end with a period
+dotnet_diagnostic.SA1629.severity = none
+
+# SA1028: Code should not contain trailing whitespace
+dotnet_diagnostic.SA1028.severity = none
+
+# SA1201: Elements should appear in the correct order
+dotnet_diagnostic.SA1201.severity = suggestion

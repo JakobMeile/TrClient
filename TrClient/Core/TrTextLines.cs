@@ -1,5 +1,5 @@
-﻿// <copyright file="TrTextLines.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrTextLines.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -114,11 +114,11 @@ namespace TrClient.Core
             return line;
         }
 
-        public TrTextLine GetLineFromReadingOrder(int search)
-        {
-            var line = lines.Where(r => r.ReadingOrder == search).FirstOrDefault();
-            return line;
-        }
+        //public TrTextLine GetLineFromReadingOrder(int search)
+        //{
+        //    var line = lines.Where(r => r.ReadingOrder == search).FirstOrDefault();
+        //    return line;
+        //}
 
         //public TrTextLine GetLineByNumber(int Number)
         //{

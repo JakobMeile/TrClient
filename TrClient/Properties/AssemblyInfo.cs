@@ -1,5 +1,5 @@
-﻿// <copyright file="AssemblyInfo.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="AssemblyInfo.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 using System.Reflection;
@@ -12,9 +12,9 @@ using System.Windows;
 [assembly: AssemblyTitle("TrClient")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Kyrillos")]
 [assembly: AssemblyProduct("TrClient")]
-[assembly: AssemblyCopyright("Copyright © Jakob K. Meile 2021")]
+[assembly: AssemblyCopyright("Copyright (c) Jakob K. Meile 2021.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -32,6 +32,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -42,9 +44,10 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <DocumentationFile>Documents\TrClient.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,18 +68,21 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>485990BB658725B8ED204A4EF1B703E34A0098C5</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>6381110C5D1BC4E923DD8490958574ABA3953025</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>TrClient_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>TrClient_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>TrClient_1_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -99,10 +105,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\TrBase.cs" />
+    <Compile Include="Core\TrCollection2.cs" />
+    <Compile Include="Core\TrCollections2.cs" />
     <Compile Include="Core\TrContainer.cs" />
     <Compile Include="Core\TrItem.cs" />
     <Compile Include="Core\TrMainItem.cs" />
     <Compile Include="Core\TrPageLevelItem.cs" />
+    <Compile Include="Core\TrRegion2.cs" />
     <Compile Include="Helpers\RangeCountPair.cs" />
     <Compile Include="Views\Statistics\ShowHistogram.xaml.cs">
       <DependentUpon>ShowHistogram.xaml</DependentUpon>
@@ -399,12 +409,20 @@
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="api\index.md" />
+    <None Include="articles\intro.md" />
+    <None Include="articles\toc.md" />
+    <None Include="ClassDiagram.cd" />
+    <None Include="docfx.json" />
+    <None Include="index.md" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="TrClient_TemporaryKey.pfx" />
+    <None Include="stylecop.json" />
+    <None Include="toc.yml" />
+    <None Include="TrClient_1_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -460,5 +478,15 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Documents\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\docfx.console.2.58.5\build\docfx.console.targets" Condition="Exists('..\packages\docfx.console.2.58.5\build\docfx.console.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\docfx.console.2.58.5\build\docfx.console.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\docfx.console.2.58.5\build\docfx.console.targets'))" />
+  </Target>
 </Project>

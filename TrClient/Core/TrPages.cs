@@ -1,5 +1,5 @@
-﻿// <copyright file="TrPages.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrPages.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -28,10 +28,10 @@ namespace TrClient.Core
             pages.Sort();
         }
 
-        public void Clear()
-        {
-            pages.Clear();
-        }
+        //public void Clear()
+        //{
+        //    pages.Clear();
+        //}
 
         public TrPage this[int index]
         {
@@ -50,26 +50,26 @@ namespace TrClient.Core
             return page;
         }
 
-        public TrPage GetPageFromID(string search)
-        {
-            var page = pages.Where(p => p.ID == search).FirstOrDefault();
-            return page;
-        }
+        //public TrPage GetPageFromID(string search)
+        //{
+        //    var page = pages.Where(p => p.ID == search).FirstOrDefault();
+        //    return page;
+        //}
 
-        public string GetIDFromPageNumber(int searchNumber)
-        {
-            string temp = string.Empty;
-            foreach (TrPage page in pages)
-            {
-                if (page.PageNr == searchNumber)
-                {
-                    temp = page.ID;
-                    break;
-                }
-            }
+        //public string GetIDFromPageNumber(int searchNumber)
+        //{
+        //    string temp = string.Empty;
+        //    foreach (TrPage page in pages)
+        //    {
+        //        if (page.PageNr == searchNumber)
+        //        {
+        //            temp = page.ID;
+        //            break;
+        //        }
+        //    }
 
-            return temp;
-        }
+        //    return temp;
+        //}
 
         public TrPages()
         {

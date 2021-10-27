@@ -1,0 +1,891 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class TrTextRegion
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class TrTextRegion
+   ">
+    <meta name="generator" content="docfx 2.58.5.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="TrClient.Core.TrTextRegion">
+  
+  
+  <h1 id="TrClient_Core_TrTextRegion" data-uid="TrClient.Core.TrTextRegion" class="text-break">Class TrTextRegion
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><a class="xref" href="TrClient.Core.TrRegion.html">TrRegion</a></div>
+    <div class="level2"><span class="xref">TrTextRegion</span></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><span class="xref">System.IComparable</span></div>
+    <div><span class="xref">System.ComponentModel.INotifyPropertyChanged</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_ParentContainer">TrRegion.ParentContainer</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_ParentTranscript">TrRegion.ParentTranscript</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Type">TrRegion.Type</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_ID">TrRegion.ID</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Orientation">TrRegion.Orientation</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_CoordsString">TrRegion.CoordsString</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_MarkToDeletion">TrRegion.MarkToDeletion</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_TagString">TrRegion.TagString</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Tags">TrRegion.Tags</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_StructuralTag">TrRegion.StructuralTag</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_ReadingOrder">TrRegion.ReadingOrder</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_changesUploaded">TrRegion.changesUploaded</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_words">TrRegion.words</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_FixCoordinates">TrRegion.FixCoordinates()</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Number">TrRegion.Number</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_HasChanged">TrRegion.HasChanged</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_StatusColor">TrRegion.StatusColor</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_HasStructuralTag">TrRegion.HasStructuralTag</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_HasReadingOrderTag">TrRegion.HasReadingOrderTag</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_StructuralTagValue">TrRegion.StructuralTagValue</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_LeftBorder">TrRegion.LeftBorder</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_RightBorder">TrRegion.RightBorder</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_TopBorder">TrRegion.TopBorder</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_BottomBorder">TrRegion.BottomBorder</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Hpos">TrRegion.Hpos</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Vpos">TrRegion.Vpos</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_HorizontalOrder">TrRegion.HorizontalOrder</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_VerticalOrder">TrRegion.VerticalOrder</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_RegionRef">TrRegion.RegionRef</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_PropertyChanged">TrRegion.PropertyChanged</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_NotifyPropertyChanged_System_String_">TrRegion.NotifyPropertyChanged(String)</a>
+    </div>
+    <div>
+      <a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_CompareTo_System_Object_">TrRegion.CompareTo(Object)</a>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="TrClient.Core.html">TrClient.Core</a></h6>
+  <h6><strong>Assembly</strong>: TrClient.dll</h6>
+  <h5 id="TrClient_Core_TrTextRegion_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class TrTextRegion : TrRegion, IComparable, INotifyPropertyChanged</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  
+  
+  <a id="TrClient_Core_TrTextRegion__ctor_" data-uid="TrClient.Core.TrTextRegion.#ctor*"></a>
+  <h4 id="TrClient_Core_TrTextRegion__ctor_System_Int32_System_Single_System_String_TrClient_Core_TrRegions_" data-uid="TrClient.Core.TrTextRegion.#ctor(System.Int32,System.Single,System.String,TrClient.Core.TrRegions)">TrTextRegion(Int32, Single, String, TrRegions)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTextRegion(int rOrder, float rOrientation, string rCoords, TrRegions parentContainer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">rOrder</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">rOrientation</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">rCoords</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TrClient.Core.TrRegions.html">TrRegions</a></td>
+        <td><span class="parametername">parentContainer</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_TrTextRegion__ctor_" data-uid="TrClient.Core.TrTextRegion.#ctor*"></a>
+  <h4 id="TrClient_Core_TrTextRegion__ctor_System_String_System_String_System_String_System_Single_System_String_TrClient_Core_TrRegions_" data-uid="TrClient.Core.TrTextRegion.#ctor(System.String,System.String,System.String,System.Single,System.String,TrClient.Core.TrRegions)">TrTextRegion(String, String, String, Single, String, TrRegions)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTextRegion(string rType, string rID, string rTags, float rOrientation, string rCoords, TrRegions parentContainer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">rType</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">rID</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">rTags</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td><span class="parametername">rOrientation</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">rCoords</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TrClient.Core.TrRegions.html">TrRegions</a></td>
+        <td><span class="parametername">parentContainer</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="TrClient_Core_TrTextRegion_Rows" data-uid="TrClient.Core.TrTextRegion.Rows">Rows</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrRows Rows</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TrClient.Extensions.TrRows.html">TrRows</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="TrClient_Core_TrTextRegion_TextLines" data-uid="TrClient.Core.TrTextRegion.TextLines">TextLines</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTextLines TextLines</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TrClient.Core.TrTextLines.html">TrTextLines</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_ChangesUploaded_" data-uid="TrClient.Core.TrTextRegion.ChangesUploaded*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_ChangesUploaded" data-uid="TrClient.Core.TrTextRegion.ChangesUploaded">ChangesUploaded</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool ChangesUploaded { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_ChangesUploaded">TrRegion.ChangesUploaded</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_HasLines_" data-uid="TrClient.Core.TrTextRegion.HasLines*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_HasLines" data-uid="TrClient.Core.TrTextRegion.HasLines">HasLines</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool HasLines { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_HasLines">TrRegion.HasLines</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_NumberOfLines_" data-uid="TrClient.Core.TrTextRegion.NumberOfLines*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_NumberOfLines" data-uid="TrClient.Core.TrTextRegion.NumberOfLines">NumberOfLines</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override int NumberOfLines { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_NumberOfLines">TrRegion.NumberOfLines</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_Words_" data-uid="TrClient.Core.TrTextRegion.Words*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_Words" data-uid="TrClient.Core.TrTextRegion.Words">Words</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override TrWords Words { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TrClient.Extensions.TrWords.html">TrWords</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Words">TrRegion.Words</a></div>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_DeleteShortBaselines_" data-uid="TrClient.Core.TrTextRegion.DeleteShortBaselines*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_DeleteShortBaselines_System_Int32_TrClient_Helpers_TrLog_" data-uid="TrClient.Core.TrTextRegion.DeleteShortBaselines(System.Int32,TrClient.Helpers.TrLog)">DeleteShortBaselines(Int32, TrLog)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override bool DeleteShortBaselines(int limit, TrLog log)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">limit</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TrClient.Helpers.TrLog.html">TrLog</a></td>
+        <td><span class="parametername">log</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_DeleteShortBaselines_System_Int32_TrClient_Helpers_TrLog_">TrRegion.DeleteShortBaselines(Int32, TrLog)</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_ExistsLineNumber_" data-uid="TrClient.Core.TrTextRegion.ExistsLineNumber*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_ExistsLineNumber_System_Int32_" data-uid="TrClient.Core.TrTextRegion.ExistsLineNumber(System.Int32)">ExistsLineNumber(Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ExistsLineNumber(int lineNumber)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">lineNumber</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_ExtendBaseLines_" data-uid="TrClient.Core.TrTextRegion.ExtendBaseLines*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_ExtendBaseLines_TrClient_Helpers_TrDialogTransferSettings_TrClient_Helpers_TrLog_" data-uid="TrClient.Core.TrTextRegion.ExtendBaseLines(TrClient.Helpers.TrDialogTransferSettings,TrClient.Helpers.TrLog)">ExtendBaseLines(TrDialogTransferSettings, TrLog)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void ExtendBaseLines(TrDialogTransferSettings settings, TrLog log)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TrClient.Helpers.TrDialogTransferSettings.html">TrDialogTransferSettings</a></td>
+        <td><span class="parametername">settings</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="TrClient.Helpers.TrLog.html">TrLog</a></td>
+        <td><span class="parametername">log</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_ExtendBaseLines_TrClient_Helpers_TrDialogTransferSettings_TrClient_Helpers_TrLog_">TrRegion.ExtendBaseLines(TrDialogTransferSettings, TrLog)</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_GetExpandedText_" data-uid="TrClient.Core.TrTextRegion.GetExpandedText*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_GetExpandedText_System_Boolean_System_Boolean_" data-uid="TrClient.Core.TrTextRegion.GetExpandedText(System.Boolean,System.Boolean)">GetExpandedText(Boolean, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override List&lt;string&gt; GetExpandedText(bool refine, bool convertOtrema)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">refine</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">convertOtrema</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_GetExpandedText_System_Boolean_System_Boolean_">TrRegion.GetExpandedText(Boolean, Boolean)</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_GetLineByNumber_" data-uid="TrClient.Core.TrTextRegion.GetLineByNumber*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_GetLineByNumber_System_Int32_" data-uid="TrClient.Core.TrTextRegion.GetLineByNumber(System.Int32)">GetLineByNumber(Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrTextLine GetLineByNumber(int lineNumber)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">lineNumber</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TrClient.Core.TrTextLine.html">TrTextLine</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_GetParagraphs_" data-uid="TrClient.Core.TrTextRegion.GetParagraphs*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_GetParagraphs" data-uid="TrClient.Core.TrTextRegion.GetParagraphs">GetParagraphs()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public TrParagraphs GetParagraphs()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="TrClient.Extensions.TrParagraphs.html">TrParagraphs</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_GetStructuralTags_" data-uid="TrClient.Core.TrTextRegion.GetStructuralTags*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_GetStructuralTags" data-uid="TrClient.Core.TrTextRegion.GetStructuralTags">GetStructuralTags()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override List&lt;string&gt; GetStructuralTags()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<span class="xref">System.String</span>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_GetStructuralTags">TrRegion.GetStructuralTags()</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_Move_" data-uid="TrClient.Core.TrTextRegion.Move*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_Move_System_Int32_System_Int32_" data-uid="TrClient.Core.TrTextRegion.Move(System.Int32,System.Int32)">Move(Int32, Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Move(int horizontally, int vertically)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">horizontally</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">vertically</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_Move_System_Int32_System_Int32_">TrRegion.Move(Int32, Int32)</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_SimplifyBoundingBoxes_" data-uid="TrClient.Core.TrTextRegion.SimplifyBoundingBoxes*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_SimplifyBoundingBoxes" data-uid="TrClient.Core.TrTextRegion.SimplifyBoundingBoxes">SimplifyBoundingBoxes()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SimplifyBoundingBoxes()</code></pre>
+  </div>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_SimplifyBoundingBoxes">TrRegion.SimplifyBoundingBoxes()</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_SimplifyBoundingBoxes_" data-uid="TrClient.Core.TrTextRegion.SimplifyBoundingBoxes*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_SimplifyBoundingBoxes_System_Int32_System_Int32_" data-uid="TrClient.Core.TrTextRegion.SimplifyBoundingBoxes(System.Int32,System.Int32)">SimplifyBoundingBoxes(Int32, Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void SimplifyBoundingBoxes(int minimumHeight, int maximumHeight)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">minimumHeight</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">maximumHeight</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_SimplifyBoundingBoxes_System_Int32_System_Int32_">TrRegion.SimplifyBoundingBoxes(Int32, Int32)</a></div>
+  
+  
+  <a id="TrClient_Core_TrTextRegion_ToXML_" data-uid="TrClient.Core.TrTextRegion.ToXML*"></a>
+  <h4 id="TrClient_Core_TrTextRegion_ToXML" data-uid="TrClient.Core.TrTextRegion.ToXML">ToXML()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override XElement ToXML()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Xml.Linq.XElement</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="TrClient.Core.TrRegion.html#TrClient_Core_TrRegion_ToXML">TrRegion.ToXML()</a></div>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <span class="xref">System.IComparable</span>
+  </div>
+  <div>
+      <span class="xref">System.ComponentModel.INotifyPropertyChanged</span>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

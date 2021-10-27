@@ -1,5 +1,5 @@
-﻿// <copyright file="TrPage.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrPage.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -32,11 +32,11 @@ namespace TrClient.Core
 
         public int Height { get; set; }
 
-        public string PageFileName { get; set; }
+        //public string PageFileName { get; set; }
 
         public int AssumedRowCount { get; set; }
 
-        public double ActualRowHeight { get; set; }
+        //public double ActualRowHeight { get; set; }
 
         public TrTranscripts Transcripts = new TrTranscripts();
 
@@ -177,22 +177,22 @@ namespace TrClient.Core
 
         private double assumedRowHeight;
 
-        public double AssumedRowHeight
-        {
-            get
-            {
-                if (AssumedRowCount != 0)
-                {
-                    assumedRowHeight = (double)Height / (double)AssumedRowCount;
-                }
-                else
-                {
-                    assumedRowHeight = 0;
-                }
+        //public double AssumedRowHeight
+        //{
+        //    get
+        //    {
+        //        if (AssumedRowCount != 0)
+        //        {
+        //            assumedRowHeight = (double)Height / (double)AssumedRowCount;
+        //        }
+        //        else
+        //        {
+        //            assumedRowHeight = 0;
+        //        }
 
-                return assumedRowHeight;
-            }
-        }
+        //        return assumedRowHeight;
+        //    }
+        //}
 
         private bool isLoaded = false;
 
@@ -298,14 +298,14 @@ namespace TrClient.Core
 
         private bool hasLines;
 
-        public bool HasLines
-        {
-            get
-            {
-                hasLines = GetLines().Count > 0;
-                return hasLines;
-            }
-        }
+        //public bool HasLines
+        //{
+        //    get
+        //    {
+        //        hasLines = GetLines().Count > 0;
+        //        return hasLines;
+        //    }
+        //}
 
         public bool ExistsRegionNumber(int regionNumber)
         {
@@ -372,21 +372,21 @@ namespace TrClient.Core
         }
 
         // constructor OFFLINE
-        public TrPage(string pageID, int iPageNr, string pageFileName, string imageFileURL, int pageW, int pageH, string pageFile)
-        {
-            ID = pageID;
-            PageNr = iPageNr;
-            ImageFileName = pageFileName;
-            ImageURL = imageFileURL;
-            Width = pageW;
-            Height = pageH;
-            pageFileName = pageFile;
+        //public TrPage(string pageID, int iPageNr, string pageFileName, string imageFileURL, int pageW, int pageH, string pageFile)
+        //{
+        //    ID = pageID;
+        //    PageNr = iPageNr;
+        //    ImageFileName = pageFileName;
+        //    ImageURL = imageFileURL;
+        //    Width = pageW;
+        //    Height = pageH;
+        //    pageFileName = pageFile;
 
-            Transcripts.ParentPage = this;
-            IsLoaded = false;
+        //    Transcripts.ParentPage = this;
+        //    IsLoaded = false;
 
-            // Debug.WriteLine("Page created! ");
-        }
+        //    // Debug.WriteLine("Page created! ");
+        //}
 
         //public void SetColumnNumbers(int AssumedNumberOfColumns)
         //{
@@ -535,13 +535,13 @@ namespace TrClient.Core
             }
         }
 
-        public void SortRegions()
-        {
-            if (HasRegions)
-            {
-                Transcripts[0].Regions.Sort();
-            }
-        }
+        //public void SortRegions()
+        //{
+        //    if (HasRegions)
+        //    {
+        //        Transcripts[0].Regions.Sort();
+        //    }
+        //}
 
         public void RenumberRegionsVertically()
         {
@@ -1097,54 +1097,54 @@ namespace TrClient.Core
             }
         }
 
-        public void KOBACC_AutoTag()
-        {
-            // sætter Date og Acc-tags på hhv region 1 og 2, hvis der er 3 eller flere regioner
-            // hvis der kun er een eller to, sker der ikke noget
-            string tagValue = string.Empty;
+        //public void KOBACC_AutoTag()
+        //{
+        //    // sætter Date og Acc-tags på hhv region 1 og 2, hvis der er 3 eller flere regioner
+        //    // hvis der kun er een eller to, sker der ikke noget
+        //    string tagValue = string.Empty;
 
-            if (HasRegions)
-            {
-                if (Transcripts[0].Regions.Count >= 3)
-                {
-                    foreach (TrRegion textRegion in Transcripts[0].Regions)
-                    {
-                        if (textRegion.GetType() == typeof(TrTextRegion))
-                        {
-                            if (textRegion.Number == 1)
-                            {
-                                tagValue = "Date";
-                            }
-                            else if (textRegion.Number == 2)
-                            {
-                                tagValue = "Acc";
-                            }
+        //    if (HasRegions)
+        //    {
+        //        if (Transcripts[0].Regions.Count >= 3)
+        //        {
+        //            foreach (TrRegion textRegion in Transcripts[0].Regions)
+        //            {
+        //                if (textRegion.GetType() == typeof(TrTextRegion))
+        //                {
+        //                    if (textRegion.Number == 1)
+        //                    {
+        //                        tagValue = "Date";
+        //                    }
+        //                    else if (textRegion.Number == 2)
+        //                    {
+        //                        tagValue = "Acc";
+        //                    }
 
-                            if (textRegion.Number < 3)
-                            {
-                                foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
-                                {
-                                    // det tjekkes, om TextLine primært består af cifre - og kun da sættes tagget
-                                    // desuden tjekkes, om antallet af numre er hhv. 1 eller 2, afh. af tagvalue
-                                    if (ClsLanguageLibrary.DigitCount(textLine.TextEquiv) > ClsLanguageLibrary.LetterCount(textLine.TextEquiv))
-                                    {
-                                        if ((tagValue == "Date" && TrLibrary.UniqueNumbersCount(textLine.TextEquiv) >= 2)
-                                            || (tagValue == "Acc" && TrLibrary.UniqueNumbersCount(textLine.TextEquiv) == 1))
-                                        {
-                                            textLine.AddStructuralTag(tagValue, false);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine($"{ParentDocument.ParentCollection} / {ParentDocument} / s. {PageNr}: under 3 regioner!");
-                }
-            }
-        }
+        //                    if (textRegion.Number < 3)
+        //                    {
+        //                        foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
+        //                        {
+        //                            // det tjekkes, om TextLine primært består af cifre - og kun da sættes tagget
+        //                            // desuden tjekkes, om antallet af numre er hhv. 1 eller 2, afh. af tagvalue
+        //                            if (ClsLanguageLibrary.DigitCount(textLine.TextEquiv) > ClsLanguageLibrary.LetterCount(textLine.TextEquiv))
+        //                            {
+        //                                if ((tagValue == "Date" && TrLibrary.UniqueNumbersCount(textLine.TextEquiv) >= 2)
+        //                                    || (tagValue == "Acc" && TrLibrary.UniqueNumbersCount(textLine.TextEquiv) == 1))
+        //                                {
+        //                                    textLine.AddStructuralTag(tagValue, false);
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Debug.WriteLine($"{ParentDocument.ParentCollection} / {ParentDocument} / s. {PageNr}: under 3 regioner!");
+        //        }
+        //    }
+        //}
 
         public void AutoTagFloorNumberSuperScript()
         {

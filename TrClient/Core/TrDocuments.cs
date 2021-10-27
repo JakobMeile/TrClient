@@ -1,5 +1,5 @@
-﻿// <copyright file="TrDocuments.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrDocuments.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -48,32 +48,32 @@ namespace TrClient.Core
             return ((IEnumerable)documents).GetEnumerator();
         }
 
-        public TrDocument GetDocumentFromTitle(string search)
-        {
-            var doc = documents.Where(d => d.Title == search).FirstOrDefault();
-            return doc;
-        }
+        //public TrDocument GetDocumentFromTitle(string search)
+        //{
+        //    var doc = documents.Where(d => d.Title == search).FirstOrDefault();
+        //    return doc;
+        //}
 
-        public TrDocument GetDocumentFromID(string search)
-        {
-            var doc = documents.Where(d => d.ID == search).FirstOrDefault();
-            return doc;
-        }
+        //public TrDocument GetDocumentFromID(string search)
+        //{
+        //    var doc = documents.Where(d => d.ID == search).FirstOrDefault();
+        //    return doc;
+        //}
 
-        public string GetIDFromName(string searchName)
-        {
-            string temp = string.Empty;
-            foreach (TrDocument doc in documents)
-            {
-                if (doc.Title == searchName)
-                {
-                    temp = doc.ID;
-                    break;
-                }
-            }
+        //public string GetIDFromName(string searchName)
+        //{
+        //    string temp = string.Empty;
+        //    foreach (TrDocument doc in documents)
+        //    {
+        //        if (doc.Title == searchName)
+        //        {
+        //            temp = doc.ID;
+        //            break;
+        //        }
+        //    }
 
-            return temp;
-        }
+        //    return temp;
+        //}
 
         public TrDocuments()
         {

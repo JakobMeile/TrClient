@@ -1,5 +1,5 @@
-﻿// <copyright file="TrCollection.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrCollection.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -38,7 +38,7 @@ namespace TrClient.Core
             }
         }
 
-        public string Folder { get; set; }
+        //public string Folder { get; set; }
 
         public string ID { get; set; }
 

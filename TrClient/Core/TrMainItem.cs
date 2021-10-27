@@ -1,79 +1,66 @@
-﻿// <copyright file="TrMainItem.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrMainItem.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Beskrivelse ... / Hjælpeklasse for ...
+/// Contains public abstract class TrMainItem.
 /// </summary>
 
-//
-// Class KlasseNavn
-//
-// Arver:       ingen
-// Base for:    ingen
-//
-// Versionshistorik m.v. - testet? fungerer? dato?
 namespace TrClient.Core
 {
+    /// <summary>
+    /// Base class for all items on page level and above: TrCollection, TrDocument, TrPage.
+    /// Inherits <see cref="TrItem"/>.
+    /// </summary>
     public abstract class TrMainItem : TrItem
     {
         // ------------------------------------------------------------------------------------------------------------------------
-        // enums                                                                                                              enums
+        // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // abstract properties                                                                                  abstract properties
+        // 2. Fields 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // public properties                                                                                      public properties
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // protected properties                                                                                protected properties
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // private properties                                                                                    private properties
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // events                                                                                                            events
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // constructors                                                                                                constructors
+        // 3. Constructors 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TrMainItem"/> class.
         /// Default constructor.
         /// </summary>
-        public TrMainItem()
+        /// <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
+        public TrMainItem(TrContainer parentContainer)
+            : base(parentContainer)
         {
         }
 
-        /// <summary>
-        /// Non-default constructor
-        /// </summary>
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 4. Finalizers 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // interface-implementing methods                                                            interface-implementing methods
+        // 5. Delegates 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // abstract methods                                                                                        abstract methods
+        // 6. Events 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // public override methods                                                                          public override methods
-
-        /// <summary>
-        /// Override af ToString()
-        /// </summary>
-        /// <returns>
-        /// Ingenting (ikke implementeret)
-        /// </returns>
-        //public override string ToString()
-        //{
-        //    return "";
-        //}
+        // 7. Enums 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // public methods                                                                                            public methods
+        // 8. Interface implementations 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // private methods                                                                                          private methods
+        // 9. Properties 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 10. Indexers 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 11. Methods 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 12. Structs 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 13. Classes 
     }
 }

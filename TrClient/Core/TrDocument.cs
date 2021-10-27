@@ -1,5 +1,5 @@
-﻿// <copyright file="TrDocument.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrDocument.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -277,18 +277,18 @@ namespace TrClient.Core
         }
 
         // constructor OFFLINE
-        public TrDocument(string docTitle, string docID, int docNrOfPages, string docFolder)
-        {
-            Title = docTitle;
-            Folder = docFolder;
-            ID = docID;
-            NrOfPages = docNrOfPages;
+        //public TrDocument(string docTitle, string docID, int docNrOfPages, string docFolder)
+        //{
+        //    Title = docTitle;
+        //    Folder = docFolder;
+        //    ID = docID;
+        //    NrOfPages = docNrOfPages;
 
-            Pages.ParentDocument = this;
-            IsLoaded = false;
+        //    Pages.ParentDocument = this;
+        //    IsLoaded = false;
 
-            // Debug.WriteLine($"Document constructed: {Title}, ID: {ID}, NrOfPages: {NrOfPages}, Folder: {Folder}");
-        }
+        //    // Debug.WriteLine($"Document constructed: {Title}, ID: {ID}, NrOfPages: {NrOfPages}, Folder: {Folder}");
+        //}
 
         public int CompareTo(object obj)
         {
@@ -338,84 +338,84 @@ namespace TrClient.Core
             return temp;
         }
 
-        public XDocument KOBACC_ExportAccessions()
-        {
-            XDocument xAccessionsDoc = new XDocument(
-                new XDeclaration("1.0", "UTF-8", "yes"),
-                new XComment("Created by Transkribus Client - The Royal Danish Library"));
+        //public XDocument KOBACC_ExportAccessions()
+        //{
+        //    XDocument xAccessionsDoc = new XDocument(
+        //        new XDeclaration("1.0", "UTF-8", "yes"),
+        //        new XComment("Created by Transkribus Client - The Royal Danish Library"));
 
-            XElement xRoot = new XElement("Root");
+        //    XElement xRoot = new XElement("Root");
 
-            XElement xAccessions = new XElement(
-                "Accessions",
-                new XAttribute("Document", Title));
+        //    XElement xAccessions = new XElement(
+        //        "Accessions",
+        //        new XAttribute("Document", Title));
 
-            XElement xSources = new XElement("Sources");
+        //    XElement xSources = new XElement("Sources");
 
-            foreach (TrPage page in Pages)
-            {
-                if (page.HasRegions)
-                {
-                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
-                    {
-                        if (textRegion.GetType() == typeof(TrTextRegion))
-                        {
-                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
-                            {
-                                if (textLine.TextEquiv != string.Empty)
-                                {
-                                    if (textLine.HasSpecificStructuralTag("Acc"))
-                                    {
-                                        // Der kan være een eller flere...
-                                        if (textLine.TextEquiv.Contains(" - "))
-                                        {
-                                            // der ER flere
-                                            string[] accessionNumbers = textLine.TextEquiv.Split('-').ToArray();
-                                            foreach (string aN in accessionNumbers)
-                                            {
-                                                if (aN != "n/a")
-                                                {
-                                                    XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(aN),
-                                                        new XAttribute("Page", page.PageNr),
-                                                        new XAttribute("Hpos", textLine.Hpos),
-                                                        new XAttribute("Vpos", textLine.Vpos));
-                                                    xAccessions.Add(xAccession);
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // der er kun een
-                                            if (textLine.TextEquiv != "n/a")
-                                            {
-                                                XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(textLine.TextEquiv),
-                                                    new XAttribute("Page", page.PageNr),
-                                                    new XAttribute("Hpos", textLine.Hpos),
-                                                    new XAttribute("Vpos", textLine.Vpos));
-                                                xAccessions.Add(xAccession);
-                                            }
-                                        }
-                                    }
-                                    else if (textLine.HasSpecificStructuralTag("caption"))
-                                    {
-                                        XElement xSource = new XElement("Source", textLine.TextEquiv,
-                                            new XAttribute("Page", page.PageNr),
-                                            new XAttribute("Hpos", textLine.Hpos),
-                                            new XAttribute("Vpos", textLine.Vpos));
-                                        xSources.Add(xSource);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        //    foreach (TrPage page in Pages)
+        //    {
+        //        if (page.HasRegions)
+        //        {
+        //            foreach (TrRegion textRegion in page.Transcripts[0].Regions)
+        //            {
+        //                if (textRegion.GetType() == typeof(TrTextRegion))
+        //                {
+        //                    foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
+        //                    {
+        //                        if (textLine.TextEquiv != string.Empty)
+        //                        {
+        //                            if (textLine.HasSpecificStructuralTag("Acc"))
+        //                            {
+        //                                // Der kan være een eller flere...
+        //                                if (textLine.TextEquiv.Contains(" - "))
+        //                                {
+        //                                    // der ER flere
+        //                                    string[] accessionNumbers = textLine.TextEquiv.Split('-').ToArray();
+        //                                    foreach (string aN in accessionNumbers)
+        //                                    {
+        //                                        if (aN != "n/a")
+        //                                        {
+        //                                            XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(aN),
+        //                                                new XAttribute("Page", page.PageNr),
+        //                                                new XAttribute("Hpos", textLine.Hpos),
+        //                                                new XAttribute("Vpos", textLine.Vpos));
+        //                                            xAccessions.Add(xAccession);
+        //                                        }
+        //                                    }
+        //                                }
+        //                                else
+        //                                {
+        //                                    // der er kun een
+        //                                    if (textLine.TextEquiv != "n/a")
+        //                                    {
+        //                                        XElement xAccession = new XElement("Accession", TrLibrary.StripSharpParanthesis(textLine.TextEquiv),
+        //                                            new XAttribute("Page", page.PageNr),
+        //                                            new XAttribute("Hpos", textLine.Hpos),
+        //                                            new XAttribute("Vpos", textLine.Vpos));
+        //                                        xAccessions.Add(xAccession);
+        //                                    }
+        //                                }
+        //                            }
+        //                            else if (textLine.HasSpecificStructuralTag("caption"))
+        //                            {
+        //                                XElement xSource = new XElement("Source", textLine.TextEquiv,
+        //                                    new XAttribute("Page", page.PageNr),
+        //                                    new XAttribute("Hpos", textLine.Hpos),
+        //                                    new XAttribute("Vpos", textLine.Vpos));
+        //                                xSources.Add(xSource);
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
-            xRoot.Add(xAccessions);
-            xRoot.Add(xSources);
-            xAccessionsDoc.Add(xRoot);
-            return xAccessionsDoc;
-        }
+        //    xRoot.Add(xAccessions);
+        //    xRoot.Add(xSources);
+        //    xAccessionsDoc.Add(xRoot);
+        //    return xAccessionsDoc;
+        //}
 
         //public async void CopyFromOtherCollection(TrCollection SourceCollection, HttpClient CurrentClient)
         //{
@@ -848,30 +848,30 @@ namespace TrClient.Core
             return temp;
         }
 
-        public TrTextLines GetAllLines()
-        {
-            TrTextLines tempList = new TrTextLines();
+        //public TrTextLines GetAllLines()
+        //{
+        //    TrTextLines tempList = new TrTextLines();
 
-            foreach (TrPage page in Pages)
-            {
-                if (page.HasRegions)
-                {
-                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
-                    {
-                        if (textRegion.GetType() == typeof(TrTextRegion))
-                        {
-                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
-                            {
-                                tempList.Add(textLine);
-                                textLine.ParentRegion = (TrTextRegion)textRegion;
-                            }
-                        }
-                    }
-                }
-            }
+        //    foreach (TrPage page in Pages)
+        //    {
+        //        if (page.HasRegions)
+        //        {
+        //            foreach (TrRegion textRegion in page.Transcripts[0].Regions)
+        //            {
+        //                if (textRegion.GetType() == typeof(TrTextRegion))
+        //                {
+        //                    foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
+        //                    {
+        //                        tempList.Add(textLine);
+        //                        textLine.ParentRegion = (TrTextRegion)textRegion;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
-            return tempList;
-        }
+        //    return tempList;
+        //}
 
         public TrTextLines GetLinesWithBaseLineProblems()
         {
@@ -901,33 +901,33 @@ namespace TrClient.Core
             return tempList;
         }
 
-        public TrTextLines GetLines_BaseLineFiltered(TrBaseLineFilter currentFilter)
-        {
-            TrTextLines tempList = new TrTextLines();
+        //public TrTextLines GetLines_BaseLineFiltered(TrBaseLineFilter currentFilter)
+        //{
+        //    TrTextLines tempList = new TrTextLines();
 
-            foreach (TrPage page in Pages)
-            {
-                if (page.HasRegions)
-                {
-                    foreach (TrRegion textRegion in page.Transcripts[0].Regions)
-                    {
-                        if (textRegion.GetType() == typeof(TrTextRegion))
-                        {
-                            foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
-                            {
-                                if (textLine.IsOKwithBaseLineFilter(currentFilter))
-                                {
-                                    tempList.Add(textLine);
-                                    textLine.ParentRegion = (TrTextRegion)textRegion;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        //    foreach (TrPage page in Pages)
+        //    {
+        //        if (page.HasRegions)
+        //        {
+        //            foreach (TrRegion textRegion in page.Transcripts[0].Regions)
+        //            {
+        //                if (textRegion.GetType() == typeof(TrTextRegion))
+        //                {
+        //                    foreach (TrTextLine textLine in (textRegion as TrTextRegion).TextLines)
+        //                    {
+        //                        if (textLine.IsOKwithBaseLineFilter(currentFilter))
+        //                        {
+        //                            tempList.Add(textLine);
+        //                            textLine.ParentRegion = (TrTextRegion)textRegion;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
-            return tempList;
-        }
+        //    return tempList;
+        //}
 
         public TrTextLines GetFilteredLines(TrLineFilterSettings currentFilter)
         {

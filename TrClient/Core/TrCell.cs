@@ -1,5 +1,5 @@
-﻿// <copyright file="TrCell.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrCell.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -19,7 +19,7 @@ namespace TrClient.Core
 
         public string CornerPoints { get; set; }
 
-        public string TagString { get; set; }
+        //public string TagString { get; set; }
 
         public TrTags Tags = new TrTags();
         public TrTagStructural StructuralTag;

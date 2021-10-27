@@ -1,5 +1,5 @@
-﻿// <copyright file="TrRegions.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrRegions.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 namespace TrClient.Core
@@ -61,20 +61,20 @@ namespace TrClient.Core
             // Debug.WriteLine($"TrRegion: Region added. Number = {Region.Number}");
         }
 
-        public void Remove(TrRegion region)
-        {
-            regions.Remove(region);
-        }
+        //public void Remove(TrRegion region)
+        //{
+        //    regions.Remove(region);
+        //}
 
-        public void Clear()
-        {
-            regions.Clear();
-        }
+        //public void Clear()
+        //{
+        //    regions.Clear();
+        //}
 
-        public void Sort()
-        {
-            regions.Sort();
-        }
+        //public void Sort()
+        //{
+        //    regions.Sort();
+        //}
 
         public void RemoveAt(int i)
         {
@@ -99,11 +99,11 @@ namespace TrClient.Core
             return region;
         }
 
-        public TrRegion GetRegionFromReadingOrder(int search)
-        {
-            var region = regions.Where(r => r.ReadingOrder == search).FirstOrDefault();
-            return region;
-        }
+        //public TrRegion GetRegionFromReadingOrder(int search)
+        //{
+        //    var region = regions.Where(r => r.ReadingOrder == search).FirstOrDefault();
+        //    return region;
+        //}
 
         public void ReNumberHorizontally()
         {

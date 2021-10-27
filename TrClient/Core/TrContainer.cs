@@ -1,75 +1,108 @@
-﻿// <copyright file="TrContainer.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="TrContainer.cs" company="Kyrillos">
+// Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Beskrivelse ... / Hjælpeklasse for ...
+/// Contains public abstract class TrContainer.
 /// </summary>
 
-//
-// Class KlasseNavn
-//
-// Arver:       ingen
-// Base for:    ingen
-//
-// Versionshistorik m.v. - testet? fungerer? dato?
 namespace TrClient.Core
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Windows.Media;
 
-    public abstract class TrContainer : IEnumerable, INotifyPropertyChanged
+    /// <summary>
+    /// Base class for all collections of items. 
+    /// Inherits <see cref="TrBase"/>.
+    /// </summary>
+    public abstract class TrContainer : TrBase, IEnumerable
     {
         // ------------------------------------------------------------------------------------------------------------------------
-        // enums                                                                                                              enums
+        // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // abstract properties                                                                                  abstract properties
+        // 2. Fields 
+
+        /// <summary>
+        /// Holds the container's parent item.
+        /// </summary>
+        private protected TrItem parentItem;
+
+        /// <summary>
+        /// Holds the container's internal list of items.
+        /// </summary>
+        private protected List<TrItem> itemList;
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // public properties                                                                                      public properties
-        public TrItem ParentItem { get; set; }
-
-        public int Count { get => itemList.Count; }
-
-        public TrItem this[int index]
+        // 3. Constructors 
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TrContainer"/> class.
+        /// Default constructor.
+        /// </summary>
+        /// <param name="parentItem">The container's parent item: No container can be instantiated without a known parent item.</param>
+        public TrContainer(TrItem parentItem)
         {
-            get { return itemList[index]; }
-            set { itemList[index] = value; }
+            itemList = new List<TrItem>();
+            ParentItem = parentItem;
         }
 
-        private bool isLoaded = false;
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 4. Finalizers 
 
-        public bool IsLoaded
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 5. Delegates 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 6. Events 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 7. Enums 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 8. Interface implementations 
+
+        /// <summary>
+        /// Implementation regarding IEnumerable.
+        /// </summary>
+        /// <returns>Returns the enumerator.</returns>
+        public IEnumerator GetEnumerator()
         {
-            get
-            {
-                return isLoaded;
-            }
+            return ((IEnumerable)itemList).GetEnumerator();
+        }
 
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 9. Properties
+       
+        /// <summary>
+        /// Gets or sets the container's parent item (of type TrItem or derived).
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Throws exception if set to null.</exception>
+        public TrItem ParentItem 
+        { 
+            get 
+            {
+                return parentItem;
+            } 
+        
             set
             {
-                if (isLoaded != value)
+                parentItem = value;
+                if (parentItem == null)
                 {
-                    isLoaded = value;
-                    NotifyPropertyChanged("IsLoaded");
-                    switch (isLoaded)
-                    {
-                        case true:
-                            StatusColor = Brushes.LimeGreen;
-                            break;
-                        case false:
-                            StatusColor = Brushes.Red;
-                            break;
-                    }
+                    throw new ArgumentNullException("A container's parent item can't be null.");
                 }
+
             }
         }
 
-        private bool hasChanged = false;
-
+        /// <summary>
+        /// Gets or sets a value indicating whether the container has changed since it was loaded (saved).
+        /// </summary>
         public bool HasChanged
         {
             get
@@ -90,111 +123,64 @@ namespace TrClient.Core
             }
         }
 
-        private bool changesUploaded = false;
-
-        public bool ChangesUploaded
+        /// <summary>
+        /// Gets or sets a value indicating whether any changes to the container has has been uploaded.
+        /// </summary>
+        public bool IsChangesUploaded
         {
             get
             {
-                return changesUploaded;
+                return isChangesUploaded;
             }
 
             set
             {
-                changesUploaded = value;
-                NotifyPropertyChanged("ChangesUploaded");
-                if (changesUploaded)
+                isChangesUploaded = value;
+                NotifyPropertyChanged("IsChangesUploaded");
+                if (isChangesUploaded)
                 {
                     StatusColor = Brushes.DarkViolet;
                 }
 
-                ParentItem.ChangesUploaded = value;
+                ParentItem.IsChangesUploaded = value;
             }
-        }
-
-        private SolidColorBrush statusColor = Brushes.Red;
-
-        public SolidColorBrush StatusColor
-        {
-            get
-            {
-                return statusColor;
-            }
-
-            set
-            {
-                if (statusColor != value)
-                {
-                    statusColor = value;
-                    NotifyPropertyChanged("StatusColor");
-                }
-            }
-        }
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // protected properties                                                                                protected properties
-        protected List<TrItem> itemList;
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // private properties                                                                                    private properties
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // events                                                                                                            events
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // constructors                                                                                                constructors
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TrContainer"/> class.
-        /// Default constructor.
-        /// </summary>
-        public TrContainer()
-        {
-            itemList = new List<TrItem>();
         }
 
         /// <summary>
-        /// Non-default constructor.
+        /// Gets the number of items in the container.
         /// </summary>
-        // ------------------------------------------------------------------------------------------------------------------------
-        // interface-implementing methods                                                            interface-implementing methods
-        public IEnumerator GetEnumerator()
-        {
-            return ((IEnumerable)itemList).GetEnumerator();
-        }
-
-        public void NotifyPropertyChanged(string propName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propName));
-            }
-        }
+        public int Count { get => itemList.Count; }
 
         // ------------------------------------------------------------------------------------------------------------------------
-        // abstract methods                                                                                        abstract methods
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // public override methods                                                                          public override methods
+        // 10. Indexers 
 
         /// <summary>
-        /// Override af ToString().
+        /// Returns a TrItem element via the indexer.
         /// </summary>
-        /// <returns>
-        /// Ingenting (ikke implementeret).
-        /// </returns>
-        //public override string ToString()
-        //{
-        //    return "";
-        //}
+        /// <param name="index">The index of the item in question.</param>
+        public TrItem this[int index]
+        {
+            get { return itemList[index]; }
+            set { itemList[index] = value; }
+        }
+
         // ------------------------------------------------------------------------------------------------------------------------
-        // public methods                                                                                            public methods
+        // 11. Methods 
+        
+        /// <summary>
+        /// Determines whether an element TrItem is in the container.
+        /// </summary>
+        /// <param name="item">The item in question.</param>
+        /// <returns>true, if the element is found in the list; otherwise false.</returns>
         public bool Contains(TrItem item)
         {
             return itemList.Contains(item);
         }
 
+        /// <summary>
+        /// Adds an item to the end of the list.
+        /// </summary>
+        /// <param name="item">The item to be added.</param>
         public void Add(TrItem item)
         {
             itemList.Add(item);
@@ -202,37 +188,69 @@ namespace TrClient.Core
             ParentItem.HasChanged = true;
         }
 
+        /// <summary>
+        /// Removes the first occurrence of the item from the list.
+        /// </summary>
+        /// <param name="item">The item to be removed.</param>
         public void Remove(TrItem item)
         {
             itemList.Remove(item);
             ParentItem.HasChanged = true;
         }
 
+        /// <summary>
+        /// Removes the item at the specified index.
+        /// </summary>
+        /// <param name="i">The specified index.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Throws an exception if the index is out of range.</exception>
         public void RemoveAt(int i)
         {
             itemList.RemoveAt(i);
             ParentItem.HasChanged = true;
         }
 
+        /// <summary>
+        /// Sorts the items in the list, using the default comparer.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Throws an exception if the operation can't be done.</exception>
         public void Sort()
         {
             itemList.Sort();
             ParentItem.HasChanged = true;
         }
 
-        public void Reverse()
-        {
-            itemList.Reverse();
-            ParentItem.HasChanged = true;
-        }
-
+        /// <summary>
+        /// Removes all items from the list.
+        /// </summary>
         public void Clear()
         {
             itemList.Clear();
             ParentItem.HasChanged = true;
         }
 
+        /// <summary>
+        /// Searches the container for an item with a certain ID number.
+        /// </summary>
+        /// <param name="searchID">The ID number to search for.</param>
+        /// <returns>An item that matches this ID.</returns>
+        /// <exception cref="ArgumentException">Throws exception when an item with this ID isn't in the container.</exception>
+        private protected TrItem GetItemFromID(string searchID)
+        {
+            try
+            {
+                var item = itemList.Where(c => c.IDNumber == searchID).FirstOrDefault();
+                return item;
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException($"Couldn't find an item with ID = {searchID}");
+            }
+        }
+
         // ------------------------------------------------------------------------------------------------------------------------
-        // private methods                                                                                          private methods
+        // 12. Structs 
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // 13. Classes 
     }
 }
