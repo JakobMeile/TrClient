@@ -6,7 +6,7 @@
 /// Contains public abstract class TrPageLevelItem.
 /// </summary>
 
-namespace TrClient.Core
+namespace TrClient2.Core
 {
     using System;
     using System.Linq;
@@ -23,6 +23,16 @@ namespace TrClient.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
+
+        /// <summary>
+        /// Holds the page number of the item.
+        /// </summary>
+        private protected int pageNumber;
+
+        /// <summary>
+        /// Holds the number of the item.
+        /// </summary>
+        private protected int number;
 
         /// <summary>
         /// Holds the string with coordinates.
@@ -97,8 +107,8 @@ namespace TrClient.Core
         /// Default constructor.
         /// </summary>
         /// <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
-        public TrPageLevelItem(TrContainer parentContainer) 
-            : base(parentContainer)
+        public TrPageLevelItem(TrItem parentItem) 
+            : base(parentItem)
         {
             MarkToDeletion = false;
         }
@@ -120,6 +130,16 @@ namespace TrClient.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
+
+        /// <summary>
+        /// Gets the page number of the item - via parents.
+        /// </summary>
+        public abstract int PageNumber { get; }
+
+        /// <summary>
+        /// Gets or sets the number of the item.
+        /// </summary>
+        public abstract int Number { get; set; }
 
         /// <summary>
         /// Gets or sets the string with coordinates.
@@ -447,6 +467,8 @@ namespace TrClient.Core
 
             return tempResult;
         }
+
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

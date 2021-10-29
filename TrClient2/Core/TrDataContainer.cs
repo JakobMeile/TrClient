@@ -1,71 +1,45 @@
-﻿// <copyright file="TrUser.cs" company="Kyrillos">
+﻿// <copyright file="TrDataContainer.cs" company="Kyrillos">
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Contains public class TrUser.
+/// Contains public class TrDataContainer.
 /// </summary>
 
-namespace TrClient.Settings
+namespace TrClient2.Core
 {
     using System;
-    using System.Diagnostics;
-    using System.IO;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Xml;
-    using System.Xml.Linq;
-    using System.Xml.Serialization;
-    using TrClient.Core;
 
-    /// <summary>
-    /// Class to hold the user's settings, including credentials.
-    /// </summary>
-    public class TrUser
+    public class TrDataContainer
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
+        public ObservableCollection<TrTextLine> Lines { get; set; }
 
-        public TrUserSettings UserSettings { get; set; }
+        public Dictionary<string, TrDocument> DocumentsDictionary = new Dictionary<string, TrDocument>();
+        public Dictionary<string, TrPage> PagesDictionary = new Dictionary<string, TrPage>();
+        public Dictionary<string, TrTranscript> TranscriptsDictionary = new Dictionary<string, TrTranscript>();
+        public Dictionary<string, TrRegion> RegionsDictionary = new Dictionary<string, TrRegion>();
+        public Dictionary<string, TrCell> CellsDictionary = new Dictionary<string, TrCell>();
+        public Dictionary<string, TrTextLine> TextLinesDictionary = new Dictionary<string, TrTextLine>();
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrUser"/> class.
+        /// Initializes a new instance of the <see cref="TrDataContainer"/> class.
         /// Default constructor.
         /// </summary>
-        public TrUser()
+        public TrDataContainer()
         {
-            if (UserSettings == null)
-            {
-                if (File.Exists("UserSettings.xml"))
-                {
-                    using (var stream = File.OpenRead("UserSettings.xml"))
-                    {
-                        var serializer = new XmlSerializer(typeof(TrUserSettings));
-                        UserSettings = serializer.Deserialize(stream) as TrUserSettings;
-                    }
-                }
-                else
-                {
-                    UserSettings = new TrUserSettings();
-                }
-            }
-
-
-            using (var stream = File.Open("UserSettings.xml", FileMode.Create))
-            {
-                var serializer = new XmlSerializer(typeof(TrUserSettings));
-                serializer.Serialize(stream, UserSettings);
-            }
-
         }
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -97,5 +71,6 @@ namespace TrClient.Settings
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 13. Classes 
+
     }
 }

@@ -369,7 +369,14 @@ namespace TrClient.Core
 
             Transcripts.ParentPage = this;
             IsLoaded = false;
+            //Transcripts[0].TestEventHandler += TrPage_TestEventHandler;
         }
+
+        //private void TrPage_TestEventHandler(object sender, EventArgs e)
+        //{
+        //    Debug.Print("Page: Not Implemented");
+        //    throw new NotImplementedException();
+        //}
 
         // constructor OFFLINE
         //public TrPage(string pageID, int iPageNr, string pageFileName, string imageFileURL, int pageW, int pageH, string pageFile)

@@ -437,16 +437,24 @@
                     </GroupBox>
                 </StackPanel>
 
-                <GroupBox Header="Tag" HorizontalAlignment="Left" Height="160" VerticalAlignment="Top" Margin="20, 10, 0, 0" Padding="5">
+                <GroupBox Header="Tag" HorizontalAlignment="Left" Height="194" VerticalAlignment="Top" Margin="20, 10, 0, 0" Padding="5">
 
                     <StackPanel Orientation="Vertical">
+
+
                         <StackPanel Orientation="Horizontal" Height="30" Margin="0,10,0,0">
-                            <Label Content="New tag:" Width="80" Margin="0,0,0,0"  VerticalAlignment="Top"/>
-                            <ComboBox x:Name="cmbNewTag" Height="25" Width="160" VerticalAlignment="Top"/>
-                            <!--<TextBox x:Name="txtTag" Width="160" Height="25" TextWrapping="NoWrap" Text="" VerticalAlignment="Top"/>-->
+                            <RadioButton x:Name="rdExistingTag" GroupName="rdUseTagMode" Content="Existing"  Width="70" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="RdExistingTag_Checked" />
+                            <!--<Label Content="Existing:" Width="80" Margin="0,0,0,0"  VerticalAlignment="Top"/>-->
+                            <ComboBox x:Name="cmbNewTag" Height="25" Width="160" VerticalAlignment="Center" />
+
 
                         </StackPanel>
-
+                        <StackPanel Orientation="Horizontal" Height="30" Margin="0,10,0,0">
+                            <RadioButton x:Name="rdNewTag" GroupName="rdUseTagMode" Content="New" Width="70" HorizontalAlignment="Left" VerticalAlignment="Center"  Checked="RdNewTag_Checked"  />
+                            <!--<Label Content="New:" Width="80" Margin="0,0,0,0"  VerticalAlignment="Top"/>-->
+                            <TextBox x:Name="txtNewTag" Width="160" Height="25" TextWrapping="NoWrap" Text="" VerticalAlignment="Center" />
+                        </StackPanel>
+                        
                         <CheckBox x:Name="chkOverWrite" Content="Overwrite?" Margin="80,10,0,0" IsChecked="False" Unchecked="ChkOverWrite_Unchecked" Checked="ChkOverWrite_Checked" />
                         
                         <StackPanel Orientation="Horizontal" Height="25" Margin="80,25,0,0" VerticalAlignment="Top">

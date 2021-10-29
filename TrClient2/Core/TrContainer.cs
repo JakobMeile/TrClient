@@ -184,7 +184,7 @@ namespace TrClient.Core
         public void Add(TrItem item)
         {
             itemList.Add(item);
-            item.ParentContainer = this;
+            // item.Parent = this;
             ParentItem.HasChanged = true;
         }
 

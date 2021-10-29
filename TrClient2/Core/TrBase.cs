@@ -6,14 +6,14 @@
 /// Contains public abstract class TrBase.
 /// </summary>
 
-namespace TrClient.Core
+namespace TrClient2.Core
 {
     using System;
     using System.ComponentModel;
     using System.Windows.Media;
 
     /// <summary>
-    /// Base class for all items (via <see cref="TrItem"/>) and all containers (via <see cref="TrContainer"/>).
+    /// Base class for all items (via <see cref="TrItem"/>).
     /// </summary>
     public abstract class TrBase : INotifyPropertyChanged
     {

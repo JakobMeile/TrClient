@@ -6,17 +6,17 @@
 /// Contains public abstract class TrItem.
 /// </summary>
 
-namespace TrClient.Core
+namespace TrClient2.Core
 {
     using System;
     using System.ComponentModel;
+    using System.Collections.ObjectModel;
     using System.Windows.Media;
 
     /// <summary>
-    /// Base class for all items via <see cref="TrMainItem"/> or <see cref="TrPageLevelItem"/>.
-    /// Inherits <see cref="TrBase"/>.
+    /// Base class for all items, directly or via <see cref="TrPageLevelItem"/>.
     /// </summary>
-    public abstract class TrItem : TrBase, IComparable
+    public abstract class TrItem : IComparable, INotifyPropertyChanged
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
@@ -25,9 +25,26 @@ namespace TrClient.Core
         // 2. Fields 
 
         /// <summary>
-        /// Holds the item's parent container.
+        /// Holds a color value indicating the status of the item.
         /// </summary>
-        private protected TrContainer parentContainer;
+        private protected SolidColorBrush statusColor = Brushes.Red;
+
+        /// <summary>
+        /// Holds a boolean flag indicating whether the item is loaded from the server.
+        /// </summary>
+        private protected bool isLoaded = false;
+
+        /// <summary>
+        /// Holds a boolean flag indicating whether the item has changed since it was loaded (saved).
+        /// </summary>
+        private protected bool hasChanged = false;
+
+        /// <summary>
+        /// Holds a boolean flag indicating whether any changes to the item has has been uploaded.
+        /// </summary>
+        private protected bool isChangesUploaded = false;
+
+        private protected TrItem parent;
 
         /// <summary>
         /// Holds the item's ID number (access via <see cref="ID"/>).
@@ -42,10 +59,14 @@ namespace TrClient.Core
         /// Default constructor.
         /// </summary>
         /// <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
-        public TrItem(TrContainer parentContainer)
+        private protected TrItem(TrItem parentItem)
         {
-            ParentContainer = parentContainer;
+            parent = parentItem;
         }
+        private protected TrItem()
+        { }
+
+        // public TrItem() { }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 4. Finalizers 
@@ -55,7 +76,12 @@ namespace TrClient.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 6. Events 
-        
+
+        /// <summary>
+        /// Raises when a property changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 7. Enums 
 
@@ -69,29 +95,131 @@ namespace TrClient.Core
         /// <returns>An integer with value.... ??????</returns>
         public abstract int CompareTo(object obj);
 
+        /// <summary>
+        /// Implementation regarding INotifyPropertyChanged
+        /// Raises a new event, telling that the property in question has changed.
+        /// </summary>
+        /// <param name="propName">The name of the property that has changed.</param>
+        public void NotifyPropertyChanged(string propName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+        }
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
 
-        /// <summary>
-        /// Gets or sets the item's parent container (of type TrContainer or derived).
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Throws exception if set to null.</exception>
-        public TrContainer ParentContainer 
-        { 
-            get 
+        public TrItem Parent
+        {
+            get
             {
-                return parentContainer;
+                return parent;
+            }
+            
+            set 
+            {
+                if (parent != value)
+                {
+                    parent = value;
+                    NotifyPropertyChanged("Parent");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a color value indicating the status of the item.
+        /// </summary>
+        public SolidColorBrush StatusColor
+        {
+            get
+            {
+                return statusColor;
             }
 
             set
             {
-                parentContainer = value;
-                if (parentContainer == null)
+                if (statusColor != value)
                 {
-                    throw new ArgumentNullException("An item's parent container can't be null.");
+                    statusColor = value;
+                    NotifyPropertyChanged("StatusColor");
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the item is loaded from the server.
+        /// </summary>
+        public bool IsLoaded
+        {
+            get
+            {
+                return isLoaded;
+            }
+
+            set
+            {
+                if (isLoaded != value)
+                {
+                    isLoaded = value;
+                    NotifyPropertyChanged("IsLoaded");
+                    switch (isLoaded)
+                    {
+                        case true:
+                            StatusColor = Brushes.LimeGreen;
+                            break;
+                        case false:
+                            StatusColor = Brushes.Red;
+                            break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the item has changed since it was loaded (saved).
+        /// </summary>
+        public bool HasChanged
+        {
+            get
+            {
+                return hasChanged;
+            }
+
+            set
+            {
+                hasChanged = value;
+                NotifyPropertyChanged("HasChanged");
+                if (hasChanged)
+                {
+                    StatusColor = Brushes.Orange;
+                }
+
+                Parent.HasChanged = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether any changes to the item has has been uploaded.
+        /// </summary>
+        public bool IsChangesUploaded
+        {
+            get
+            {
+                return isChangesUploaded;
+            }
+
+            set
+            {
+                isChangesUploaded = value;
+                NotifyPropertyChanged("IsChangesUploaded");
+                if (isChangesUploaded)
+                {
+                    StatusColor = Brushes.DarkViolet;
+                }
+
+                Parent.IsChangesUploaded = value;
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the item's ID number (as used by Transkribus).
@@ -119,57 +247,6 @@ namespace TrClient.Core
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the item has changed since it was loaded (saved).
-        /// </summary>
-        public bool HasChanged
-        {
-            get
-            {
-                return hasChanged;
-            }
-
-            set
-            {
-                hasChanged = value;
-                NotifyPropertyChanged("HasChanged");
-                if (hasChanged)
-                {
-                    StatusColor = Brushes.Orange;
-                }
-
-                ParentContainer.HasChanged = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether any changes to the item has has been uploaded.
-        /// </summary>
-        public bool IsChangesUploaded
-        {
-            get
-            {
-                return isChangesUploaded;
-            }
-
-            set
-            {
-                isChangesUploaded = value;
-                NotifyPropertyChanged("IsChangesUploaded");
-                if (isChangesUploaded)
-                {
-                    StatusColor = Brushes.DarkViolet;
-                }
-
-                ParentContainer.IsChangesUploaded = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the number of lines of the item; from Collection-wide (returns many) down to single TrTextLine (returns 1).
-        /// When the item is below TrTextLine-level, LineCount returns 0.
-        /// </summary>
-        public abstract int LineCount { get; }
 
         /// <summary>
         /// Gets the previous item of its kind.

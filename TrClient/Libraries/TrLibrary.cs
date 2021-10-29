@@ -46,15 +46,28 @@ namespace TrClient.Libraries
 
         //public static string ExportFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Export\";
         //public static string LogFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Log\";
-        public static XNamespace Xmlns = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
-        public static XNamespace Xsi = "http://www.w3.org/2001/XMLSchema-instance";
-        public static XNamespace SchemaLocation = "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd";
+        
+        public static XNamespace Xmlns = Properties.Resources.PAGENameSpace;
+        // "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
+  
+        public static XNamespace Xsi = Properties.Resources.XMLSchemaInstance;
+        // "http://www.w3.org/2001/XMLSchema-instance";
+        
+        public static XNamespace SchemaLocation = Properties.Resources.PAGESchemaLocation;
+        //"http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd";
 
-        public static string TrpBaseAdress = "https://transkribus.eu/TrpServer/rest/";
-        public static string TrpLogin = "https://transkribus.eu/TrpServer/rest/auth/login";
-        public static string TrpCollections = "https://transkribus.eu/TrpServer/rest/collections/list.xml";
+        public static string TrpBaseAdress = Properties.Resources.TrpServerBaseAddress;
+        // = "https://transkribus.eu/TrpServer/rest/";
+        
+        public static string TrpLogin = Properties.Resources.TrpServerBaseAddress + Properties.Resources.TrpServerPathLogin;
+        // "https://transkribus.eu/TrpServer/rest/auth/login";
+        
+        public static string TrpCollections = Properties.Resources.TrpServerBaseAddress + Properties.Resources.TrpServerPathCollectionsList;
+        // "https://transkribus.eu/TrpServer/rest/collections/list.xml";
 
-        public static string AppName = "Transkribus Client";
+
+        public static string AppName = Properties.Resources.ApplicationName; 
+        //  "Transkribus httpClient";
 
         public static int NarrowColumnWidth = 8;
         public static int BroadColumnWidth = 4 * NarrowColumnWidth;

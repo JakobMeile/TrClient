@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrClient2", "TrClient2\TrClient2.csproj", "{206719EA-0DB1-4C4A-A3A3-22F5D1DB6B1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{F0C0954C-7A6D-4B0A-B159-0399B83A789F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0C0954C-7A6D-4B0A-B159-0399B83A789F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0C0954C-7A6D-4B0A-B159-0399B83A789F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{206719EA-0DB1-4C4A-A3A3-22F5D1DB6B1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{206719EA-0DB1-4C4A-A3A3-22F5D1DB6B1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{206719EA-0DB1-4C4A-A3A3-22F5D1DB6B1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{206719EA-0DB1-4C4A-A3A3-22F5D1DB6B1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

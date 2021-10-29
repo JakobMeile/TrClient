@@ -22,7 +22,7 @@ namespace TrClient.Views
         private Int32Rect cropRect;
         private CroppedBitmap lineImage;
 
-        public ShowTextLine(TrTextLine line) // , TrPage Page, HttpClient Client
+        public ShowTextLine(TrTextLine line) // , TrPage Page, HttpClient httpClient
         {
             InitializeComponent();
             currentLine = line;

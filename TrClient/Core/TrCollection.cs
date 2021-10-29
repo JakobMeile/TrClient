@@ -17,7 +17,8 @@ namespace TrClient.Core
 
     public class TrCollection : IComparable, INotifyPropertyChanged
     {
-        public string TrpDocuments = "https://transkribus.eu/TrpServer/rest/collections/_ColID_/list.xml";
+        public string TrpDocuments = Properties.Resources.TrpServerBaseAddress + Properties.Resources.TrpServerPathDocumentsList;
+            // "https://transkribus.eu/TrpServer/rest/collections/_ColID_/list.xml";
 
         private string name = string.Empty;
 
@@ -365,7 +366,7 @@ namespace TrClient.Core
         //{
         //    XDocument xAccessionsDoc = new XDocument(
         //        new XDeclaration("1.0", "UTF-8", "yes"),
-        //        new XComment("Created by Transkribus Client - The Royal Danish Library"));
+        //        new XComment("Created by Transkribus httpClient - The Royal Danish Library"));
 
         //    XElement xRoot = new XElement("Root");
 

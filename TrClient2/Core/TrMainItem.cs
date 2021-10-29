@@ -28,8 +28,8 @@ namespace TrClient.Core
         /// Default constructor.
         /// </summary>
         /// <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
-        public TrMainItem(TrContainer parentContainer)
-            : base(parentContainer)
+        public TrMainItem(TrItem parent)
+            : base(parent)
         {
         }
 

@@ -10,7 +10,7 @@ namespace TrClient.Settings
     public class TrCurrent : INotifyPropertyChanged
     {
         private TrCollection collection;
-
+        
         public TrCollection Collection
         {
             get

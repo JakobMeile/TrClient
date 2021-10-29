@@ -305,18 +305,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrBase.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrBase.html",
-          "hash": "vhVB9djU0IHGyLhdW+J7nuNAm4vRe2j2xn48pfO8YxQ="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "obj/api/TrClient.Core.TrCell.yml",
       "output": {
         ".html": {
@@ -353,47 +341,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrCollection2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrCollection2.html",
-          "hash": "UNV1zVkU1lC7pQ7DETidzlSWt3W7ZHJG9OLmpz+1c24="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "obj/api/TrClient.Core.TrCollections.yml",
       "output": {
         ".html": {
           "relative_path": "api/TrClient.Core.TrCollections.html",
           "hash": "Tfjba7iKUJ/nWmr3dZIkAh+G4bIVYM1C+ChA2bXDOS4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrCollections2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrCollections2.html",
-          "hash": "UqNjK4j8YlQRW3blsIYC5zwzgDXMLIVq8sHPXTCb/Ww="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrContainer.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrContainer.html",
-          "hash": "RTcNYEuDTUAAGuAwLTd+wuc2T6+UCwYyksZXgduWb7E="
         }
       },
       "is_incremental": true,
@@ -449,47 +401,11 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrItem.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrItem.html",
-          "hash": "iMRqpXNJrhvxg/G3iumtOXLoZv2xudS0D/jbQMblyD4="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrMainItem.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrMainItem.html",
-          "hash": "uJCuyT+RNkCRTwrZaw1H0X131UwEk1Xrh4pxEvEju5Q="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "obj/api/TrClient.Core.TrPage.yml",
       "output": {
         ".html": {
           "relative_path": "api/TrClient.Core.TrPage.html",
           "hash": "hEJHYjSb9lTbqMgAwaqNBTin9PVyZhkxY1TVLoM08yw="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrPageLevelItem.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrPageLevelItem.html",
-          "hash": "dEsdNgPppyNtfBmGTUqGKlXm9Nj2D7yiou7hjF23KYk="
         }
       },
       "is_incremental": true,
@@ -514,18 +430,6 @@
         ".html": {
           "relative_path": "api/TrClient.Core.TrRegion.html",
           "hash": "Gb5/VkcbRDstBIgtT9UQELmCJrhatpCEqPQbTCjNcDA="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "obj/api/TrClient.Core.TrRegion2.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/TrClient.Core.TrRegion2.html",
-          "hash": "TdZTc+eT8thQFgWtiTs6FsMLG69SGNZwPRpag8n9Ktg="
         }
       },
       "is_incremental": true,
@@ -645,7 +549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/TrClient.Core.html",
-          "hash": "dbp2cHzXzaYGdEvb/h01i6sqJl/bz/M+Csi54DfWhoI="
+          "hash": "mGPuRIAgOR4tfMbvVZs/esX2WMkS0TT/TtgTEApzzTo="
         }
       },
       "is_incremental": true,
@@ -1029,7 +933,19 @@
       "output": {
         ".html": {
           "relative_path": "api/TrClient.MainWindow.html",
-          "hash": "dKWusNNMqWneN/9DpE3pTzmp+nUpHl1WQJNNrMzWdeg="
+          "hash": "x4pHg3nJNF5qYhnEczoiaSF2N3hdntCFPd7hGfkIW9I="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TrClient.Settings.TrCredentials.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TrClient.Settings.TrCredentials.html",
+          "hash": "zDLgRLDIcZmdAW3V65HpC3APuIeTjcsyQe6E6Q5wM38="
         }
       },
       "is_incremental": true,
@@ -1049,11 +965,35 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/TrClient.Settings.TrSession.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TrClient.Settings.TrSession.html",
+          "hash": "b0+4DrmXlU9ydoKUWPsxsC/+TBVtxHHnhRpu/i1tSmI="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/TrClient.Settings.TrUser.yml",
       "output": {
         ".html": {
           "relative_path": "api/TrClient.Settings.TrUser.html",
-          "hash": "nd1Gr+l+SEkk/4wGFAj6kBr+QDzJUo96lG+w92GJI+E="
+          "hash": "J21N0uXky7ZZlEAnW7W4gn7mjENJxbJIvHcPXunVxIY="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/TrClient.Settings.TrUserSettings.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/TrClient.Settings.TrUserSettings.html",
+          "hash": "jagb8vRWs80ocnnxQxgQ87yHNuKgilD8LE9/EhcRDTY="
         }
       },
       "is_incremental": true,
@@ -1065,7 +1005,7 @@
       "output": {
         ".html": {
           "relative_path": "api/TrClient.Settings.html",
-          "hash": "qsijGqidSdOrw/wKcyJla59xQxrnVa+3oBVgiG5vtcw="
+          "hash": "9ek+ybs5xJyPvcAckH//nnxCTkUOxzfERcKNkLreEYc="
         }
       },
       "is_incremental": true,
@@ -1437,7 +1377,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "VTaXnzlWLU+sS7GV52Rn+einvGcYNhcz5WAcetRFNJY="
+          "hash": "9A9oPDQdYk2bJRAzwq6Q0ubiw4X9yW4K2FUV1xQ/r6o="
         }
       },
       "is_incremental": false,
@@ -1474,8 +1414,8 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 115,
-          "skipped_file_count": 115
+          "total_file_count": 110,
+          "skipped_file_count": 110
         },
         "TocDocumentProcessor": {
           "can_incremental": false,

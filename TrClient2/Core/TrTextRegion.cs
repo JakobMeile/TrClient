@@ -1,72 +1,64 @@
-﻿// <copyright file="TrUser.cs" company="Kyrillos">
+﻿// <copyright file="TrTextRegion.cs" company="Kyrillos">
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Contains public class TrUser.
+/// Contains public class TrTextRegion.
 /// </summary>
 
-namespace TrClient.Settings
+namespace TrClient2.Core
 {
     using System;
-    using System.Diagnostics;
-    using System.IO;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Xml;
-    using System.Xml.Linq;
-    using System.Xml.Serialization;
-    using TrClient.Core;
 
-    /// <summary>
-    /// Class to hold the user's settings, including credentials.
-    /// </summary>
-    public class TrUser
+    public class TrTextRegion : TrRegion
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-
-        public TrUserSettings UserSettings { get; set; }
+        public List<TrTextLine> TextLines { get; set; }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrUser"/> class.
-        /// Default constructor.
+        /// Initializes a new instance of the <see cref="TrTextRegion"/> class.
         /// </summary>
-        public TrUser()
+        /// <remarks>
+        /// This constructor is used when loading a XML-document!
+        /// </remarks>
+        /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
+        public TrTextRegion(string type, string id, string tags, float orientation, string coords, TrTranscript parentTranscript)
+            : base(type, id, tags, orientation, coords, parentTranscript)
         {
-            if (UserSettings == null)
-            {
-                if (File.Exists("UserSettings.xml"))
-                {
-                    using (var stream = File.OpenRead("UserSettings.xml"))
-                    {
-                        var serializer = new XmlSerializer(typeof(TrUserSettings));
-                        UserSettings = serializer.Deserialize(stream) as TrUserSettings;
-                    }
-                }
-                else
-                {
-                    UserSettings = new TrUserSettings();
-                }
-            }
+            TextLines = new List<TrTextLine>();
 
-
-            using (var stream = File.Open("UserSettings.xml", FileMode.Create))
-            {
-                var serializer = new XmlSerializer(typeof(TrUserSettings));
-                serializer.Serialize(stream, UserSettings);
-            }
-
+            // Tags.ParentRegion = this;
         }
+
+        // constructor ved skabelse af ny region
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TrTextRegion"/> class.
+        /// </summary>
+        /// <remarks>
+        /// This constructor is used when creating a new document programmatically!
+        /// </remarks>
+        /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
+        public TrTextRegion(int order, float orientation, string coords, TrTranscript parentTranscript)
+            : base(order, orientation, coords, parentTranscript)
+        {
+            TextLines = new List<TrTextLine>();
+
+            // Tags.ParentRegion = this;
+        }
+
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 4. Finalizers 
@@ -86,6 +78,15 @@ namespace TrClient.Settings
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
 
+        public override List<TrTextLine> Lines 
+        { 
+            get
+            {
+                return TextLines;
+            }
+        }
+
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 
@@ -97,5 +98,6 @@ namespace TrClient.Settings
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 13. Classes 
+
     }
 }

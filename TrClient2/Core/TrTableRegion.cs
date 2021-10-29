@@ -1,72 +1,63 @@
-﻿// <copyright file="TrUser.cs" company="Kyrillos">
+﻿// <copyright file="TrTableRegion.cs" company="Kyrillos">
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Contains public class TrUser.
+/// Contains public class TrTableRegion.
 /// </summary>
 
-namespace TrClient.Settings
+namespace TrClient2.Core
 {
     using System;
-    using System.Diagnostics;
-    using System.IO;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Xml;
-    using System.Xml.Linq;
-    using System.Xml.Serialization;
-    using TrClient.Core;
 
-    /// <summary>
-    /// Class to hold the user's settings, including credentials.
-    /// </summary>
-    public class TrUser
+    public class TrTableRegion : TrRegion
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-
-        public TrUserSettings UserSettings { get; set; }
+        public List<TrCell> Cells { get; set; }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrUser"/> class.
-        /// Default constructor.
+        /// Initializes a new instance of the <see cref="TrTableRegion"/> class.
         /// </summary>
-        public TrUser()
+        /// <remarks>
+        /// This constructor is used when loading a XML-document!
+        /// </remarks>
+        /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
+        public TrTableRegion(string type, string id, string tags, float orientation, string coords, TrTranscript parentTranscript)
+            : base(type, id, tags, orientation, coords, parentTranscript)
         {
-            if (UserSettings == null)
-            {
-                if (File.Exists("UserSettings.xml"))
-                {
-                    using (var stream = File.OpenRead("UserSettings.xml"))
-                    {
-                        var serializer = new XmlSerializer(typeof(TrUserSettings));
-                        UserSettings = serializer.Deserialize(stream) as TrUserSettings;
-                    }
-                }
-                else
-                {
-                    UserSettings = new TrUserSettings();
-                }
-            }
+            Cells = new List<TrCell>();
 
-
-            using (var stream = File.Open("UserSettings.xml", FileMode.Create))
-            {
-                var serializer = new XmlSerializer(typeof(TrUserSettings));
-                serializer.Serialize(stream, UserSettings);
-            }
-
+            // Tags.ParentRegion = this;
         }
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TrTableRegion"/> class.
+        /// </summary>
+        /// <remarks>
+        /// This constructor is used when creating a new document programmatically!
+        /// </remarks>
+        /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
+        public TrTableRegion(int order, float orientation, string coords, TrTranscript parentTranscript)
+            : base(order, orientation, coords, parentTranscript)
+        {
+            Cells = new List<TrCell>();
+
+            // Tags.ParentRegion = this;
+        }
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 4. Finalizers 
@@ -86,6 +77,17 @@ namespace TrClient.Settings
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
 
+
+        public override List<TrTextLine> Lines
+        {
+            get
+            {
+                var selectedLines = Cells.SelectMany(x => x.TextLines).ToList();
+                return selectedLines;
+            }
+        }
+
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 
@@ -97,5 +99,6 @@ namespace TrClient.Settings
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 13. Classes 
+
     }
 }

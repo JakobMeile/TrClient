@@ -292,13 +292,13 @@ namespace TrClient.Core
         {
             TrParagraphs temp = new TrParagraphs();
             temp.ParentRegion = this;
-            Debug.WriteLine($"TextRegion:GetP - parentregion {temp.ParentRegion.Number}");
+            //Debug.WriteLine($"TextRegion:GetP - parentregion {temp.ParentRegion.Number}");
 
             int max = TextLines.Count - 1;
-            Debug.WriteLine($"TextRegion:GetP - max = {max}");
+            //Debug.WriteLine($"TextRegion:GetP - max = {max}");
             for (int i = 0; i < max; i++)
             {
-                Debug.WriteLine($"TextRegion:GetP - i = {i}");
+                //Debug.WriteLine($"TextRegion:GetP - i = {i}");
 
                 TrTextLine currentLine = TextLines[i];
                 TrTextLine nextLine = TextLines[i + 1];
@@ -312,19 +312,19 @@ namespace TrClient.Core
                 }
             }
 
-            Debug.WriteLine($"TextRegion:GetP - next/previous OK");
+            //Debug.WriteLine($"TextRegion:GetP - next/previous OK");
 
             int n = 0;
             foreach (TrTextLine textLine in TextLines)
             {
-                Debug.WriteLine($"TextRegion:GetP - foreach TL, linenumber = {textLine.Number}");
+                //Debug.WriteLine($"TextRegion:GetP - foreach TL, linenumber = {textLine.Number}");
 
                 if (textLine.Previous == null && textLine.HasStructuralTag)
                 {
-                    Debug.WriteLine($"TextRegion:GetP - TL.previous = {textLine.Previous}, TL.hasstruct = {textLine.HasStructuralTag}");
+                    //Debug.WriteLine($"TextRegion:GetP - TL.previous = {textLine.Previous}, TL.hasstruct = {textLine.HasStructuralTag}");
 
                     n++;
-                    Debug.WriteLine($"TextRegion:GetP - n = {n}");
+                    //Debug.WriteLine($"TextRegion:GetP - n = {n}");
                     TrParagraph newParagraph = new TrParagraph(n, textLine);
                     temp.Add(newParagraph);
                     newParagraph.ParentRegion = this;
@@ -333,11 +333,11 @@ namespace TrClient.Core
 
             if (temp == null)
             {
-                Debug.WriteLine($"TextRegion:GetP - temp = null!");
+                //Debug.WriteLine($"TextRegion:GetP - temp = null!");
             }
             else
             {
-                Debug.WriteLine($"TextRegion:GetP - temp != null!");
+                //Debug.WriteLine($"TextRegion:GetP - temp != null!");
             }
 
             return temp;

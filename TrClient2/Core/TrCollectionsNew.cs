@@ -1,9 +1,9 @@
-﻿// <copyright file="TrCollections2.cs" company="Kyrillos">
+﻿// <copyright file="TrCollectionsNew.cs" company="Kyrillos">
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Contains public class TrCollections2.
+/// Contains public class TrCollectionsNew.
 /// </summary>
 
 namespace TrClient.Core
@@ -18,16 +18,16 @@ namespace TrClient.Core
     /// Container class for collections.
     /// Inherits <see cref="TrContainer"/>.
     /// </summary>
-    public class TrCollections2 : TrContainer
+    public class TrCollectionsNew // : TrContainer
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrCollections2"/> class.
+        /// Initializes a new instance of the <see cref="TrCollectionsNew"/> class.
         /// Default constructor.
         /// </summary>
         /// <param name="parentItem">The collections parent item: No container can be instantiated without a known parent item.</param>
-        public TrCollections2(TrItem parentItem)
-            : base(parentItem)
+        public TrCollectionsNew(TrItem parentItem)
+            //: base(parentItem)
         {
 
         }

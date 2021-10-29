@@ -1,43 +1,55 @@
-﻿// <copyright file="TrCollection2.cs" company="Kyrillos">
+﻿// <copyright file="TrCell.cs" company="Kyrillos">
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
 /// <summary>
-/// Contains public class TrCollection2.
+/// Contains public class TrCell.
 /// </summary>
 
-namespace TrClient.Core
+namespace TrClient2.Core
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-
-    /// <summary>
-    /// Item class for a collection.
-    /// Inherits <see cref="TrItem"/>.
-    /// </summary>
-    public class TrCollection2 : TrItem
+    
+    public class TrCell : TrPageLevelItem
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-        private string name;
+        public TrTableRegion ParentRegion { get; set; }
+        public List<TrTextLine> TextLines { get; set; }
+
+        public int RowNumber { get; set; }
+
+        public int ColumnNumber { get; set; }
+
+        public string CornerPoints { get; set; }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrCollection2"/> class.
+        /// Initializes a new instance of the <see cref="TrCell"/> class.
         /// Default constructor.
         /// </summary>
-        /// <param name="parentContainer">The collection's parent container: No item can be instantiated without a known parent container.</param>
-        public TrCollection2(TrContainer parentContainer)
-            : base(parentContainer)
+        /// <param name="parent">The line's parent: No item can be instantiated without a known parent.</param>
+        public TrCell(string id, string row, string column, string coords, string cornerPoints, TrTableRegion parentRegion)
+            : base(parentRegion)
         {
+            IDNumber = id;
+            RowNumber = Convert.ToInt32(row);
+            ColumnNumber = Convert.ToInt32(column);
+            CoordinatesString = coords;
+            CornerPoints = cornerPoints;
+
+            ParentRegion = parentRegion;
+            TextLines = new List<TrTextLine>();
         }
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -62,64 +74,55 @@ namespace TrClient.Core
         /// <returns>An integer with value.... ??????</returns>
         public override int CompareTo(object obj)
         {
-            var collection = obj as TrCollection2;
-            return Name.CompareTo(collection.Name);
+            var cell = obj as TrCell;
+            return Number.CompareTo(cell.Number);
         }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
-        
-        /// <summary>
-        /// Gets or sets the name of the collection.
-        /// </summary>
-        public string Name
-        { 
-            get 
+        public override int PageNumber
+        {
+            get
             {
-                return name;
-            }
-            
-            set 
-            {
-                name = value;
+                return ParentRegion.PageNumber;
             }
         }
 
         /// <summary>
-        /// Gets the number of lines of the item; from Collection-wide (returns many) down to single TrTextLine (returns 1).
-        /// When the item is below TrTextLine-level, LineCount returns 0.
+        /// Gets or sets the number of the cell.
         /// </summary>
-        public override int LineCount 
-        { 
+        public override int Number
+        {
             get
             {
-                return 0;
+                // temporary code begins
+                number = ParentRegion.Cells.IndexOf(this);
+                // temporary code ends
+
+                return number;
+            }
+
+            set
+            {
+                number = value;
             }
         }
+
 
         /// <summary>
         /// Gets the previous item of its kind.
         /// </summary>
         public override TrItem Previous
         {
-            get
-            {
-                TrCollection2 test = new TrCollection2(ParentContainer);
-                return test;
-            }
+            get;
         }
-
 
         /// <summary>
         /// Gets the next item of its kind.
         /// </summary>
         public override TrItem Next
         {
-            get
-            {
-                TrCollection2 test = new TrCollection2(ParentContainer);
-                return test;
-            }
+            get;
         }
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -133,6 +136,7 @@ namespace TrClient.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 13. Classes 
+
 
     }
 }

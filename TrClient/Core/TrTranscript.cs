@@ -15,12 +15,16 @@ namespace TrClient.Core
     using System.Xml.Linq;
     using TrClient.Core.Tags;
     using TrClient.Libraries;
+    using System.Resources;
 
     public class TrTranscript : IComparable, INotifyPropertyChanged
     {
+
         //public string BaseURL = "https://dbis-thure.uibk.ac.at/f/Get?id=";
-        public string BaseURL = "https://files.transkribus.eu/Get?id=";
-        public string UploadURL = "https://transkribus.eu/TrpServer/rest/collections/_ColID_/_DocID_/_PageNr_/text?overwrite=true";
+        public string BaseURL = Properties.Resources.TrpServerTranscriptURL; // "https://files.transkribus.eu/Get?id=";
+        
+        //public string UploadURL = "https://transkribus.eu/TrpServer/rest/collections/_ColID_/_DocID_/_PageNr_/text?overwrite=true";
+        public string UploadURL = Properties.Resources.TrpServerBaseAddress + Properties.Resources.TrpServerPathUpload;
 
         public string PageFileName { get; set; }            // bruges offline
 
@@ -76,6 +80,13 @@ namespace TrClient.Core
             }
         }
 
+        //public event EventHandler TestEventHandler;
+
+        //static void Transcripts_TestEventHandler(object sender, EventArgs e)
+        //{
+        //    Debug.Print($"TestEventHandler: {e.ToString()}");
+        //}
+
         public XDocument TranscriptionDocument;
 
         public TrRegions Regions = new TrRegions();
@@ -99,6 +110,8 @@ namespace TrClient.Core
                 {
                     StatusColor = Brushes.Orange;
                 }
+
+                //TestEventHandler?.Invoke(this, EventArgs.Empty);
 
                 NotifyPropertyChanged("HasChanged");
                 ParentPage.HasChanged = value;
@@ -785,7 +798,7 @@ namespace TrClient.Core
                 Regions.OrderedGroupID = "ro_" + TrLibrary.GetNewTimeStamp();
             }
 
-            // new XComment("Created by Transkribus Client - The Royal Danish Library"),
+            // new XComment("Created by Transkribus httpClient - The Royal Danish Library"),
             XDocument xTranscript = new XDocument(
                 new XDeclaration("1.0", "UTF-8", "yes"),
                 new XElement(

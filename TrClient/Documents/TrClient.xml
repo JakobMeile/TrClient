@@ -4,455 +4,32 @@
         <name>TrClient</name>
     </assembly>
     <members>
-        <member name="T:TrClient.Core.TrBase">
+        <member name="T:TrClient.Settings.TrSession">
             <summary>
-            Base class for all items (via <see cref="T:TrClient.Core.TrItem"/>) and all containers (via <see cref="T:TrClient.Core.TrContainer"/>).
+            Class to keep the current session, combining the user, the HttpClient and the user's collections.
             </summary>
         </member>
-        <member name="F:TrClient.Core.TrBase.statusColor">
+        <member name="M:TrClient.Settings.TrSession.#ctor(TrClient.Settings.TrUser)">
             <summary>
-            Holds a color value indicating the status of the item.
+            Initializes a new instance of the <see cref="T:TrClient.Settings.TrSession"/> class.
             </summary>
+            <param name="user">The user to log in.</param>
         </member>
-        <member name="F:TrClient.Core.TrBase.isLoaded">
+        <member name="M:TrClient.Settings.TrSession.#ctor">
             <summary>
-            Holds a boolean flag indicating whether the item is loaded from the server.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrBase.hasChanged">
-            <summary>
-            Holds a boolean flag indicating whether the item has changed since it was loaded (saved).
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrBase.isChangesUploaded">
-            <summary>
-            Holds a boolean flag indicating whether any changes to the item has has been uploaded.
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrBase.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:TrClient.Core.TrBase"/> class.
+            Initializes a new instance of the <see cref="T:TrClient.Settings.TrSession"/> class.
             Default constructor.
             </summary>
         </member>
-        <member name="E:TrClient.Core.TrBase.PropertyChanged">
+        <member name="T:TrClient.Settings.TrUser">
             <summary>
-            Raises when a property changes.
+            Class to hold the user's settings, including credentials.
             </summary>
         </member>
-        <member name="M:TrClient.Core.TrBase.NotifyPropertyChanged(System.String)">
+        <member name="M:TrClient.Settings.TrUser.#ctor">
             <summary>
-            Implementation regarding INotifyPropertyChanged
-            Raises a new event, telling that the property in question has changed.
-            </summary>
-            <param name="propName">The name of the property that has changed.</param>
-        </member>
-        <member name="P:TrClient.Core.TrBase.StatusColor">
-            <summary>
-            Gets or sets a color value indicating the status of the item.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrBase.IsLoaded">
-            <summary>
-            Gets or sets a value indicating whether the item is loaded from the server.
-            </summary>
-        </member>
-        <member name="T:TrClient.Core.TrCollection2">
-            <summary>
-            Item class for a collection.
-            Inherits <see cref="T:TrClient.Core.TrItem"/>.
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrCollection2.#ctor(TrClient.Core.TrContainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TrClient.Core.TrCollection2"/> class.
+            Initializes a new instance of the <see cref="T:TrClient.Settings.TrUser"/> class.
             Default constructor.
-            </summary>
-            <param name="parentContainer">The collection's parent container: No item can be instantiated without a known parent container.</param>
-        </member>
-        <member name="M:TrClient.Core.TrCollection2.CompareTo(System.Object)">
-            <summary>
-            Implementation regarding IComparable: Compares this item with another item of the same kind.
-            </summary>
-            <param name="obj">The other item to be compared with.</param>
-            <returns>An integer with value.... ??????</returns>
-        </member>
-        <member name="P:TrClient.Core.TrCollection2.Name">
-            <summary>
-            Gets or sets the name of the collection.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrCollection2.LineCount">
-            <summary>
-            Gets the number of lines of the item; from Collection-wide (returns many) down to single TrTextLine (returns 1).
-            When the item is below TrTextLine-level, LineCount returns 0.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrCollection2.Previous">
-            <summary>
-            Gets the previous item of its kind.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrCollection2.Next">
-            <summary>
-            Gets the next item of its kind.
-            </summary>
-        </member>
-        <member name="T:TrClient.Core.TrCollections2">
-            <summary>
-            Container class for collections.
-            Inherits <see cref="T:TrClient.Core.TrContainer"/>.
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrCollections2.#ctor(TrClient.Core.TrItem)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TrClient.Core.TrCollections2"/> class.
-            Default constructor.
-            </summary>
-            <param name="parentItem">The collections parent item: No container can be instantiated without a known parent item.</param>
-        </member>
-        <member name="T:TrClient.Core.TrContainer">
-            <summary>
-            Base class for all collections of items. 
-            Inherits <see cref="T:TrClient.Core.TrBase"/>.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrContainer.parentItem">
-            <summary>
-            Holds the container's parent item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrContainer.itemList">
-            <summary>
-            Holds the container's internal list of items.
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.#ctor(TrClient.Core.TrItem)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TrClient.Core.TrContainer"/> class.
-            Default constructor.
-            </summary>
-            <param name="parentItem">The container's parent item: No container can be instantiated without a known parent item.</param>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.GetEnumerator">
-            <summary>
-            Implementation regarding IEnumerable.
-            </summary>
-            <returns>Returns the enumerator.</returns>
-        </member>
-        <member name="P:TrClient.Core.TrContainer.ParentItem">
-            <summary>
-            Gets or sets the container's parent item (of type TrItem or derived).
-            </summary>
-            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
-        </member>
-        <member name="P:TrClient.Core.TrContainer.HasChanged">
-            <summary>
-            Gets or sets a value indicating whether the container has changed since it was loaded (saved).
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrContainer.IsChangesUploaded">
-            <summary>
-            Gets or sets a value indicating whether any changes to the container has has been uploaded.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrContainer.Count">
-            <summary>
-            Gets the number of items in the container.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrContainer.Item(System.Int32)">
-            <summary>
-            Returns a TrItem element via the indexer.
-            </summary>
-            <param name="index">The index of the item in question.</param>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.Contains(TrClient.Core.TrItem)">
-            <summary>
-            Determines whether an element TrItem is in the container.
-            </summary>
-            <param name="item">The item in question.</param>
-            <returns>true, if the element is found in the list; otherwise false.</returns>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.Add(TrClient.Core.TrItem)">
-            <summary>
-            Adds an item to the end of the list.
-            </summary>
-            <param name="item">The item to be added.</param>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.Remove(TrClient.Core.TrItem)">
-            <summary>
-            Removes the first occurrence of the item from the list.
-            </summary>
-            <param name="item">The item to be removed.</param>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.RemoveAt(System.Int32)">
-            <summary>
-            Removes the item at the specified index.
-            </summary>
-            <param name="i">The specified index.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Throws an exception if the index is out of range.</exception>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.Sort">
-            <summary>
-            Sorts the items in the list, using the default comparer.
-            </summary>
-            <exception cref="T:System.InvalidOperationException">Throws an exception if the operation can't be done.</exception>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.Clear">
-            <summary>
-            Removes all items from the list.
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrContainer.GetItemFromID(System.String)">
-            <summary>
-            Searches the container for an item with a certain ID number.
-            </summary>
-            <param name="searchID">The ID number to search for.</param>
-            <returns>An item that matches this ID.</returns>
-            <exception cref="T:System.ArgumentException">Throws exception when an item with this ID isn't in the container.</exception>
-        </member>
-        <member name="T:TrClient.Core.TrItem">
-            <summary>
-            Base class for all items via <see cref="T:TrClient.Core.TrMainItem"/> or <see cref="T:TrClient.Core.TrPageLevelItem"/>.
-            Inherits <see cref="T:TrClient.Core.TrBase"/>.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrItem.parentContainer">
-            <summary>
-            Holds the item's parent container.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrItem.idNumber">
-            <summary>
-            Holds the item's ID number (access via <see cref="!:ID"/>).
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrItem.#ctor(TrClient.Core.TrContainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TrClient.Core.TrItem"/> class.
-            Default constructor.
-            </summary>
-            <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
-        </member>
-        <member name="M:TrClient.Core.TrItem.CompareTo(System.Object)">
-            <summary>
-            Implementation regarding IComparable: Compares this item with another item of the same kind.
-            </summary>
-            <param name="obj">The other item to be compared with.</param>
-            <returns>An integer with value.... ??????</returns>
-        </member>
-        <member name="P:TrClient.Core.TrItem.ParentContainer">
-            <summary>
-            Gets or sets the item's parent container (of type TrContainer or derived).
-            </summary>
-            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
-        </member>
-        <member name="P:TrClient.Core.TrItem.IDNumber">
-            <summary>
-            Gets or sets the item's ID number (as used by Transkribus).
-            </summary>
-            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
-            <exception cref="T:System.ArgumentException">Throws exception if set to empty string.</exception>
-        </member>
-        <member name="P:TrClient.Core.TrItem.HasChanged">
-            <summary>
-            Gets or sets a value indicating whether the item has changed since it was loaded (saved).
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrItem.IsChangesUploaded">
-            <summary>
-            Gets or sets a value indicating whether any changes to the item has has been uploaded.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrItem.LineCount">
-            <summary>
-            Gets the number of lines of the item; from Collection-wide (returns many) down to single TrTextLine (returns 1).
-            When the item is below TrTextLine-level, LineCount returns 0.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrItem.Previous">
-            <summary>
-            Gets the previous item of its kind.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrItem.Next">
-            <summary>
-            Gets the next item of its kind.
-            </summary>
-        </member>
-        <member name="T:TrClient.Core.TrMainItem">
-            <summary>
-            Base class for all items on page level and above: TrCollection, TrDocument, TrPage.
-            Inherits <see cref="T:TrClient.Core.TrItem"/>.
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrMainItem.#ctor(TrClient.Core.TrContainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TrClient.Core.TrMainItem"/> class.
-            Default constructor.
-            </summary>
-            <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
-        </member>
-        <member name="T:TrClient.Core.TrPageLevelItem">
-            <summary>
-            Base class for all items below page level, which have a position and hence coordinates,
-            i.e. TrRegion (TrTextRegion and TrTableRegion), TrTextLine, TrCell.
-            Inherits <see cref="T:TrClient.Core.TrItem"/>.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.coordinatesString">
-            <summary>
-            Holds the string with coordinates.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.markToDeletion">
-            <summary>
-            Holds a boolean flag indicating whether the item can be deleted.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.hasCoordinates">
-            <summary>
-            Holds a boolean flag indicating whether the item has coordinates.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.horizontalPosition">
-            <summary>
-            Holds a value indicating the horizontal position of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.horizontalEndPosition">
-            <summary>
-            Holds a value indicating the horizontal end position of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.verticalPosition">
-            <summary>
-            Holds a value indicating the vertical position of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.width">
-            <summary>
-            Holds a value indicating the width of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.leftBorder">
-            <summary>
-            Holds a value indicating the left border of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.rightBorder">
-            <summary>
-            Holds a value indicating the right border of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.topBorder">
-            <summary>
-            Holds a value indicating the top border of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.bottomBorder">
-            <summary>
-            Holds a value indicating the bottom border of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.horizontalOrder">
-            <summary>
-            Holds a value indicating the horizontal order of the item.
-            </summary>
-        </member>
-        <member name="F:TrClient.Core.TrPageLevelItem.verticalOrder">
-            <summary>
-            Holds a value indicating the vertial order of the item.
-            </summary>
-        </member>
-        <member name="M:TrClient.Core.TrPageLevelItem.#ctor(TrClient.Core.TrContainer)">
-            <summary>
-            Initializes a new instance of the <see cref="T:TrClient.Core.TrPageLevelItem"/> class.
-            Default constructor.
-            </summary>
-            <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.CoordinatesString">
-            <summary>
-            Gets or sets the string with coordinates.
-            </summary>
-            <exception cref="T:System.ArgumentNullException">Throws exception if set to null.</exception>
-            <exception cref="T:System.ArgumentException">Throws exception if set to empty string.</exception>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.MarkToDeletion">
-            <summary>
-            Gets or sets a value indicating whether the item can be deleted.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.HasCoordinates">
-            <summary>
-            Gets a value indicating whether the item has got coordinates.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.HorizontalPosition">
-            <summary>
-            Gets the horizontal starting position of the item.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.HorizontalEndPosition">
-            <summary>
-            Gets the horizontal ending position of the item.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.VerticalPosition">
-            <summary>
-            Gets the <b>average</b> vertical position of the item.
-            </summary>
-            <remarks>
-            Remember that vertical zero is on top of page!
-            </remarks>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.Width">
-            <summary>
-            Gets the width of the item.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.LeftBorder">
-            <summary>
-            Gets the left border of the item.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.RightBorder">
-            <summary>
-            Gets the right border of the item.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.TopBorder">
-            <summary>
-            Gets the top border of the item.
-            </summary>
-            <remarks>
-            Remember that vertical zero is on top of page!
-            </remarks>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.BottomBorder">
-            <summary>
-            Gets the bottom border of the item.
-            </summary>
-            <remarks>
-            Remember that vertical zero is on top of page!
-            </remarks>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.HorizontalOrder">
-            <summary>
-            Gets an arbitrary and calculated number, that expresses the horizontal order of the item.
-            </summary>
-        </member>
-        <member name="P:TrClient.Core.TrPageLevelItem.VerticalOrder">
-            <summary>
-            Gets an arbitrary and calculated number, that expresses the vertical order of the item.
-            </summary>
-        </member>
-        <member name="T:TrClient.Core.TrRegion2">
-            <summary>
-            Base class for TrTextRegion and TrTableRegion.
-            Inherits <see cref="T:TrClient.Core.TrPageLevelItem"/>.
             </summary>
         </member>
         <member name="T:TrClient.Views.ShowHistogram">
@@ -865,7 +442,7 @@
             Makes...
             </summary>
         </member>
-        <member name="F:TrClient.MainWindow.Client">
+        <member name="F:TrClient.MainWindow.httpClient">
             <summary>
             Makes...
             </summary>
@@ -941,6 +518,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:TrClient.Properties.Resources.ApplicationName">
+            <summary>
+              Looks up a localized string similar to TrClient.
+            </summary>
+        </member>
         <member name="P:TrClient.Properties.Resources.MonthNames">
              <summary>
                Looks up a localized string similar to januar
@@ -974,9 +556,59 @@
             .
              </summary>
         </member>
+        <member name="P:TrClient.Properties.Resources.PAGENameSpace">
+            <summary>
+              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.PAGESchemaLocation">
+            <summary>
+              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd.
+            </summary>
+        </member>
         <member name="P:TrClient.Properties.Resources.TrClient">
             <summary>
               Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerBaseAddress">
+            <summary>
+              Looks up a localized string similar to https://transkribus.eu/TrpServer/rest/.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathCollectionsList">
+            <summary>
+              Looks up a localized string similar to collections/list.xml.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathDocumentsList">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/list.xml.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathLogin">
+            <summary>
+              Looks up a localized string similar to auth/login.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathPagesList">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/_DocID_/fulldoc.xml.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathUpload">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/_DocID_/_PageNr_/text?overwrite=true.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerTranscriptURL">
+            <summary>
+              Looks up a localized string similar to https://files.transkribus.eu/Get?id=.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.XMLSchemaInstance">
+            <summary>
+              Looks up a localized string similar to http://www.w3.org/2001/XMLSchema-instance.
             </summary>
         </member>
     </members>

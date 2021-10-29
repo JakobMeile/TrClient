@@ -32,6 +32,8 @@ namespace TrClient.Views
 
         private string tagName = string.Empty;
         private bool overWrite = false;
+        private bool useExistingTag = true;
+        private bool useNewTag = false;
 
         // ------------------------------------------------------------------------------------------------
         public FilterLines(TrDocument document)
@@ -648,6 +650,13 @@ namespace TrClient.Views
 
             cmbNewTag.ItemsSource = listOfTags;
 
+            rdExistingTag.IsChecked = true;
+
+            useExistingTag = true;
+            useNewTag = false;
+            cmbNewTag.IsEnabled = true;
+            txtNewTag.IsEnabled = false;
+
             //lstLines.ItemsSource = CurrentDocument.GetFilteredLines(FilterSettings);
             GetLines();
         }
@@ -660,6 +669,23 @@ namespace TrClient.Views
         private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
             Reset();
+        }
+
+
+        private void RdExistingTag_Checked(object sender, RoutedEventArgs e)
+        {
+            useExistingTag = true;
+            useNewTag = false;
+            cmbNewTag.IsEnabled = true;
+            txtNewTag.IsEnabled = false;
+        }
+
+        private void RdNewTag_Checked(object sender, RoutedEventArgs e)
+        {
+            useExistingTag = false;
+            useNewTag = true;
+            cmbNewTag.IsEnabled = false;
+            txtNewTag.IsEnabled = true;
         }
 
         private void ChkOverWrite_Checked(object sender, RoutedEventArgs e)
@@ -689,7 +715,21 @@ namespace TrClient.Views
         {
             //Region = GetNumber(cmbRegion.Text);
             //Line = GetNumber(cmbLine.Text);
-            tagName = cmbNewTag.SelectedItem.ToString().Trim();
+
+            if (useExistingTag)
+            {
+                if (cmbNewTag.SelectedItem != null)
+                {
+                    tagName = cmbNewTag.SelectedItem.ToString().Trim();
+                }
+            }
+            else if (useNewTag)
+            {
+                if (txtNewTag.Text != null)
+                {
+                    tagName = txtNewTag.Text.Trim();
+                }
+            }
 
             if (tagName != string.Empty)
             {
@@ -697,9 +737,20 @@ namespace TrClient.Views
                 {
                     (o as TrTextLine).AddStructuralTag(tagName, overWrite);
                 }
+
+                // opdaterer tag listen
+                if (!listOfTags.Contains(tagName))
+                {
+                    listOfTags.Add(tagName);
+                    listOfTags.Sort();
+                    cmbTagName.ItemsSource = listOfTags;
+                    cmbNewTag.ItemsSource = listOfTags;
+                }
+
             }
 
-            cmbNewTag.SelectedItem = null;
+
+            //cmbNewTag.SelectedItem = null;
             //txtTag.Text = string.Empty;
         }
 

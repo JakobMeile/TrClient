@@ -30,7 +30,7 @@
     <WebPage>publish.htm</WebPage>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.0.2.%2a</ApplicationVersion>
+    <ApplicationVersion>1.0.3.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -105,15 +105,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Core\TrBase.cs" />
-    <Compile Include="Core\TrCollection2.cs" />
-    <Compile Include="Core\TrCollections2.cs" />
-    <Compile Include="Core\TrContainer.cs" />
-    <Compile Include="Core\TrItem.cs" />
-    <Compile Include="Core\TrMainItem.cs" />
-    <Compile Include="Core\TrPageLevelItem.cs" />
-    <Compile Include="Core\TrRegion2.cs" />
     <Compile Include="Helpers\RangeCountPair.cs" />
+    <Compile Include="Settings\TrSession.cs" />
+    <Compile Include="Settings\TrUser.cs" />
+    <Compile Include="Settings\TrUserSettings.cs" />
     <Compile Include="Views\Statistics\ShowHistogram.xaml.cs">
       <DependentUpon>ShowHistogram.xaml</DependentUpon>
     </Compile>
@@ -367,7 +362,7 @@
     <Compile Include="Helpers\TrPairOrderIDs.cs" />
     <Compile Include="Libraries\TrLibrary.cs" />
     <Compile Include="Settings\TrCurrent.cs" />
-    <Compile Include="Settings\TrUser.cs" />
+    <Compile Include="Settings\TrCredentials.cs" />
     <Compile Include="Core\TrCells.cs" />
     <Compile Include="Core\TrCollections.cs" />
     <Compile Include="Core\TrCoords.cs" />
@@ -412,7 +407,6 @@
     <None Include="api\index.md" />
     <None Include="articles\intro.md" />
     <None Include="articles\toc.md" />
-    <None Include="ClassDiagram.cd" />
     <None Include="docfx.json" />
     <None Include="index.md" />
     <None Include="packages.config" />

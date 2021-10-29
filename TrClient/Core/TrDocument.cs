@@ -23,7 +23,8 @@ namespace TrClient.Core
 
     public class TrDocument : IComparable, INotifyPropertyChanged
     {
-        public string TrpPages = "https://transkribus.eu/TrpServer/rest/collections/_ColID_/_DocID_/fulldoc.xml";
+        public string TrpPages = Properties.Resources.TrpServerBaseAddress + Properties.Resources.TrpServerPathPagesList;
+            // "https://transkribus.eu/TrpServer/rest/collections/_ColID_/_DocID_/fulldoc.xml";
 
         public string Folder { get; set; }
 
@@ -342,7 +343,7 @@ namespace TrClient.Core
         //{
         //    XDocument xAccessionsDoc = new XDocument(
         //        new XDeclaration("1.0", "UTF-8", "yes"),
-        //        new XComment("Created by Transkribus Client - The Royal Danish Library"));
+        //        new XComment("Created by Transkribus httpClient - The Royal Danish Library"));
 
         //    XElement xRoot = new XElement("Root");
 
