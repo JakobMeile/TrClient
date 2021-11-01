@@ -17,9 +17,8 @@ namespace TrClient2.Core
 
     /// <summary>
     /// Item class for a collection.
-    /// Inherits <see cref="TrItem"/>.
     /// </summary>
-    public class TrCollection : TrItem
+    public class TrCollection
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
@@ -42,7 +41,6 @@ namespace TrClient2.Core
         /// Initializes a new instance of the <see cref="TrCollection"/> class.
         /// Default constructor.
         /// </summary>
-        /// <param name="parent">The collection's parent: No item can be instantiated without a known parent.</param>
         public TrCollection(string collectionName, string id, int documentCount)
         {
             Documents = new List<TrDocument>();
@@ -68,39 +66,10 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 8. Interface implementations 
-
-        /// <summary>
-        /// Implementation regarding IComparable: Compares this item with another item of the same kind.
-        /// </summary>
-        /// <param name="obj">The other item to be compared with.</param>
-        /// <returns>An integer with value.... ??????</returns>
-        public override int CompareTo(object obj)
-        {
-            var collection = obj as TrCollection;
-            return Name.CompareTo(collection.Name);
-        }
-
+     
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
-
-
-
-        /// <summary>
-        /// Gets the previous item of its kind.
-        /// </summary>
-        public override TrItem Previous
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the next item of its kind.
-        /// </summary>
-        public override TrItem Next
-        {
-            get;
-        }
-
+    
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 
