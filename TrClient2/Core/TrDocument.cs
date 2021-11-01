@@ -11,17 +11,19 @@ namespace TrClient2.Core
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
 
-    public class TrDocument : IComparable, INotifyPropertyChanged
+    public class TrDocument : TrBase, IComparable
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
+
         /// <summary>
         /// Gets or sets the title of the document.
         /// </summary>
@@ -41,7 +43,7 @@ namespace TrClient2.Core
         /// Default constructor.
         /// </summary>
         /// <param name="parent">The document's parent: No item can be instantiated without a known parent.</param>
-        public TrDocument(string documentTitle, string id, int pageCount, TrCollection parentCollection)
+        public TrDocument(TrCollection parentCollection, string id, string documentTitle, int pageCount)
         {
             ParentCollection = parentCollection;
             Pages = new List<TrPage>();
@@ -62,11 +64,6 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 6. Events 
 
-        /// <summary>
-        /// Raises when a property changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         // ------------------------------------------------------------------------------------------------------------------------
         // 7. Enums 
 
@@ -84,15 +81,6 @@ namespace TrClient2.Core
             return Title.CompareTo(document.Title);
         }
 
-        /// <summary>
-        /// Implementation regarding INotifyPropertyChanged
-        /// Raises a new event, telling that the property in question has changed.
-        /// </summary>
-        /// <param name="propName">The name of the property that has changed.</param>
-        public void NotifyPropertyChanged(string propName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-        }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 

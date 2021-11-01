@@ -40,8 +40,7 @@ namespace TrClient2.Core
         /// Default constructor.
         /// </summary>
         /// <param name="parent">The page's parent: No item can be instantiated without a known parent.</param>
-        public TrPage(string id, int pageNumber, string pageFileName, string imageFileURL, int width, int height, TrDocument parentDocument)
-            : base(parentDocument)
+        public TrPage(TrDocument parentDocument, string id, int pageNumber, string pageFileName, string imageFileURL, int width, int height)
         {
             ParentDocument = parentDocument;
             Transcripts = new List<TrTranscript>();

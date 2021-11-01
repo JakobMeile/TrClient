@@ -54,6 +54,10 @@ namespace TrClient.Core
                 transcriptCount = Transcripts.Count;
                 return transcriptCount;
             }
+            set
+            {
+                NotifyPropertyChanged("TranscriptCount");
+            }
         }
 
         private bool hasTables;

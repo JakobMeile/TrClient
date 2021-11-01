@@ -36,6 +36,7 @@
                 <!--<MenuItem Header="Load _All Docs in Current Collection" Name="MenuItem_LoadAllDocsInCurrentCollection" Click="MenuItem_LoadAllDocsInCurrentCollection_Click" />
                 <Separator/>
                 <MenuItem Header="Upload _Collection" Name="MenuItem_UploadCollection" Click="MenuItem_UploadCollection_Click" />-->
+                <MenuItem Header="Check for newer _transcripts" Name="MenuItem_CheckForNewerTranscripts" Click="MenuItem_CheckForNewerTranscripts_Click"  />
                 <MenuItem Header="Upload _Document" Name="MenuItem_UploadDocument" Click="MenuItem_UploadDocument_Click" />
                 <!--<Separator/>
                 -->
@@ -120,7 +121,7 @@
                 <Separator/>
                 <MenuItem Header="Show &amp; Export _Pages" Name="MenuItem_ShowAndExportPages" Click="MenuItem_ShowAndExportPages_Click" />
                 <MenuItem Header="Export as Plain _Text" Name="MenuItem_ExportAsPlainText" Click="MenuItem_ExportAsPlainText_Click" />
-                <!--<MenuItem Header="Export Pseudo Ta_bles" Name="MenuItem_ExportPseudoTables" Click="MenuItem_ExportPseudoTables_Click"/>-->
+                <MenuItem Header="Export Pseudo Ta_bles" Name="MenuItem_ExportPseudoTables" Click="MenuItem_ExportPseudoTables_Click"/>
                 <Separator/>
                 <!--<MenuItem Header="Show _Images" Name="MenuItem_ShowImages" Click="MenuItem_ShowImages_Click"/>-->
                 <!--<Separator/>-->

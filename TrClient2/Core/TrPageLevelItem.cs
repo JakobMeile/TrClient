@@ -106,9 +106,7 @@ namespace TrClient2.Core
         /// Initializes a new instance of the <see cref="TrPageLevelItem"/> class.
         /// Default constructor.
         /// </summary>
-        /// <param name="parentContainer">The item's parent container: No item can be instantiated without a known parent container.</param>
-        public TrPageLevelItem(TrItem parentItem) 
-            : base(parentItem)
+        public TrPageLevelItem() 
         {
             MarkToDeletion = false;
         }

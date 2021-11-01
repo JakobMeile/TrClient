@@ -1470,7 +1470,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                TrPage testPage = Current.Document.Pages[1];
+                TrPage testPage = Current.Document.Pages[0];
 
                 ShowPage showPage = new ShowPage(testPage, httpClient);
                 showPage.Owner = this;
@@ -2119,6 +2119,21 @@ namespace TrClient
             {
                 TellUser("You have to choose a collection AND a document!");
             }
+        }
+
+        private void MenuItem_CheckForNewerTranscripts_Click(object sender, RoutedEventArgs e)
+        {
+            if (Current.Collection != null && Current.Document != null)
+            {
+                Current.Document.CheckNewTranscripts(httpClient);
+                // lstPages.ItemsSource = Current.Document.Pages;
+                lstPages.DataContext = Current.Document.Pages;
+            }
+            else
+            {
+                TellUser("You have to choose a collection AND a document!");
+            }
+
         }
     }
 }

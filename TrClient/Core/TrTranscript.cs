@@ -758,7 +758,8 @@ namespace TrClient.Core
 
                     IsLoaded = true;
                     ParentPage.IsLoaded = true;
-                    ParentPage.ParentDocument.NrOfTranscriptsLoaded++;
+                    ParentPage.ParentDocument.NrOfTranscriptsLoaded += 1;
+                    ParentPage.TranscriptCount += 1;
 
                     // Debug.WriteLine($"Transcript loaded: {ParentPage.ParentDocument.ParentCollection.Name} / {ParentPage.ParentDocument.Title} / {ParentPage.PageNr}");
                 }
@@ -865,6 +866,8 @@ namespace TrClient.Core
                     new KeyValuePair<string, string>("status", "FINAL"),
                     new KeyValuePair<string, string>("overwrite", "FALSE"),
                 });
+
+            Timestamp = TrLibrary.GetNewTimeStamp().ToString();
 
             var uploadHttpContent = new StringContent(ToXML().ToString(), Encoding.UTF8, "application/xml");
 

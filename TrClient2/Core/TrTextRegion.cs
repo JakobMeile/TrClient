@@ -34,9 +34,10 @@ namespace TrClient2.Core
         /// This constructor is used when loading a XML-document!
         /// </remarks>
         /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
-        public TrTextRegion(string type, string id, string tags, float orientation, string coords, TrTranscript parentTranscript)
-            : base(type, id, tags, orientation, coords, parentTranscript)
+        public TrTextRegion(TrTranscript parentTranscript, string id, string type, int order, string tags, float orientation, string coords)
+            : base(parentTranscript, id, type, order, orientation, coords)
         {
+            // order??
             TextLines = new List<TrTextLine>();
 
             // Tags.ParentRegion = this;
@@ -47,11 +48,11 @@ namespace TrClient2.Core
         /// Initializes a new instance of the <see cref="TrTextRegion"/> class.
         /// </summary>
         /// <remarks>
-        /// This constructor is used when creating a new document programmatically!
+        /// This constructor is used when creating a new region programmatically!
         /// </remarks>
         /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
-        public TrTextRegion(int order, float orientation, string coords, TrTranscript parentTranscript)
-            : base(order, orientation, coords, parentTranscript)
+        public TrTextRegion(TrTranscript parentTranscript, string id, string type, int order, float orientation, string coords)
+            : base(parentTranscript, id, type, order, orientation, coords)
         {
             TextLines = new List<TrTextLine>();
 

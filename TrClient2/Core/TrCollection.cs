@@ -11,6 +11,7 @@ namespace TrClient2.Core
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -18,13 +19,14 @@ namespace TrClient2.Core
     /// <summary>
     /// Item class for a collection.
     /// </summary>
-    public class TrCollection : INotifyPropertyChanged
+    public class TrCollection : TrBase
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
+
         /// <summary>
         /// Gets or sets the name of the collection.
         /// </summary>
@@ -61,30 +63,15 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 6. Events 
 
-        /// <summary>
-        /// Raises when a property changes.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
         // ------------------------------------------------------------------------------------------------------------------------
         // 7. Enums 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 8. Interface implementations 
      
-        /// <summary>
-        /// Implementation regarding INotifyPropertyChanged
-        /// Raises a new event, telling that the property in question has changed.
-        /// </summary>
-        /// <param name="propName">The name of the property that has changed.</param>
-        public void NotifyPropertyChanged(string propName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-        }
-
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
-    
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 

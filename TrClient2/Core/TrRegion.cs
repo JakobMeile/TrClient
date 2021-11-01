@@ -39,8 +39,7 @@ namespace TrClient2.Core
         /// This constructor is used when loading a XML-document!
         /// </remarks>
         /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
-        public TrRegion(string type, string id, string tags, float orientation, string coords, TrTranscript parentTranscript)
-            : base(parentTranscript)
+        public TrRegion(TrTranscript parentTranscript, string id, string type, string tags, float orientation, string coords)
         {
             // Type = type;
             IDNumber = id;
@@ -70,11 +69,10 @@ namespace TrClient2.Core
         /// Initializes a new instance of the <see cref="TrRegion"/> class.
         /// </summary>
         /// <remarks>
-        /// This constructor is used when creating a new document programmatically!
+        /// This constructor is used when creating a new region programmatically!
         /// </remarks>
         /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
-        public TrRegion(int order, float orientation, string coords, TrTranscript parentTranscript)
-            : base(parentTranscript)
+        public TrRegion(TrTranscript parentTranscript, string id, string type, int order, float orientation, string coords)
         {
             // Type = string.Empty;
             // IDNumber = "region_" + TrLibrary.GetNewTimeStamp().ToString();

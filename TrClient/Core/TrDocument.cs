@@ -2019,6 +2019,156 @@ namespace TrClient.Core
         //    }
         //}
 
+        public async Task<bool> CheckNewTranscripts(HttpClient currentClient)
+        {
+
+            // indledende check
+            for (int i = 0; i < Pages.Count; i++)
+            {
+                Debug.Print($"i = {i}; pagenr = {Pages[i].PageNr}");
+
+                for (int j = 0; j < Pages[i].Transcripts.Count; j++)
+                {
+
+                    Debug.Print($"j = {j}; transcript date = {TrLibrary.ConvertUnixTimeStamp(Pages[i].Transcripts[j].Timestamp)}");
+                }
+
+            }
+
+
+            int currentPage;
+            int pageIndex;
+            TrTranscript latestTranscript;
+            DateTime latestTranscriptDateTime;
+            
+            DateTime newTranscriptDateTime;
+
+            // checker, om der er nye transcripts
+            TrpPages = TrpPages.Replace("_ColID_", ParentCollection.ID);
+            TrpPages = TrpPages.Replace("_DocID_", ID);
+          
+            // Henter de relevante pages ind i et XMLdoc
+            HttpResponseMessage pagesResponseMessage = await currentClient.GetAsync(TrpPages);
+            string pagesResponse = await pagesResponseMessage.Content.ReadAsStringAsync();
+            PagesAndTranscriptsMetadata.LoadXml(pagesResponse);
+
+            // Udtrækker de enkelte transcripts
+            XmlNodeList transcriptNodes = PagesAndTranscriptsMetadata.DocumentElement.SelectNodes("//transcripts");
+            foreach (XmlNode xnTranscript in transcriptNodes)
+            {
+                XmlNodeList transcriptMetaData = xnTranscript.ChildNodes;
+
+                string transcriptID = string.Empty;
+                string transcriptKey = string.Empty;
+                int pageNr = 0;
+                string transcriptStatus = string.Empty;
+                string transcriptUser = string.Empty;
+                string timestamp = string.Empty;
+                int numberOfRegions = 0;
+                int numberOfTranscribedRegions = 0;
+                int numberOfLines = 0;
+                int numberOfTranscribedLines = 0;
+
+                // Debug.WriteLine("Henter transcripts.");
+                int temp = 0;
+
+                foreach (XmlNode xnTranscriptMetaData in transcriptMetaData)
+                {
+                    string name = xnTranscriptMetaData.Name;
+                    string value = xnTranscriptMetaData.InnerText;
+                    temp++;
+
+                    // Debug.WriteLine($"trsc. {temp}:\t{Name}\t{Value}");
+                    switch (name)
+                    {
+                        case "tsId":
+                            transcriptID = value;
+                            break;
+                        case "key":
+                            transcriptKey = value;
+                            break;
+                        case "pageNr":
+                            pageNr = Int32.Parse(value);
+                            break;
+                        case "status":
+                            transcriptStatus = value;
+                            break;
+                        case "userName":
+                            transcriptUser = value;
+                            break;
+                        case "timestamp":
+                            timestamp = value;
+                            break;
+                        case "nrOfRegions":
+                            numberOfRegions = Int32.Parse(value);
+                            break;
+                        case "nrOfTranscribedRegions":
+                            numberOfTranscribedRegions = Int32.Parse(value);
+                            break;
+                        case "nrOfLines":
+                            numberOfLines = Int32.Parse(value);
+                            break;
+                        case "nrOfTranscribedLines":
+                            numberOfTranscribedLines = Int32.Parse(value);
+                            break;
+                    }
+                }
+
+                TrTranscript newTranscript = new TrTranscript(transcriptID, transcriptKey, pageNr, transcriptStatus,
+                    transcriptUser, timestamp);
+                
+                newTranscriptDateTime = TrLibrary.ConvertUnixTimeStamp(newTranscript.Timestamp);
+
+                currentPage = pageNr;
+                pageIndex = currentPage - 1;
+                latestTranscript = Pages.GetPageFromPageNr(currentPage).Transcripts[0];
+                latestTranscriptDateTime = TrLibrary.ConvertUnixTimeStamp(latestTranscript.Timestamp);
+
+
+
+                if (newTranscriptDateTime > latestTranscriptDateTime)
+                {
+                    Debug.Print($"                               ");
+                    Debug.Print($"Page nr. {currentPage}");
+                    Debug.Print($"-------------------------------");
+                    Debug.Print($"Latest: {latestTranscriptDateTime}    Newest on server: {newTranscriptDateTime}");
+
+                    newTranscript.ParentPage = Pages.GetPageFromPageNr(currentPage);
+                    newTranscript.LoadTranscript(currentClient);
+                    Pages.GetPageFromPageNr(currentPage).Transcripts.Insert(newTranscript);
+                    // Pages[pageIndex].Transcripts.Insert(newTranscript);
+                    // Pages.GetPageFromPageNr(currentPage).HasChanged = true;
+                    // Pages[pageIndex].HasChanged = true;
+                    
+                }
+
+                // Transcripts.Add(transcript);
+            }
+
+            // SKIDTET VIRKER!!! Blot opdateres lstPages ikke med antal Transcripts - men den tvinger ikke upload igennem, så den VED, at den nyeste er inde.
+
+            // Debug.WriteLine($"antal transcripts = {Transcripts.Count}");
+
+            //// så nu fordeler vi dem på siderne
+            //foreach (TrTranscript tra in Transcripts)
+            //{
+            //    Pages.GetPageFromPageNr(tra.PageNr).Transcripts.Add(tra);
+            //}
+
+            //// og sorterer dem - og vender dem rundt, så nyeste er først
+            //foreach (TrPage page in Pages)
+            //{
+            //    page.Transcripts.Sort();
+            //    page.Transcripts.Reverse();
+
+            //    // Page.IsLoaded = true;
+            //    // Debug.WriteLine($"Page # {Page.PageNr}: {Page.TranscriptCount} transcripts.");
+            //}
+
+
+            return true;
+        }
+
         public async Task<bool> LoadPages(HttpClient currentClient)
         {
             // bruges kun ONLINE

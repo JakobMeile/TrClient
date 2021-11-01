@@ -61,8 +61,7 @@ namespace TrClient2.Core
         /// <param name="baseLineCoords"></param>
         /// <param name="textEquiv"></param>
         /// <param name="parentRegion"></param>
-        public TrTextLine(string id, string tags, string lineCoords, string baseLineCoords, string textEquiv, TrTextRegion parentRegion)
-            : base(parentRegion)
+        public TrTextLine(TrTextRegion parentRegion, string id, string tags, string lineCoords, string baseLineCoords, string textEquiv)
         {
             IDNumber = id;
             // TagString = tags;
@@ -105,8 +104,7 @@ namespace TrClient2.Core
         /// <param name="baseLineCoords"></param>
         /// <param name="textEquiv"></param>
         /// <param name="parentCell"></param>
-        public TrTextLine(string id, string tags, string lineCoords, string baseLineCoords, string textEquiv, TrCell parentCell)
-            : base(parentCell)
+        public TrTextLine(TrCell parentCell, string id, string tags, string lineCoords, string baseLineCoords, string textEquiv)
         {
             IDNumber = id;
             // TagString = tags;

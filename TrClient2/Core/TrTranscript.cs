@@ -39,8 +39,7 @@ namespace TrClient2.Core
         /// Default constructor.
         /// </summary>
         /// <param name="parent">The transcripts's parent: No item can be instantiated without a known parent.</param>
-        public TrTranscript(string id, string key, int pageNumber, string status, string user, string timeStamp, TrPage parentPage)
-            : base(parentPage)
+        public TrTranscript(TrPage parentPage, string id, string key, int pageNumber, string status, string user, string timeStamp)
         {
             ParentPage = parentPage;
             Regions = new List<TrRegion>();

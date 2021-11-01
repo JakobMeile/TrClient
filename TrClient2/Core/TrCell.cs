@@ -39,8 +39,7 @@ namespace TrClient2.Core
         /// Default constructor.
         /// </summary>
         /// <param name="parent">The line's parent: No item can be instantiated without a known parent.</param>
-        public TrCell(string id, string row, string column, string coords, string cornerPoints, TrTableRegion parentRegion)
-            : base(parentRegion)
+        public TrCell(TrTableRegion parentRegion, string id, string row, string column, string coords, string cornerPoints)
         {
             IDNumber = id;
             RowNumber = Convert.ToInt32(row);

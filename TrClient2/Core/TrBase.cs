@@ -24,6 +24,11 @@ namespace TrClient2.Core
         // 2. Fields 
 
         /// <summary>
+        /// Holds the item's ID number (access via <see cref="ID"/>).
+        /// </summary>
+        private protected string idNumber;
+
+        /// <summary>
         /// Holds a color value indicating the status of the item.
         /// </summary>
         private protected SolidColorBrush statusColor = Brushes.Red;
@@ -86,6 +91,32 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
+
+        /// <summary>
+        /// Gets or sets the item's ID number (as used by Transkribus).
+        /// </summary>
+        /// <exception cref="ArgumentNullException">Throws exception if set to null.</exception>
+        /// <exception cref="ArgumentException">Throws exception if set to empty string.</exception>
+        public string IDNumber
+        {
+            get
+            {
+                return idNumber;
+            }
+
+            set
+            {
+                idNumber = value;
+                if (idNumber == null)
+                {
+                    throw new ArgumentNullException("An item's ID can't be null.");
+                }
+                else if (idNumber == string.Empty)
+                {
+                    throw new ArgumentException("An item's ID can't be an empty string.");
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets a color value indicating the status of the item.

@@ -63,9 +63,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Core\TrBase.cs" />
     <Compile Include="Core\TrCell.cs" />
     <Compile Include="Core\TrCollection.cs" />
-    <Compile Include="Core\TrDataContainer.cs" />
     <Compile Include="Core\TrDocument.cs" />
     <Compile Include="Core\TrItem.cs" />
     <Compile Include="Core\TrPageLevelItem.cs" />
@@ -107,6 +107,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

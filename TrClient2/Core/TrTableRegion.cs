@@ -34,13 +34,14 @@ namespace TrClient2.Core
         /// This constructor is used when loading a XML-document!
         /// </remarks>
         /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
-        public TrTableRegion(string type, string id, string tags, float orientation, string coords, TrTranscript parentTranscript)
-            : base(type, id, tags, orientation, coords, parentTranscript)
+        public TrTableRegion(TrTranscript parentTranscript, string id, string type, string tags, float orientation, string coords)
+            : base(parentTranscript, id, type, tags, orientation, coords)
         {
             Cells = new List<TrCell>();
 
             // Tags.ParentRegion = this;
         }
+        // public TrRegion(string rType, string rID, string rTags, float rOrientation, string rCoords, TrRegions parentContainer)
 
 
         /// <summary>
@@ -50,13 +51,14 @@ namespace TrClient2.Core
         /// This constructor is used when creating a new document programmatically!
         /// </remarks>
         /// <param name="parent">The region's parent: No item can be instantiated without a known parent.</param>
-        public TrTableRegion(int order, float orientation, string coords, TrTranscript parentTranscript)
-            : base(order, orientation, coords, parentTranscript)
+        public TrTableRegion(TrTranscript parentTranscript, string id, string type, int order, float orientation, string coords)
+            : base(parentTranscript, id, type, order, orientation, coords)
         {
             Cells = new List<TrCell>();
 
             // Tags.ParentRegion = this;
         }
+        //         public TrRegion(int rOrder, float rOrientation, string rCoords, TrRegions parentContainer)
 
 
         // ------------------------------------------------------------------------------------------------------------------------

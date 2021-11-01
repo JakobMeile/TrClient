@@ -7,6 +7,8 @@ namespace TrClient.Core
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Diagnostics;
+    using TrClient.Libraries;
 
     public class TrTranscripts : IEnumerable
     {
@@ -31,6 +33,27 @@ namespace TrClient.Core
         public void Reverse()
         {
             transcripts.Reverse();
+        }
+
+        public void Insert(TrTranscript newTranscript)
+        {
+            // before
+            Debug.Print($"----------------------");
+            Debug.Print($"Before:");
+            foreach (TrTranscript T in transcripts)
+            {
+                Debug.Print($"ID: {T.ID} - Time: {TrLibrary.ConvertUnixTimeStamp(T.Timestamp)}");
+            }
+
+            transcripts.Insert(0, newTranscript);
+
+            Debug.Print($"             ");
+            Debug.Print($"After:");
+            foreach (TrTranscript T in transcripts)
+            {
+                Debug.Print($"ID: {T.ID} - Time: {TrLibrary.ConvertUnixTimeStamp(T.Timestamp)}");
+            }
+
         }
 
         public void Clear()
