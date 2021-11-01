@@ -15,7 +15,7 @@ namespace TrClient2.Core
     using System.Text;
     using System.Threading.Tasks;
 
-    public class TrDocument : TrItem
+    public class TrDocument : IComparable, INotifyPropertyChanged
     {
         // ------------------------------------------------------------------------------------------------------------------------
         // 1. Constants 
@@ -42,7 +42,6 @@ namespace TrClient2.Core
         /// </summary>
         /// <param name="parent">The document's parent: No item can be instantiated without a known parent.</param>
         public TrDocument(string documentTitle, string id, int pageCount, TrCollection parentCollection)
-            : base(parentCollection)
         {
             ParentCollection = parentCollection;
             Pages = new List<TrPage>();
@@ -63,6 +62,11 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 6. Events 
 
+        /// <summary>
+        /// Raises when a property changes.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 7. Enums 
 
@@ -74,10 +78,20 @@ namespace TrClient2.Core
         /// </summary>
         /// <param name="obj">The other item to be compared with.</param>
         /// <returns>An integer with value.... ??????</returns>
-        public override int CompareTo(object obj)
+        public int CompareTo(object obj)
         {
             var document = obj as TrDocument;
             return Title.CompareTo(document.Title);
+        }
+
+        /// <summary>
+        /// Implementation regarding INotifyPropertyChanged
+        /// Raises a new event, telling that the property in question has changed.
+        /// </summary>
+        /// <param name="propName">The name of the property that has changed.</param>
+        public void NotifyPropertyChanged(string propName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -93,23 +107,7 @@ namespace TrClient2.Core
             }
         }
 
-
-        /// <summary>
-        /// Gets the previous item of its kind.
-        /// </summary>
-        public override TrItem Previous
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the next item of its kind.
-        /// </summary>
-        public override TrItem Next
-        {
-            get;
-        }
-
+  
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 
