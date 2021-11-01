@@ -38,13 +38,13 @@ namespace TrClient2.Core
             }
         }
 
-        private string baseLineCoordinatesString;
+        private string _baseLineCoordinatesString;
 
         // temporary code begins
         public string Content { get; set; }
         // temporary code ends
 
-        private int regionNumber;
+        private int _regionNumber;
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -74,7 +74,7 @@ namespace TrClient2.Core
             ParentRegion = parentRegion;
             ParentCell = null;
             pageNumber = ParentRegion.PageNumber;
-            regionNumber = parentRegion.Number;
+            _regionNumber = parentRegion.Number;
 
             //Tags.ParentRegion = ParentRegion;
             //Tags.ParentLine = this;
@@ -118,7 +118,7 @@ namespace TrClient2.Core
             ParentRegion = null;
             ParentCell = parentCell;
             pageNumber = ParentCell.PageNumber;
-            regionNumber = ParentCell.ParentRegion.Number;
+            _regionNumber = ParentCell.ParentRegion.Number;
 
             //Tags.ParentRegion = ParentRegion;
             //Tags.ParentLine = this;
@@ -178,7 +178,7 @@ namespace TrClient2.Core
         {
             get
             {
-                return regionNumber;
+                return _regionNumber;
             }
         }
 
@@ -226,17 +226,17 @@ namespace TrClient2.Core
         {
             get
             {
-                return baseLineCoordinatesString;
+                return _baseLineCoordinatesString;
             }
 
             set
             {
-                baseLineCoordinatesString = value;
-                if (baseLineCoordinatesString == null)
+                _baseLineCoordinatesString = value;
+                if (_baseLineCoordinatesString == null)
                 {
                     throw new ArgumentNullException("A coordinate string can't be null.");
                 }
-                else if (baseLineCoordinatesString == string.Empty)
+                else if (_baseLineCoordinatesString == string.Empty)
                 {
                     throw new ArgumentException("A coordinate string can't be empty.");
                 }
