@@ -33,6 +33,7 @@ NB: To use this app, you need to have an account at Transkribus - and of course 
 * Find & replace text
 * Convert tables to regions
 * Set top-level region on all pages
+* Check for updated transcripts in current document (v1.0.4-)
 
 ## Version history
 
