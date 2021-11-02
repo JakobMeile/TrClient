@@ -38,3 +38,7 @@ NB: To use this app, you need to have an account at Transkribus - and of course 
 ## Version history
 
 Please see separate document [Version history](VersionHistory.md)
+
+## Download executable app
+
+Find the latest release under [releases](releases)
