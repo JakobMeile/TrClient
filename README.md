@@ -41,4 +41,4 @@ Please see separate document [Version history](VersionHistory.md)
 
 ## Download executable app
 
-Find the latest release under [releases](releases)
+Find the latest release under [releases](https://github.com/JakobMeile/TrClient/releases) and follow the instructions.
