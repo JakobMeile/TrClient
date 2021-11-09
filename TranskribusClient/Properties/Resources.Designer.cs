@@ -127,7 +127,7 @@ namespace TranskribusClient.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon TrClient {
+        internal static System.Drawing.Icon TranskribusClient {
             get {
                 object obj = ResourceManager.GetObject("TranskribusClient", resourceCulture);
                 return ((System.Drawing.Icon)(obj));

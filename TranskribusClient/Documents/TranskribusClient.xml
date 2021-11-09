@@ -1,0 +1,615 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TranskribusClient</name>
+    </assembly>
+    <members>
+        <member name="T:TranskribusClient.Settings.TrSession">
+            <summary>
+            Class to keep the current session, combining the user, the HttpClient and the user's collections.
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Settings.TrSession.#ctor(TranskribusClient.Settings.TrUser)">
+            <summary>
+            Initializes a new instance of the <see cref="T:TranskribusClient.Settings.TrSession"/> class.
+            </summary>
+            <param name="user">The user to log in.</param>
+        </member>
+        <member name="M:TranskribusClient.Settings.TrSession.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TranskribusClient.Settings.TrSession"/> class.
+            Default constructor.
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Settings.TrUser">
+            <summary>
+            Class to hold the user's settings, including credentials.
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Settings.TrUser.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:TranskribusClient.Settings.TrUser"/> class.
+            Default constructor.
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowHistogram">
+            <summary>
+            Interaction logic for ShowHistogram.xaml.
+            </summary>
+            <summary>
+            ShowHistogram
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowHistogram.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.CopyFromCollection">
+            <summary>
+            Interaction logic for CopyFromCollection.xaml.
+            </summary>
+            <summary>
+            CopyFromCollection
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.CopyFromCollection.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.EditLemma">
+            <summary>
+            Interaction logic for EditLemma.xaml.
+            </summary>
+            <summary>
+            EditLemma
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.EditLemma.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.FindReplace">
+            <summary>
+            Interaction logic for FindReplace.xaml.
+            </summary>
+            <summary>
+            FindReplace
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.FindReplace.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowLemmas">
+            <summary>
+            Interaction logic for ShowLemmas.xaml.
+            </summary>
+            <summary>
+            ShowLemmas
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowLemmas.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowParagraphs">
+            <summary>
+            Interaction logic for ShowParagraphs.xaml.
+            </summary>
+            <summary>
+            ShowParagraphs
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowParagraphs.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowAndExportPages">
+            <summary>
+            Interaction logic for ShowAndExportPages.xaml.
+            </summary>
+            <summary>
+            ShowAndExportPages
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowAndExportPages.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.FilterLines">
+            <summary>
+            Interaction logic for FilterLines.xaml.
+            </summary>
+            <summary>
+            FilterLines
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.FilterLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.FilterLinesByLocation">
+            <summary>
+            Interaction logic for FilterLinesByLocation.xaml.
+            </summary>
+            <summary>
+            FilterLinesByLocation
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.FilterLinesByLocation.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.FilterLinesByRegex">
+            <summary>
+            Interaction logic for FilterLinesByRegex.xaml.
+            </summary>
+            <summary>
+            FilterLinesByRegex
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.FilterLinesByRegex.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ChooseMinMaxNumbers">
+            <summary>
+            Interaction logic for ChooseMinMaxNumbers.xaml.
+            </summary>
+            <summary>
+            ChooseMinMaxNumbers
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ChooseMinMaxNumbers.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ChoosePageRange">
+            <summary>
+            Interaction logic for ChoosePageRange.xaml.
+            </summary>
+            <summary>
+            ChoosePageRange
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ChoosePageRange.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.DeleteLines">
+            <summary>
+            Interaction logic for DeleteLines.xaml.
+            </summary>
+            <summary>
+            DeleteLines
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.DeleteLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.EditBaseLines">
+            <summary>
+            Interaction logic for EditBaseLines.xaml.
+            </summary>
+            <summary>
+            EditBaseLines
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.EditBaseLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.EditTextLine">
+            <summary>
+            Interaction logic for EditTextLine.xaml.
+            </summary>
+            <summary>
+            EditTextLine
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.EditTextLine.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.RepairBaseLines">
+            <summary>
+            Interaction logic for RepairBaseLines.xaml.
+            </summary>
+            <summary>
+            RepairBaseLines
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.RepairBaseLines.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowTextLine">
+            <summary>
+            Interaction logic for ShowTextLine.xaml.
+            </summary>
+            <summary>
+            ShowTextLine
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowTextLine.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.SimplifyBoundingBoxes">
+            <summary>
+            Interaction logic for SimplifyBoundingBoxes.xaml.
+            </summary>
+            <summary>
+            SimplifyBoundingBoxes
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.SimplifyBoundingBoxes.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowLog">
+            <summary>
+            Interaction logic for ShowLog.xaml.
+            </summary>
+            <summary>
+            ShowLog
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowLog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowPage">
+            <summary>
+            Interaction logic for ShowPage.xaml.
+            </summary>
+            <summary>
+            ShowPage
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowPage.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ProgressCopy">
+            <summary>
+            Interaction logic for ProgressCopy.xaml.
+            </summary>
+            <summary>
+            ProgressCopy
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ProgressCopy.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ProgressLoadDocs">
+            <summary>
+            Interaction logic for ProgressLoadDocs.xaml.
+            </summary>
+            <summary>
+            ProgressLoadDocs
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ProgressLoadDocs.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ProgressLoadPages">
+            <summary>
+            Interaction logic for ProgressLoadPages.xaml.
+            </summary>
+            <summary>
+            ProgressLoadPages
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ProgressLoadPages.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.DeleteRegions">
+            <summary>
+            Interaction logic for DeleteRegions.xaml.
+            </summary>
+            <summary>
+            DeleteRegions
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.DeleteRegions.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.MoveRegions">
+            <summary>
+            Interaction logic for MoveRegions.xaml.
+            </summary>
+            <summary>
+            MoveRegions
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.MoveRegions.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.EditStructuralTags">
+            <summary>
+            Interaction logic for EditStructuralTags.xaml.
+            </summary>
+            <summary>
+            EditStructuralTags
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.EditStructuralTags.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.RenameTags">
+            <summary>
+            Interaction logic for RenameTags.xaml.
+            </summary>
+            <summary>
+            RenameTags
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.RenameTags.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Views.ShowTags">
+            <summary>
+            Interaction logic for ShowTags.xaml.
+            </summary>
+            <summary>
+            ShowTags
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.Views.ShowTags.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.App">
+            <summary>
+            Interaction logic for App.xaml.
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.MainWindow">
+            <summary>
+            Interaction logic for MainWindow.xaml.
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.MainWindow.DeleteAction">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.DeleteAction.Delete">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.DeleteAction.Preserve">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.User">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.httpClient">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.MyCollectionsDocument">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.MyCollections">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.Current">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="F:TranskribusClient.MainWindow.Secondary">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.MainWindow.#ctor">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.MainWindow.RunLoginAndGetMyCollections(System.String,System.String)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.MainWindow.AskUser(System.String)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.MainWindow.TellUser(System.String)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.MainWindow.CopyFromSecondaryDocument(TranskribusClient.Core.TrDocument,TranskribusClient.Core.TrDocument)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.MainWindow.CopyFromSecondaryCollection(TranskribusClient.Core.TrCollection,TranskribusClient.Core.TrCollection)">
+            <summary>
+            Makes...
+            </summary>
+        </member>
+        <member name="M:TranskribusClient.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TranskribusClient.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.ApplicationName">
+            <summary>
+              Looks up a localized string similar to TranskribusClient.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.MonthNames">
+             <summary>
+               Looks up a localized string similar to januar
+            februar
+            marts
+            april
+            maj
+            juni
+            juli
+            august
+            september
+            oktober
+            november
+            december
+            jan
+            feb
+            febr
+            mar
+            apr
+            jun
+            jul
+            aug
+            sep
+            sept
+            okt
+            oktbr
+            nov
+            novbr
+            dec
+            decbr
+            .
+             </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.PAGENameSpace">
+            <summary>
+              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.PAGESchemaLocation">
+            <summary>
+              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TranskribusClient">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TrpServerBaseAddress">
+            <summary>
+              Looks up a localized string similar to https://transkribus.eu/TrpServer/rest/.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TrpServerPathCollectionsList">
+            <summary>
+              Looks up a localized string similar to collections/list.xml.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TrpServerPathDocumentsList">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/list.xml.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TrpServerPathLogin">
+            <summary>
+              Looks up a localized string similar to auth/login.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TrpServerPathPagesList">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/_DocID_/fulldoc.xml.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TrpServerPathUpload">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/_DocID_/_PageNr_/text?overwrite=true.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.TrpServerTranscriptURL">
+            <summary>
+              Looks up a localized string similar to https://files.transkribus.eu/Get?id=.
+            </summary>
+        </member>
+        <member name="P:TranskribusClient.Properties.Resources.XMLSchemaInstance">
+            <summary>
+              Looks up a localized string similar to http://www.w3.org/2001/XMLSchema-instance.
+            </summary>
+        </member>
+    </members>
+</doc>

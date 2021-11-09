@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranskribusClient", "TrClient\TranskribusClient.csproj", "{F0C0954C-7A6D-4B0A-B159-0399B83A789F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranskribusClient", "TranskribusClient\TranskribusClient.csproj", "{F0C0954C-7A6D-4B0A-B159-0399B83A789F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{68981A18-D69A-4FE3-9458-0D6A7EBC2162}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranskribusClient2", "TrClient2\TranskribusClient2.csproj", "{206719EA-0DB1-4C4A-A3A3-22F5D1DB6B1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranskribusClient2", "TranskribusClient2\TranskribusClient2.csproj", "{206719EA-0DB1-4C4A-A3A3-22F5D1DB6B1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranskribusClient2UnitTest", "TrClient2UnitTest\TranskribusClient2UnitTest.csproj", "{608DA83B-405B-4E8A-A63D-543573FAF11B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranskribusClient2UnitTest", "TranskribusClient2UnitTest\TranskribusClient2UnitTest.csproj", "{608DA83B-405B-4E8A-A63D-543573FAF11B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
