@@ -33,10 +33,12 @@ NB: To use this app, you need to have an account at Transkribus - and of course 
 * Find & replace text
 * Convert tables to regions
 * Set top-level region on all pages
+* Check for updated transcripts in current document (v1.0.4-)
 
 ## Version history
 
-1.0.0.1:	21 Oct 2021:	Initial commit (though development started in July 2019)
+Please see separate document [Version history](VersionHistory.md)
 
+## Download executable app
 
-
+Find the latest release under [releases](https://github.com/JakobMeile/TrClient/releases) and follow the instructions.
