@@ -1,4 +1,4 @@
-# TrClient
+# TranskribusClient
 Client App for Transkribus HTR Platform
 
 ## Introduction
