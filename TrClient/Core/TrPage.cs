@@ -942,6 +942,12 @@ namespace TrClient.Core
             }
         }
 
+        public void ConvertAsterisksToHyphenation()
+        {
+            foreach (TrRegion region in Transcripts[0].Regions)
+                region.ConvertAsterisksToHyphenation();
+        }
+
         //public void RepairBaseLines(TrLog Log)
         //{
         //    bool PageIsOK = true;

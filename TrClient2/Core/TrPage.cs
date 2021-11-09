@@ -22,14 +22,12 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-        /// <summary>
-        /// Gets or sets the number of the page.
-        /// </summary>
-        public int Number { get; set; }
 
-        public TrDocument ParentDocument { get; set; }
+        private int _number;
 
-        public List<TrTranscript> Transcripts { get; set; }
+        private TrDocument _parentDocument;
+
+        private List<TrTranscript> _transcripts;
 
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -43,7 +41,7 @@ namespace TrClient2.Core
         public TrPage(TrDocument parentDocument, string id, int pageNumber, string pageFileName, string imageFileURL, int width, int height)
         {
             ParentDocument = parentDocument;
-            Transcripts = new List<TrTranscript>();
+            _transcripts = new List<TrTranscript>();
 
             IDNumber = id;
             Number = pageNumber;
@@ -83,16 +81,24 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
-
-        public List<TrRegion> Regions { get; set; }
-
-        public List<TrTextLine> Lines
+        /// <summary>
+        /// Gets or sets the number of the page.
+        /// </summary>
+        public int Number
         {
-            get
-            {
-                return Transcripts[0].Lines;
-            }
+            get { return _number; }
+            set { _number = value; }
         }
+
+        public TrDocument ParentDocument
+        {
+            get { return _parentDocument; }
+            set { _parentDocument = value; }
+        }
+
+
+
+
 
 
 
@@ -117,6 +123,16 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+        public List<TrRegion> GetRegions()
+        {
+            return null;
+        }
+
+        public List<TrTextLine> GetLines()
+        {
+            var selectedLines = _transcripts[0].GetLines();
+            return selectedLines;
+        }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

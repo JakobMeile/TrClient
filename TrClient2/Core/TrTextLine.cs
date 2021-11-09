@@ -25,24 +25,16 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
         // public ObservableCollection<TrTag> Tags { get; set; }
+        private TrTextRegion _parentRegion;
 
-        public TrTextRegion ParentRegion { get; set; }
+        private TrCell _parentCell;
 
-        public TrCell ParentCell { get; set; }
+        private bool _isInTable;
 
-        public bool IsInTable
-        {
-            get
-            {
-                return (ParentRegion == null && ParentCell != null);
-            }
-        }
 
         private string _baseLineCoordinatesString;
 
-        // temporary code begins
-        public string Content { get; set; }
-        // temporary code ends
+        private string _content;
 
         private int _regionNumber;
 
@@ -72,7 +64,7 @@ namespace TrClient2.Core
 
             ParentRegion = parentRegion;
             ParentCell = null;
-            pageNumber = ParentRegion.PageNumber;
+            _pageNumber = ParentRegion.PageNumber;
             _regionNumber = parentRegion.Number;
 
             //Tags.ParentRegion = ParentRegion;
@@ -115,7 +107,7 @@ namespace TrClient2.Core
 
             ParentRegion = null;
             ParentCell = parentCell;
-            pageNumber = ParentCell.PageNumber;
+            _pageNumber = ParentCell.PageNumber;
             _regionNumber = ParentCell.ParentRegion.Number;
 
             //Tags.ParentRegion = ParentRegion;
@@ -164,11 +156,32 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
+        public TrTextRegion ParentRegion
+        {
+            get { return _parentRegion; }
+            set { _parentRegion = value; }
+        }
+
+
+        public TrCell ParentCell
+        {
+            get { return _parentCell; }
+            set { _parentCell = value; }
+        }
+
+
+        public bool IsInTable
+        {
+            get
+            {
+                return (ParentRegion == null && ParentCell != null);
+            }
+        }
         public override int PageNumber
         {
             get
             {
-                return pageNumber;
+                return _pageNumber;
             }
         }
 
@@ -188,17 +201,26 @@ namespace TrClient2.Core
             get
             {
                 // temporary code begins
-                number = ParentRegion.Lines.IndexOf(this);
+                // _number = ParentRegion.Lines.IndexOf(this);
                 // temporary code ends
 
-                return number;
+                return _number;
             }
 
             set
             {
-                number = value;
+                _number = value;
             }
         }
+
+        // temporary code begins
+        public string Content
+        {
+            get { return _content; }
+            set { _content = value; }
+        }
+
+        // temporary code ends
 
         /// <summary>
         /// Gets the previous item of its kind.

@@ -64,60 +64,6 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
 
-
-        /// <summary>
-        /// Gets or sets a color value indicating the status of the item.
-        /// </summary>
-        public SolidColorBrush StatusColor
-        {
-            get
-            {
-                return statusColor;
-            }
-
-            set
-            {
-                if (statusColor != value)
-                {
-                    statusColor = value;
-                    NotifyPropertyChanged("StatusColor");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the item is loaded from the server.
-        /// </summary>
-        public bool IsLoaded
-        {
-            get
-            {
-                return isLoaded;
-            }
-
-            set
-            {
-                if (isLoaded != value)
-                {
-                    isLoaded = value;
-                    NotifyPropertyChanged("IsLoaded");
-                    switch (isLoaded)
-                    {
-                        case true:
-                            StatusColor = Brushes.LimeGreen;
-                            break;
-                        case false:
-                            StatusColor = Brushes.Red;
-                            break;
-                    }
-                }
-            }
-        }
-
-
-
-
-
         /// <summary>
         /// Gets the previous item of its kind.
         /// </summary>

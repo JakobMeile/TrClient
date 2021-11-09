@@ -2135,5 +2135,24 @@ namespace TrClient
             }
 
         }
+
+        private void MenuItem_ConvertAsterisks_Click(object sender, RoutedEventArgs e)
+        {
+            if (Current.Collection != null && Current.Document != null)
+            {
+                string question = $"T2I-feature: Convert asterisks to hyphenation in {Current.Collection.Name} / {Current.Document.Title}?";
+                MessageBoxResult result = AskUser(question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Current.Document.ConvertAsterisksToHyphenation();
+                }
+
+            }
+            else
+            {
+                TellUser("You have to choose a collection AND a document!");
+            }
+
+        }
     }
 }

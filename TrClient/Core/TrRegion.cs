@@ -88,6 +88,8 @@ namespace TrClient.Core
 
         public abstract void ExtendBaseLines(TrDialogTransferSettings settings, TrLog log);
 
+        public abstract void ConvertAsterisksToHyphenation();
+
         public abstract XElement ToXML();
 
         // -----------------------

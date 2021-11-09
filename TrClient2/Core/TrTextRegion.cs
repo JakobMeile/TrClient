@@ -22,7 +22,8 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-        public List<TrTextLine> TextLines { get; set; }
+        private List<TrTextLine> _textLines;
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -38,7 +39,7 @@ namespace TrClient2.Core
             : base(parentTranscript, id, type, order, orientation, coords)
         {
             // order??
-            TextLines = new List<TrTextLine>();
+            _textLines = new List<TrTextLine>();
 
             // Tags.ParentRegion = this;
         }
@@ -54,7 +55,7 @@ namespace TrClient2.Core
         public TrTextRegion(TrTranscript parentTranscript, string id, string type, int order, float orientation, string coords)
             : base(parentTranscript, id, type, order, orientation, coords)
         {
-            TextLines = new List<TrTextLine>();
+            _textLines = new List<TrTextLine>();
 
             // Tags.ParentRegion = this;
         }
@@ -79,13 +80,6 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
 
-        public override List<TrTextLine> Lines 
-        { 
-            get
-            {
-                return TextLines;
-            }
-        }
 
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -93,6 +87,10 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+        public override List<TrTextLine> GetLines()
+        {
+            return _textLines;
+        }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

@@ -26,27 +26,33 @@ namespace TrClient2.Core
         /// <summary>
         /// Holds the item's ID number (access via <see cref="ID"/>).
         /// </summary>
-        private protected string idNumber;
+        private protected string _idNumber;
+
+        /// <summary>
+        /// Holds a value indicating the status of the item.
+        /// </summary>
+        private protected TrEnum.Status _status = TrEnum.Status.Unloaded;
 
         /// <summary>
         /// Holds a color value indicating the status of the item.
         /// </summary>
-        private protected SolidColorBrush statusColor = Brushes.Red;
+        private protected SolidColorBrush _statusColor = Brushes.Red;
 
         /// <summary>
         /// Holds a boolean flag indicating whether the item is loaded from the server.
         /// </summary>
-        private protected bool isLoaded = false;
+        private protected bool _isLoaded = false;
 
         /// <summary>
         /// Holds a boolean flag indicating whether the item has changed since it was loaded (saved).
         /// </summary>
-        private protected bool hasChanged = false;
+        private protected bool _hasChanged = false;
 
         /// <summary>
         /// Holds a boolean flag indicating whether any changes to the item has has been uploaded.
         /// </summary>
-        private protected bool isChangesUploaded = false;
+        private protected bool _isChangesUploaded = false;
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -72,6 +78,7 @@ namespace TrClient2.Core
         /// Raises when a property changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 7. Enums 
@@ -101,20 +108,42 @@ namespace TrClient2.Core
         {
             get
             {
-                return idNumber;
+                return _idNumber;
             }
 
             set
             {
-                idNumber = value;
-                if (idNumber == null)
+                _idNumber = value;
+                if (_idNumber == null)
                 {
                     throw new ArgumentNullException("An item's ID can't be null.");
                 }
-                else if (idNumber == string.Empty)
+                else if (_idNumber == string.Empty)
                 {
                     throw new ArgumentException("An item's ID can't be an empty string.");
                 }
+            }
+        }
+
+        public TrEnum.Status Status
+        {
+            get
+            {
+                return _status;
+            }
+
+            set
+            {
+                if (_status != value)
+                {
+                    if (value >= TrEnum.Status.Unloaded && value <= TrEnum.Status.Refreshed)
+                    {
+                        _status = value;
+                        NotifyPropertyChanged("Status");
+                        SetStatusColor();
+                    }
+                }
+
             }
         }
 
@@ -125,14 +154,14 @@ namespace TrClient2.Core
         {
             get
             {
-                return statusColor;
+                return _statusColor;
             }
 
             set
             {
-                if (statusColor != value)
+                if (_statusColor != value)
                 {
-                    statusColor = value;
+                    _statusColor = value;
                     NotifyPropertyChanged("StatusColor");
                 }
             }
@@ -145,16 +174,16 @@ namespace TrClient2.Core
         {
             get
             {
-                return isLoaded;
+                return _isLoaded;
             }
 
             set
             {
-                if (isLoaded != value)
+                if (_isLoaded != value)
                 {
-                    isLoaded = value;
+                    _isLoaded = value;
                     NotifyPropertyChanged("IsLoaded");
-                    switch (isLoaded)
+                    switch (_isLoaded)
                     {
                         case true:
                             StatusColor = Brushes.LimeGreen;
@@ -167,16 +196,80 @@ namespace TrClient2.Core
             }
         }
 
+        public bool HasChanged
+        {
+            get
+            {
+                return _hasChanged;
+            }
+
+            set
+            {
+                _hasChanged = value;
+                NotifyPropertyChanged("HasChanged");
+                if (_hasChanged)
+                {
+                    StatusColor = Brushes.Orange;
+                }
+
+            }
+        }
+
+        public bool IsChangesUploaded
+        {
+            get
+            {
+                return _isChangesUploaded;
+            }
+
+            set
+            {
+                _isChangesUploaded = value;
+                NotifyPropertyChanged("IsChangesUploaded");
+                if (_isChangesUploaded)
+                {
+                    StatusColor = Brushes.DarkViolet;
+                }
+            }
+        }
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
 
+        private protected void SetStatusColor()
+        {
+            switch (Status)
+            {
+                case TrEnum.Status.Unloaded:
+                    StatusColor = Brushes.Red; 
+                    break;
+                case TrEnum.Status.Loaded:
+                    StatusColor = Brushes.LimeGreen; 
+                    break;
+                case TrEnum.Status.Changed:
+                    StatusColor = Brushes.Orange; 
+                    break;
+                case TrEnum.Status.Uploaded:
+                    StatusColor = Brushes.DarkViolet; 
+                    break;
+                case TrEnum.Status.Refreshed:
+                    StatusColor = Brushes.Cyan;
+                    break;
+                default:
+                    StatusColor = Brushes.Red;
+                    break;
+            }
+        }
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 13. Classes 
+        
+    
     }
 }

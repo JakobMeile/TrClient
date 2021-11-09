@@ -22,14 +22,16 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-        public TrTableRegion ParentRegion { get; set; }
-        public List<TrTextLine> TextLines { get; set; }
+        private TrTableRegion _parentRegion;
 
-        public int RowNumber { get; set; }
+        private List<TrTextLine> _textLines;
 
-        public int ColumnNumber { get; set; }
+        private int _rowNumber;
 
-        public string CornerPoints { get; set; }
+        private int _columnNumber;
+
+        private string _cornerPoints;
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -79,6 +81,15 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
+        public TrTableRegion ParentRegion { get; set; }
+        public List<TrTextLine> TextLines { get; set; }
+
+        public int RowNumber { get; set; }
+
+        public int ColumnNumber { get; set; }
+
+        public string CornerPoints { get; set; }
+
         public override int PageNumber
         {
             get
@@ -95,15 +106,15 @@ namespace TrClient2.Core
             get
             {
                 // temporary code begins
-                number = ParentRegion.Cells.IndexOf(this);
+                // _number = ParentRegion.Cells.IndexOf(this);
                 // temporary code ends
 
-                return number;
+                return _number;
             }
 
             set
             {
-                number = value;
+                _number = value;
             }
         }
 
@@ -129,6 +140,11 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+
+        public List<TrTextLine> GetLines()
+        {
+            return _textLines;
+        }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

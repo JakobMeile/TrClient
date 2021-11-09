@@ -198,6 +198,12 @@ namespace TrClient.Core
             }
         }
 
+        public override void ConvertAsterisksToHyphenation()
+        {
+            foreach (TrTextLine textLine in TextLines)
+                textLine.ConvertAsterisksToHyphenation();
+        }
+
         public override XElement ToXML()
         {
             string customString = Tags.ToString();

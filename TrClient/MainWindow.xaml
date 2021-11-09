@@ -131,6 +131,9 @@
                 <MenuItem Header="Wrap Super/Subscript with Spaces" Name="MenuItem_WrapSuperAndSubscriptWithSpaces" Click="MenuItem_WrapSuperAndSubscriptWithSpaces_Click"/>
             </MenuItem>
 
+            <MenuItem Header="T2I">
+                <MenuItem Header="Convert * to hyphen" Name="MenuItem_ConvertAsterisks" Click="MenuItem_ConvertAsterisks_Click"/>
+            </MenuItem>
             <MenuItem Header="_Statistics">
                 <MenuItem Header="_Count Pages with Regions" Name="MenuItem_CountPagesWithRegions" Click="MenuItem_CountPagesWithRegions_Click"/>
                 <MenuItem Header="List Pages w/o _Regional Tags" Name="MenuItem_ListPagesWORegionalTags" Click="MenuItem_ListPagesWORegionalTags_Click" />

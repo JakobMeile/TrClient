@@ -2,6 +2,8 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
+// #define DEBUG
+
 namespace TrClient.Core
 {
     using System;
@@ -38,6 +40,11 @@ namespace TrClient.Core
 
     public class TrTextLine : IComparable, INotifyPropertyChanged
     {
+        private const string asterisk = "*";
+        private const string space = " ";
+        private const string hyphen = "-";
+        private const string angledDash = "¬";    // Unicode 00AC "Not Sign" - in Transkribus known as "angled dash"
+
         public string ID { get; set; }
 
         public string TagString { get; set; }
@@ -2171,6 +2178,7 @@ namespace TrClient.Core
         //}
 
         // genbrugte
+
         public ContentType ContentType = ContentType.Undefined;
 
         // public string[] TagStrings;
@@ -2905,7 +2913,7 @@ namespace TrClient.Core
             {
                 if (TextEquiv.EndsWith(" "))
                 {
-                    //Debug.Print($"Line ends with space");
+
                     if (TextEquiv.Length > 0)
                     {
                         int lastRealCharPosition = TextEquiv.Length - 1;
@@ -2920,7 +2928,14 @@ namespace TrClient.Core
                         //Debug.Print($"Length: {TextEquiv.Length}, lastrealcharpos: {LastRealCharPosition}, difference: {Difference}");
                         if (difference != 0)
                         {
-                            Tags.Move(lastRealCharPosition + 1, difference, true);
+#if DEBUG
+                            Debug.Print($"Trim: Line # {Number} is trimmed.");
+#endif
+                            if (HasTextualTags)
+                            { 
+                                Tags.Move(lastRealCharPosition + 1, difference, true); 
+                            }
+
                             TextEquiv = temp;
                             HasChanged = true;
                         }
@@ -2948,6 +2963,317 @@ namespace TrClient.Core
                             TextEquiv = temp;
                             HasChanged = true;
                         }
+                    }
+                }
+            }
+        }
+
+
+        public void InsertBefore(string insertion)
+        {
+#if DEBUG
+            Debug.Print($"InsertBefore: line# {Number}: string to insertion = >{insertion}<");
+#endif
+            // allerførst trimmes denne linie
+            Trim();
+
+            // hvis insertion ender med en bindestreg/angled dash, skal den blot sættes ind;
+            // hvis ikke, skal der også indsættes et mellemrum efter insertion:
+            if (!insertion.EndsWith(hyphen) && !insertion.EndsWith(angledDash))
+            {
+                insertion = insertion + " ";
+#if DEBUG
+                Debug.Print($"InsertBefore: space added to insertion (after this): >{insertion}<");
+#endif
+            }
+
+            // hvis denne linie har textual tags, skal de flyttes til højre
+            if (HasTextualTags)
+            {
+                Tags.Move(-1, insertion.Length, true);
+#if DEBUG
+                Debug.Print($"InsertBefore: tags moved with {insertion.Length} characters.");
+#endif
+            }
+
+            // strengen sættes ind
+            textEquiv = textEquiv.Insert(0, insertion);
+
+            // giv besked om at linien er ændret
+            HasChanged = true;
+        }
+
+        public void InsertAfter(string insertion)
+        {
+#if DEBUG
+            Debug.Print($"InsertAfter: line# {Number}: string to insertion = >{insertion}<");
+#endif
+            // allerførst trimmes denne linie
+            Trim();
+
+            // hvis denne linie ender med en bindestreg/angled dash, skal insertion blot sættes ind;
+            // hvis ikke, skal der også indsættes et mellemrum først
+            if (!textEquiv.EndsWith(hyphen) && !textEquiv.EndsWith(angledDash))
+            {
+                // dog skal der ikke tilføjes mellemrum, når metoden blot benyttes til at indsætte 'angledDash' eller hyphen:
+                if (insertion != angledDash && insertion != hyphen)
+                {
+                    insertion = " " + insertion;
+#if DEBUG
+                    Debug.Print($"InsertAfter: space added to insertion (before this): >{insertion}<");
+#endif
+                }
+            }
+
+            // strengen sættes ind
+            textEquiv = textEquiv.Insert(Length, insertion);
+
+            // (det er ikke nødvendigt at flytte Tags)
+
+            // giv besked om at linien er ændret
+            HasChanged = true;
+        }
+
+        public bool HasTextualTags
+        {
+            get
+            {
+                bool hasTextualTags = false;
+
+                foreach (TrTag tag in Tags)
+                {
+                    if (tag.GetType() == typeof(TrTagTextual) || tag.GetType().IsSubclassOf(typeof(TrTagTextual)))
+                    {
+                        hasTextualTags = hasTextualTags || true; 
+                    }
+                }
+
+                return hasTextualTags;
+            }
+        }
+
+        public bool HasTextualTagAtIndex(int index)
+        {
+            bool hasTagAtIndex = false;
+
+            foreach (TrTag tag in Tags)
+            {
+                if (tag.GetType() == typeof(TrTagTextual) || tag.GetType().IsSubclassOf(typeof(TrTagTextual)))
+                {
+                    hasTagAtIndex = hasTagAtIndex || (tag as TrTagTextual).IsAtIndex(index);
+                }
+            }
+
+            return hasTagAtIndex;
+        }
+
+        public TrTags GetTextualTagsAtIndex(int index)
+        {
+            TrTags tagsAtIndex = new TrTags();
+
+            foreach (TrTag tag in Tags)
+            {
+                if (tag.GetType() == typeof(TrTagTextual) || tag.GetType().IsSubclassOf(typeof(TrTagTextual)))
+                {
+                    if ((tag as TrTagTextual).IsAtIndex(index))
+                    {
+                        tagsAtIndex.Add(tag);
+                    }
+                }
+            }
+            return tagsAtIndex;
+        }
+
+        public void ConvertAsterisksToHyphenation()
+        {
+            bool moveToPrevious = false;
+            bool moveToNext = false;
+            int tagDelta = 0;
+            int tagOffset = 0;
+
+            // indledningsvist trimmer vi denne linie, så afsluttende mellemrum ikke ødelægger fornøjelsen
+            Trim();
+
+            // vha. RegEx findes alle forekomster af asterisk
+            Regex findAsterisk = new Regex(Regex.Escape(asterisk));
+            MatchCollection asteriskMatches = findAsterisk.Matches(TextEquiv);
+
+            // NB: for hver textline er det muligt at der kan være 0, 1 eller 2 - hvis flere, er den gal
+            // hvis <= 0: uinteressant: videre til næste
+            // hvis >= 3: meld fejl
+            // hvis 1 eller 2: fortsæt; dog kun hvis denne + forrige + næste IKKE har textual tags!!!
+            if (asteriskMatches.Count > 0 && asteriskMatches.Count < 3)
+            {
+                Match firstMatch = asteriskMatches[0];
+                Match lastMatch = asteriskMatches[asteriskMatches.Count - 1];
+                int firstIndex = firstMatch.Index;
+                int lastIndex = lastMatch.Index;
+                double centerIndex = (Length - 1) / 2;
+
+                // check: hvis asterisk er første eller sidste karakter, skal der IKKE gøres noget: fortsætter kun, hvis dette ikke er tilfældet
+                if (firstIndex > 0 && firstIndex < (Length - 1) && lastIndex > 0 && lastIndex < (Length - 1))
+                {
+                    // hvis 1: relativt simpelt: der skal flyttes tekst fra denne til enten forrige eller næste
+                    if (asteriskMatches.Count == 1)
+                    {
+                        // hvis *.position er < midten: der skal flyttes tekst til forrige
+                        if ((double)firstIndex < centerIndex)
+                        {
+                            // check: eksisterer forrige?
+                            if (Previous != null)
+                            {
+                                // hvis ja: der må flyttes til forrige
+                                moveToPrevious = true;
+                            }
+                            else
+                            {
+                                // hvis nej: meld fejl
+                            }
+                        }
+                        else
+
+                        // ellers hvis *.position er > midten: der skal flyttes tekst til næste
+                        if ((double)lastIndex > centerIndex)
+                        {
+                            // check: eksisterer næste?
+                            if (Next != null)
+                            {
+                                // hvis ja: der må flyttes til næste
+                                moveToNext = true;
+                            }
+                            else
+                            {
+                                // hvis nej: meld fejl
+                            }
+                        }
+                        else
+
+                        // ellers hvis *.position er = midten kan det ikke afgøres programmatisk!
+                        {
+                            // meld fejl / spørg bruger
+                        }
+                    }
+
+                    // hvis 2: der skal flyttes tekst fra denne både til forrige og næste
+                    if (asteriskMatches.Count == 2)
+                    {
+                        // check: *.position.1 skal være < midten OG *.position.2 skal være > midten;
+                        // desuden må ingen af dem være hhv. første og sidste position
+                        if ((double)firstIndex < centerIndex && (double)lastIndex > centerIndex && firstIndex > 0 && firstIndex < (Length - 1) && lastIndex > 0 && lastIndex < (Length - 1))
+                        {
+                            // check: eksisterer forrige og næste?
+                            if (Previous != null && Next != null)
+                            {
+                                // hvis ja: der må flyttes til både forrige og næste
+                                moveToPrevious = true;
+                                moveToNext = true;
+                            }
+                            else
+                            {
+                                // hvis nej: meld fejl: enten mangler previous eller next
+                            }
+                        }
+                        else
+                        {
+                            // hvis nej: meld fejl: positionerne er forkerte
+                        }
+                    }
+#if DEBUG
+                    Debug.Print($"   "); 
+                    Debug.Print($"-----------------------------");
+                    Debug.Print($"ConvertAsterisksToHyphenation: line# {Number}: moveToPrevious? {moveToPrevious} - moveToNext? {moveToNext}");
+#endif
+
+                    // i det følgende udføres cut-and-paste: vi begynder med moveToNext, for ikke at påvirke index- og length-værdierne for moveToPrevious
+
+                    // hvis moveToNext er OK:
+                    if (moveToNext)
+                    {
+                        // find og gem tekstbid til højre for *
+                        string substringToNext = textEquiv.Substring(lastIndex + 1).Trim();
+
+                        // indsæt tekstbidden i begyndelsen af næste linie
+                        Next.InsertBefore(substringToNext);
+
+                        // hvis denne linie har textual tags på asterisken, skal de beskæres
+                        if (HasTextualTags)
+                        { 
+                            if (HasTextualTagAtIndex(lastIndex))
+                            {
+                                tagOffset = lastIndex;
+                                tagDelta = -(substringToNext.Length + 1);
+                                Tags.Move(tagOffset, tagDelta, true);
+                            }
+                        }
+
+                        // fjern tekstbidden incl. *
+                        textEquiv = textEquiv.Remove(lastIndex).Trim();
+
+                        // tilføj "angled dash" i slutningen af denne linie
+                        InsertAfter(angledDash);
+
+                        // MEN: Hvis den flyttede tekst har andre tags, end i begyndelsen af næste linie - hvad så?
+                        // (flyt evt.tags i den flyttede tekst til næste linie)
+                        // NOT IMPLEMENTED
+
+                        // giv besked om at linien er ændret
+                        HasChanged = true;
+                    }
+
+                    // hvis moveToPrevious er OK:
+                    if (moveToPrevious)
+                    {
+                        // find og gem tekstbid til venstre for *
+                        string substringToPrevious = textEquiv.Substring(0, firstIndex);
+                        
+                        // notér længden af det, der er klippet fra
+                        int substringUntrimmedLength = substringToPrevious.Length;
+                        
+                        // og trim det
+                        substringToPrevious = substringToPrevious.Trim();
+
+                        // indsæt tekstbidden i slutningen af forrige linie
+                        Previous.InsertAfter(substringToPrevious);
+
+                        // tilføj "angled dash" i slutningen af forrige linie
+                        Previous.InsertAfter(angledDash);
+
+                        // fjern tekstbidden incl. * 
+                        textEquiv = textEquiv.Remove(0, firstIndex + 1);
+
+                        // notér længden af det tilbareværende
+                        int thisUntrimmedLength = TextEquiv.Length;
+
+                        // og trim egen linie
+                        textEquiv = textEquiv.Trim();
+
+                        // flyt evt.tags i den flyttede tekst til forrige linie
+                        // og hvad nu, hvis forrige linie ender med tagget ord med hyphen? skal den flyttede tekst så inkluderes i dette tag?
+                        // hvordan???
+                        // NOT IMPLEMENTED
+
+                        // hvis denne linie har textual tags, skal de flyttes
+                        if (HasTextualTags)
+                        {
+                            // flyt denne linies Tags et tilsvarende antal karakterer bagud
+                            tagOffset = 0;
+                            tagDelta = -(substringToPrevious.Length + 1);
+
+                            // der skal kompenseres for evt. mellemrum ifm. asterisk:
+                            if (substringUntrimmedLength > substringToPrevious.Length || thisUntrimmedLength > Length)
+                            {
+                                int correction = (substringUntrimmedLength - substringToPrevious.Length) + (thisUntrimmedLength - Length);
+                                tagDelta -= correction;
+                            }
+
+                            Tags.Move(tagOffset, tagDelta, true);
+#if DEBUG
+                            Debug.Print($"ConvertAsterisksToHyphenation: tags moved with {tagDelta} characters.");
+#endif
+                        }
+
+                        // giv besked om at linien er ændret
+                        HasChanged = true;
                     }
                 }
             }

@@ -22,7 +22,8 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-        public List<TrCell> Cells { get; set; }
+        private List<TrCell> _cells;
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -37,7 +38,7 @@ namespace TrClient2.Core
         public TrTableRegion(TrTranscript parentTranscript, string id, string type, string tags, float orientation, string coords)
             : base(parentTranscript, id, type, tags, orientation, coords)
         {
-            Cells = new List<TrCell>();
+            _cells = new List<TrCell>();
 
             // Tags.ParentRegion = this;
         }
@@ -54,7 +55,7 @@ namespace TrClient2.Core
         public TrTableRegion(TrTranscript parentTranscript, string id, string type, int order, float orientation, string coords)
             : base(parentTranscript, id, type, order, orientation, coords)
         {
-            Cells = new List<TrCell>();
+            _cells = new List<TrCell>();
 
             // Tags.ParentRegion = this;
         }
@@ -80,14 +81,6 @@ namespace TrClient2.Core
         // 9. Properties 
 
 
-        public override List<TrTextLine> Lines
-        {
-            get
-            {
-                var selectedLines = Cells.SelectMany(x => x.TextLines).ToList();
-                return selectedLines;
-            }
-        }
 
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -95,6 +88,11 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+        public override List<TrTextLine> GetLines()
+        {
+            var selectedLines = _cells.SelectMany(x => x.GetLines()).ToList();
+            return selectedLines;
+        }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

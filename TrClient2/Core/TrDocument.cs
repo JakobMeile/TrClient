@@ -25,15 +25,16 @@ namespace TrClient2.Core
         // 2. Fields 
 
         /// <summary>
-        /// Gets or sets the title of the document.
+        /// Holds the title of the document.
         /// </summary>
-        public string Title { get; set; }
+        private string _title = string.Empty;
 
-        public TrCollection ParentCollection { get; set; }
+        private TrCollection _parentCollection;
 
-        public List<TrPage> Pages { get; set; }
+        private List<TrPage> _pages;
 
-        public int PageCount { get; set; }
+        private int _pageCount;
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -46,12 +47,13 @@ namespace TrClient2.Core
         public TrDocument(TrCollection parentCollection, string id, string documentTitle, int pageCount)
         {
             ParentCollection = parentCollection;
-            Pages = new List<TrPage>();
+            _pages = new List<TrPage>();
 
             Title = documentTitle;
             IDNumber = id;
             PageCount = pageCount;
 
+            Status = TrEnum.Status.Unloaded;
             IsLoaded = false;
         }
 
@@ -85,22 +87,42 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
 
-
-        public List<TrTextLine> Lines
-        {
-            get
-            {
-                var selectedLines = Pages.SelectMany(x => x.Lines).ToList();
-                return selectedLines;
-            }
+        /// <summary>
+        /// Gets or sets the title of the document.
+        /// </summary>
+        public string Title 
+        { 
+            get { return _title; } 
+            set { _title = value; } 
         }
 
-  
+        public TrCollection ParentCollection
+        {
+            get { return _parentCollection; }
+            set { _parentCollection = value; }
+        }
+
+
+        public int PageCount
+        {
+            get { return _pageCount; }
+            set { _pageCount = value; }
+        }
+
+
+
+
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+        public List<TrTextLine> GetLines()
+        {
+            var selectedLines = _pages.SelectMany(x => x.GetLines()).ToList();
+            return selectedLines;
+        }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

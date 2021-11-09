@@ -196,6 +196,11 @@ namespace TrClient.Core.Tags
             }
         }
 
+        public bool IsAtIndex(int index)
+        {
+            return Offset <= index && EndPosition >= index;
+        }
+
         public new int SortKey
         {
             get

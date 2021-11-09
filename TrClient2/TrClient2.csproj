@@ -66,7 +66,9 @@
     <Compile Include="Core\TrBase.cs" />
     <Compile Include="Core\TrCell.cs" />
     <Compile Include="Core\TrCollection.cs" />
+    <Compile Include="Core\TrCommon.cs" />
     <Compile Include="Core\TrDocument.cs" />
+    <Compile Include="Core\TrEnum.cs" />
     <Compile Include="Core\TrItem.cs" />
     <Compile Include="Core\TrPageLevelItem.cs" />
     <Compile Include="Core\TrPage.cs" />

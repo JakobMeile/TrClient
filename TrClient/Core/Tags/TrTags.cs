@@ -2,6 +2,8 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
+// #define DEBUG
+
 namespace TrClient.Core.Tags
 {
     using System.Collections;
@@ -134,35 +136,57 @@ namespace TrClient.Core.Tags
 
         public void Move(int startOffset, int delta, bool Permanent)
         {
-            //Debug.Print($"Page# {ParentLine.ParentPageNr}, Line# {ParentLine.Number}, Text: {ParentLine.TextEquiv}, parameters StartOffset = {StartOffset}, Delta = {Delta}");
+#if DEBUG
+            Debug.Print($"Move Tags: StartOffset = {startOffset}, Delta = {delta}");
+#endif
+
             int currentOffset;
             int currentLength;
-            int CurrentEndPosition;
+            int currentEndPosition;
+            
+            int newOffset;
+            int newLength;
+            int newEndPosition;
 
-            int NewEndPosition;
-
-            int ParentLineMaxPosition = ParentLine.Length - 1;
+            int parentLineMaxPosition = ParentLine.Length - 1;
 
             foreach (TrTag T in tags)
             {
                 if (T.GetType() == typeof(TrTagTextual) || T.GetType().IsSubclassOf(typeof(TrTagTextual)))
                 {
-                    //Debug.Print($"{T.GetType()} : parameters StartOffset = {StartOffset}, Delta = {Delta}");
                     currentOffset = (T as TrTagTextual).Offset;
                     currentLength = (T as TrTagTextual).Length;
-                    CurrentEndPosition = (T as TrTagTextual).EndPosition;
+                    currentEndPosition = (T as TrTagTextual).EndPosition;
 
-                    //Debug.Print($"CURRENT offset: {CurrentOffset}, length: {CurrentLength}, end: {CurrentEndPosition}");
-                    NewEndPosition = CurrentEndPosition + delta;
+                    newOffset = currentOffset + delta;
+                    newLength = currentLength + delta;
+                    newEndPosition = currentEndPosition + delta;
 
-                    if (NewEndPosition <= ParentLineMaxPosition || !Permanent)
+#if DEBUG
+                    Debug.Print($"CURRENT   offset: {currentOffset}, length: {currentLength}, end: {currentEndPosition}");
+                    Debug.Print($"temp      offset: {newOffset}, length: {newLength}, end: {newEndPosition}");
+#endif
+
+                    // her kompenserer vi for det, der sker, når man klipper (T2I-*) i linier, og det første ord bliver kortere
+                    // offsettet kan aldrig være negativt - det må være 0, og så skal længden tilgengæld gøres mindre
+                    if (newOffset < 0)
+                    {
+                        newOffset = 0;
+                    }
+#if DEBUG
+                    Debug.Print($"corrected offset: {newOffset}, length: {newLength}, end: {newEndPosition}");
+#endif
+                    if (newEndPosition <= parentLineMaxPosition || !Permanent)
                     {
                         // hvis hele tagget ligger til højre for start, skal kun dets offset ændres
-                        if (currentOffset > startOffset && CurrentEndPosition > startOffset)
+                        if (currentOffset > startOffset && currentEndPosition > startOffset)
                         {
+#if DEBUG
+                            Debug.Print($"Changing only offset.");
+#endif
                             if (Permanent)
                             {
-                                (T as TrTagTextual).Offset = currentOffset + delta;
+                                (T as TrTagTextual).Offset = newOffset;
                             }
                             else
                             {
@@ -172,23 +196,37 @@ namespace TrClient.Core.Tags
 
                         // ellers hvis tagget ligger hen over start, skal kun dets længde ændres
                         else
-                        if (currentOffset <= startOffset && CurrentEndPosition >= startOffset)
+                        if (currentOffset <= startOffset && currentEndPosition >= startOffset)
                         {
+#if DEBUG
+                            Debug.Print($"Changing only length.");
+#endif
                             if (Permanent)
                             {
-                                (T as TrTagTextual).Length = currentLength + delta;
+                                (T as TrTagTextual).Length = newLength;
                             }
                             else
                             {
                                 (T as TrTagTextual).DeltaLength = (T as TrTagTextual).DeltaLength + delta;
                             }
                         }
+                        else
+                        {
+#if DEBUG
+                            Debug.Print($"Don't know what to change!");
+#endif
 
-                        //Debug.Print($"NEW     offset: {(T as TrTagTextual).Offset}, length: {(T as TrTagTextual).Length}, end: {(T as TrTagTextual).EndPosition}");
+                        }
+#if DEBUG
+                        Debug.Print($"NEW     offset: {(T as TrTagTextual).Offset}, length: {(T as TrTagTextual).Length}, end: {(T as TrTagTextual).EndPosition}");
+#endif
+
                     }
                     else
                     {
+#if DEBUG
                         Debug.Print($"Change not allowed!");
+#endif
                     }
                 }
             }

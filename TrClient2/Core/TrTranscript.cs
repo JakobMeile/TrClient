@@ -26,9 +26,11 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-        public TrPage ParentPage { get; set; }
 
-        public List<TrRegion> Regions { get; set; }
+        private TrPage _parentPage;
+
+        private List<TrRegion> _regions;
+        
 
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -42,7 +44,7 @@ namespace TrClient2.Core
         public TrTranscript(TrPage parentPage, string id, string key, int pageNumber, string status, string user, string timeStamp)
         {
             ParentPage = parentPage;
-            Regions = new List<TrRegion>();
+            _regions = new List<TrRegion>();
 
             // TranscriptionDocument = new XDocument();
 
@@ -85,42 +87,42 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
+        public TrPage ParentPage
+        {
+            get { return _parentPage; }
+            set { _parentPage = value; }
+        }
+
+
+
+
         public override int PageNumber
         {
-            get
-            {
-                return ParentPage.Number;
-            }
+            get { return _pageNumber; }
+            // set { _pageNumber = value; }
         }
 
 
-        public List<TrTextLine> Lines
-        {
-            get
-            {
-                var selectedLines = Regions.SelectMany(x => x.Lines).ToList();
-                return selectedLines;
-            }
-        }
+
 
         /// <summary>
         /// Gets or sets the number of the transcript.
         /// </summary>
-        
+
         public override int Number
         {
             get
             {
                 // temporary code begins
-                number = ParentPage.Transcripts.IndexOf(this);
+                // _number = ParentPage.Transcripts.IndexOf(this);
                 // temporary code ends
 
-                return number;
+                return _number;
             }
 
             set
             {
-                number = value;
+                _number = value;
             }
         }
 
@@ -146,6 +148,11 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+        public List<TrTextLine> GetLines()
+        {
+            var selectedLines = _regions.SelectMany(x => x.GetLines()).ToList();
+            return selectedLines;
+        }
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

@@ -1717,6 +1717,13 @@ namespace TrClient.Core
             log.Save();
         }
 
+        public void ConvertAsterisksToHyphenation()
+        {
+            foreach (TrPage page in Pages)
+                page.ConvertAsterisksToHyphenation();
+        }
+
+
         //public void RepairBaseLines()
         //{
         //    string LogFileName = "Repair BaseLines";

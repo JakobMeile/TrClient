@@ -27,77 +27,82 @@ namespace TrClient2.Core
         /// <summary>
         /// Holds the page number of the item.
         /// </summary>
-        private protected int pageNumber;
+        private protected int _pageNumber;
 
         /// <summary>
         /// Holds the number of the item.
         /// </summary>
-        private protected int number;
+        private protected int _number;
 
         /// <summary>
         /// Holds the string with coordinates.
         /// </summary>
-        private protected string coordinatesString;
+        private protected string _coordinatesString;
 
-        /// <summary>
-        /// Holds a boolean flag indicating whether the item can be deleted.
-        /// </summary>
-        private protected bool markToDeletion;
+        ///// <summary>
+        ///// Holds a boolean flag indicating whether the item can be deleted.
+        ///// </summary>
+        //private protected bool _markToDeletion;
 
         /// <summary>
         /// Holds a boolean flag indicating whether the item has coordinates.
         /// </summary>
-        private protected bool hasCoordinates;
+        private protected bool _hasCoordinates;
 
         /// <summary>
         /// Holds a value indicating the horizontal position of the item.
         /// </summary>
-        private protected int horizontalPosition;
+        private protected int _horizontalPosition;
 
         /// <summary>
         /// Holds a value indicating the horizontal end position of the item.
         /// </summary>
-        private protected int horizontalEndPosition;
+        private protected int _horizontalEndPosition;
 
         /// <summary>
         /// Holds a value indicating the vertical position of the item.
         /// </summary>
-        private protected int verticalPosition;
+        private protected int _verticalPosition;
         
         /// <summary>
         /// Holds a value indicating the width of the item.
         /// </summary>
-        private protected int width;
+        private protected int _width;
+
+        /// <summary>
+        /// Holds a value indicating the height of the item.
+        /// </summary>
+        private protected int _height;
 
         /// <summary>
         /// Holds a value indicating the left border of the item.
         /// </summary>
-        private protected int leftBorder;
+        private protected int _leftBorder;
 
         /// <summary>
         /// Holds a value indicating the right border of the item.
         /// </summary>
-        private protected int rightBorder;
+        private protected int _rightBorder;
 
         /// <summary>
         /// Holds a value indicating the top border of the item.
         /// </summary>
-        private protected int topBorder;
+        private protected int _topBorder;
 
         /// <summary>
         /// Holds a value indicating the bottom border of the item.
         /// </summary>
-        private protected int bottomBorder;
+        private protected int _bottomBorder;
 
         /// <summary>
         /// Holds a value indicating the horizontal order of the item.
         /// </summary>
-        private protected int horizontalOrder;
+        private protected int _horizontalOrder;
 
         /// <summary>
         /// Holds a value indicating the vertial order of the item.
         /// </summary>
-        private protected int verticalOrder;
+        private protected int _verticalOrder;
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -108,7 +113,6 @@ namespace TrClient2.Core
         /// </summary>
         public TrPageLevelItem() 
         {
-            MarkToDeletion = false;
         }
 
         // ------------------------------------------------------------------------------------------------------------------------
@@ -148,38 +152,38 @@ namespace TrClient2.Core
         { 
             get
             {
-                return coordinatesString;
+                return _coordinatesString;
             }
 
             set
             {
-                coordinatesString = value;
-                if (coordinatesString == null)
+                _coordinatesString = value;
+                if (_coordinatesString == null)
                 {
                     throw new ArgumentNullException("A coordinate string can't be null.");
                 }
-                else if (coordinatesString == string.Empty)
+                else if (_coordinatesString == string.Empty)
                 {
                     throw new ArgumentException("A coordinate string can't be empty.");
                 }
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the item can be deleted.
-        /// </summary>
-        public bool MarkToDeletion
-        {
-            get
-            {
-                return markToDeletion;
-            }
+        ///// <summary>
+        ///// Gets or sets a value indicating whether the item can be deleted.
+        ///// </summary>
+        //public bool MarkToDeletion
+        //{
+        //    get
+        //    {
+        //        return _markToDeletion;
+        //    }
 
-            set
-            {
-                markToDeletion = value;
-            }
-        }
+        //    set
+        //    {
+        //        _markToDeletion = value;
+        //    }
+        //}
 
         /// <summary>
         /// Gets a value indicating whether the item has got coordinates.
@@ -188,8 +192,8 @@ namespace TrClient2.Core
         {
             get
             {
-                hasCoordinates = CoordinatesString != string.Empty;
-                return hasCoordinates;
+                _hasCoordinates = CoordinatesString != string.Empty;
+                return _hasCoordinates;
             }
         }
 
@@ -200,8 +204,8 @@ namespace TrClient2.Core
         {
             get
             {
-                horizontalPosition = GetLeftMostX(CoordinatesString);
-                return horizontalPosition;
+                _horizontalPosition = GetLeftMostX(CoordinatesString);
+                return _horizontalPosition;
             }
         }
 
@@ -212,8 +216,8 @@ namespace TrClient2.Core
         {
             get
             {
-                horizontalEndPosition = GetRightMostX(CoordinatesString);
-                return horizontalEndPosition;
+                _horizontalEndPosition = GetRightMostX(CoordinatesString);
+                return _horizontalEndPosition;
             }
         }
 
@@ -227,8 +231,8 @@ namespace TrClient2.Core
         {
             get
             {
-                verticalPosition = GetAverageY(CoordinatesString);
-                return verticalPosition;
+                _verticalPosition = GetAverageY(CoordinatesString);
+                return _verticalPosition;
             }
         }
 
@@ -239,8 +243,20 @@ namespace TrClient2.Core
         {
             get
             {
-                width = HorizontalEndPosition - HorizontalPosition;
-                return width;
+                _width = HorizontalEndPosition - HorizontalPosition;
+                return _width;
+            }
+        }
+
+        /// <summary>
+        /// Gets the height of the item.
+        /// </summary>
+        public int Height
+        {
+            get
+            {
+                _height = BottomBorder - TopBorder;
+                return _height;
             }
         }
 
@@ -251,8 +267,8 @@ namespace TrClient2.Core
         {
             get
             {
-                leftBorder = HorizontalPosition;
-                return leftBorder;
+                _leftBorder = HorizontalPosition;
+                return _leftBorder;
             }
         }
 
@@ -263,8 +279,8 @@ namespace TrClient2.Core
         {
             get
             {
-                rightBorder = HorizontalEndPosition;
-                return rightBorder;
+                _rightBorder = HorizontalEndPosition;
+                return _rightBorder;
             }
         }
 
@@ -278,8 +294,8 @@ namespace TrClient2.Core
         {
             get
             {
-                topBorder = GetTopMostY(CoordinatesString);
-                return topBorder;
+                _topBorder = GetTopMostY(CoordinatesString);
+                return _topBorder;
             }
         }
 
@@ -293,8 +309,8 @@ namespace TrClient2.Core
         {
             get
             {
-                bottomBorder = GetBottomMostY(CoordinatesString);
-                return bottomBorder;
+                _bottomBorder = GetBottomMostY(CoordinatesString);
+                return _bottomBorder;
             }
         }
 
@@ -305,8 +321,8 @@ namespace TrClient2.Core
         {
             get
             {
-                horizontalOrder = (HorizontalPosition * 10_000) + VerticalPosition;
-                return horizontalOrder;
+                _horizontalOrder = (HorizontalPosition * 10_000) + VerticalPosition;
+                return _horizontalOrder;
             }
         }
 
@@ -317,18 +333,10 @@ namespace TrClient2.Core
         {
             get
             {
-                verticalOrder = (VerticalPosition * 10_000) + HorizontalPosition;
-                return verticalOrder;
+                _verticalOrder = (VerticalPosition * 10_000) + HorizontalPosition;
+                return _verticalOrder;
             }
         }
-
-        // width??
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // 10. Indexers 
-
-        // ------------------------------------------------------------------------------------------------------------------------
-        // 11. Methods 
 
         private static int GetLeftMostX(string coordinates)
         {

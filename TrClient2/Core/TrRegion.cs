@@ -26,8 +26,9 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 2. Fields 
-        public TrTranscript ParentTranscript { get; set; }
+        private TrTranscript _parentTranscript;
 
+        
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -112,6 +113,13 @@ namespace TrClient2.Core
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
 
+        public TrTranscript ParentTranscript
+        {
+            get { return _parentTranscript; }
+            set { _parentTranscript = value; }
+        }
+
+
         public override int PageNumber 
         {
             get 
@@ -128,19 +136,18 @@ namespace TrClient2.Core
             get
             {
                 // temporary code begins
-                number = ParentTranscript.Regions.IndexOf(this);
+                // _number = ParentTranscript.Regions.IndexOf(this);
                 // temporary code ends
 
-                return number;
+                return _number;
             }
 
             set
             {
-                number = value;
+                _number = value;
             }
         }
 
-        public abstract List<TrTextLine> Lines { get; }
 
         /// <summary>
         /// Gets the previous item of its kind.
@@ -163,6 +170,7 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+        public abstract List<TrTextLine> GetLines();
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 

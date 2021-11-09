@@ -12,6 +12,7 @@ namespace TrClient2.Core
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -28,13 +29,14 @@ namespace TrClient2.Core
         // 2. Fields 
 
         /// <summary>
-        /// Gets or sets the name of the collection.
+        /// Holds the name of the collection.
         /// </summary>
-        public string Name { get; set; }
+        private string _name = string.Empty;
 
-        public List<TrDocument> Documents { get; set; }
+        private List<TrDocument> _documents;
 
-        public int DocumentCount { get; set; }
+        private int _documentCount;
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 3. Constructors 
@@ -45,11 +47,13 @@ namespace TrClient2.Core
         /// </summary>
         public TrCollection(string collectionName, string id, int documentCount)
         {
-            Documents = new List<TrDocument>();
+            _documents = new List<TrDocument>();
             
             Name = collectionName;
             IDNumber = id;
             DocumentCount = documentCount;
+
+            this.PropertyChanged += TrDocument_PropertyChanged;
 
             IsLoaded = false;
         }
@@ -68,15 +72,47 @@ namespace TrClient2.Core
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 8. Interface implementations 
-     
+
         // ------------------------------------------------------------------------------------------------------------------------
         // 9. Properties 
+        /// <summary>
+        /// Gets or sets the name of the collection.
+        /// </summary>
+        public string Name 
+        { 
+            get { return _name;  } 
+            set { _name = value; }
+        }
+
+
+        public int DocumentCount
+        {
+            get { return _documentCount; }
+            set { _documentCount = value; }
+        }
+
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 10. Indexers 
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 11. Methods 
+        void TrDocument_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Debug.Print($"TrDocument_PropertyChanged:");
+            switch (e.PropertyName)
+            {
+                case "Status": 
+                    this.Status = (sender as TrDocument).Status;
+                    Debug.Print($"Status changed for document: {(sender as TrDocument).Title}: Status = {(sender as TrDocument).Status}");
+                    break;
+                default:
+                    break;
+
+            }
+        }
+
+      
 
         // ------------------------------------------------------------------------------------------------------------------------
         // 12. Structs 
