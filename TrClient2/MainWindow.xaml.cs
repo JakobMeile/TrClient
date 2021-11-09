@@ -13,9 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TrClient2.Core;
+using TranskribusClient2.Core;
 
-namespace TrClient2
+namespace TranskribusClient2
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -2,11 +2,11 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System.Net.Http;
     using System.Windows;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     /// <summary>
     /// Interaction logic for ShowPage.xaml.

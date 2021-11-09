@@ -4,7 +4,7 @@
 
 // #define DEBUG
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System;
     using System.Collections.Generic;
@@ -17,10 +17,10 @@ namespace TrClient.Core
     using System.Windows.Media;
     using System.Windows.Shapes;
     using System.Xml.Linq;
-    using TrClient.Core.Tags;
-    using TrClient.Extensions;
-    using TrClient.Helpers;
-    using TrClient.Libraries;
+    using TranskribusClient.Core.Tags;
+    using TranskribusClient.Extensions;
+    using TranskribusClient.Helpers;
+    using TranskribusClient.Libraries;
 
     public enum ContentType
     {

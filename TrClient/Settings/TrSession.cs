@@ -9,7 +9,7 @@
 /// <summary>
 /// Class to hold the current session.
 /// </summary>
-namespace TrClient.Settings
+namespace TranskribusClient.Settings
 {
     using System;
     using System.Net.Http;
@@ -23,7 +23,7 @@ namespace TrClient.Settings
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Serialization;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
 
     /// <summary>

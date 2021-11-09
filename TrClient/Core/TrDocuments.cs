@@ -2,12 +2,12 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System.Collections;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using TrClient.Helpers;
+    using TranskribusClient.Helpers;
 
     public class TrDocuments : IEnumerable
     {

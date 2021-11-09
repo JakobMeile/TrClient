@@ -2,11 +2,11 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System;
     using System.ComponentModel;
-    using TrClient.Core.Tags;
+    using TranskribusClient.Core.Tags;
 
     public class TrCell : IComparable, INotifyPropertyChanged
     {

@@ -2,15 +2,15 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Data;
     using System.Windows.Input;
-    using TrClient.Core;
-    using TrClient.Extensions;
+    using TranskribusClient.Core;
+    using TranskribusClient.Extensions;
 
     /// <summary>
     /// Interaction logic for ShowLemmas.xaml.

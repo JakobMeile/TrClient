@@ -2,15 +2,15 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Windows;
-    using TrClient.Core;
-    using TrClient.Helpers;
-    using TrClient.Libraries;
+    using TranskribusClient.Core;
+    using TranskribusClient.Helpers;
+    using TranskribusClient.Libraries;
 
     /// <summary>
     /// Interaction logic for ShowHistogram.xaml.

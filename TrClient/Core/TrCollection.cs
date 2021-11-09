@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System;
     using System.ComponentModel;
@@ -13,7 +13,7 @@ namespace TrClient.Core
     using System.Windows.Media;
     using System.Xml;
     using System.Xml.Linq;
-    using TrClient.Libraries;
+    using TranskribusClient.Libraries;
 
     public class TrCollection : IComparable, INotifyPropertyChanged
     {

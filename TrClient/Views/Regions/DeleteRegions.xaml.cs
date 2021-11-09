@@ -2,10 +2,10 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System.Windows;
-    using static TrClient.MainWindow;
+    using static TranskribusClient.MainWindow;
 
     /// <summary>
     /// Interaction logic for DeleteRegions.xaml.

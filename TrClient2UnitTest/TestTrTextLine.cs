@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TrClient2;
+using TranskribusClient2;
 
-namespace TrClient2UnitTest
+namespace TranskribusClient2UnitTest
 {
     [TestClass]
     public class TestTrTextLine

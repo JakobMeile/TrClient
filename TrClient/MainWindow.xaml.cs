@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient
+namespace TranskribusClient
 {
     using System;
     using System.Collections.Generic;
@@ -19,12 +19,12 @@ namespace TrClient
     using System.Xml.Linq;
     using System.Xml.Serialization;
     using DanishNLP;
-    using TrClient.Core;
-    using TrClient.Extensions;
-    using TrClient.Helpers;
-    using TrClient.Libraries;
-    using TrClient.Settings;
-    using TrClient.Views;
+    using TranskribusClient.Core;
+    using TranskribusClient.Extensions;
+    using TranskribusClient.Helpers;
+    using TranskribusClient.Libraries;
+    using TranskribusClient.Settings;
+    using TranskribusClient.Views;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml.

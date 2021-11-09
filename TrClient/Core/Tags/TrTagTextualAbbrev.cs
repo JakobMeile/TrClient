@@ -2,11 +2,11 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core.Tags
+namespace TranskribusClient.Core.Tags
 {
     using System.Text;
     using System.Text.RegularExpressions;
-    using TrClient.Libraries;
+    using TranskribusClient.Libraries;
 
     public class TrTagTextualAbbrev : TrTagTextual
     {

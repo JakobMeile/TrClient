@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System;
     using System.Diagnostics;
@@ -11,7 +11,7 @@ namespace TrClient.Views
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     /// <summary>
     /// Interaction logic for EditTextLine.xaml.

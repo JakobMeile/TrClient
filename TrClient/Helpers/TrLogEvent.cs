@@ -2,11 +2,11 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Helpers
+namespace TranskribusClient.Helpers
 {
     using System.Text;
-    using TrClient.Core;
-    using TrClient.Libraries;
+    using TranskribusClient.Core;
+    using TranskribusClient.Libraries;
 
     public class TrLogEvent
     {

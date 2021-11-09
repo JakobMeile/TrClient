@@ -2,13 +2,13 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using TrClient.Helpers;
-    using TrClient.Libraries;
+    using TranskribusClient.Helpers;
+    using TranskribusClient.Libraries;
 
     public class TrRegions : IEnumerable
     {

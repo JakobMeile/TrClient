@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Libraries
+namespace TranskribusClient.Libraries
 {
     using System;
     using System.Collections.Generic;
@@ -11,9 +11,9 @@ namespace TrClient.Libraries
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Xml.Linq;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
-    // funktioner til understøttelse af TrClient
+    // funktioner til understøttelse af TranskribusClient
     public static class TrLibrary
     {
         public enum MarcFelt

@@ -2,13 +2,13 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System;
     using System.Windows;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     /// <summary>
     /// Interaction logic for ShowTextLine.xaml.

@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core.Tags
+namespace TranskribusClient.Core.Tags
 {
     using System.Collections;
     using System.Collections.Generic;

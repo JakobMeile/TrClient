@@ -6,7 +6,7 @@
 /// Contains public class TrUser.
 /// </summary>
 
-namespace TrClient.Settings
+namespace TranskribusClient.Settings
 {
     using System;
     using System.Diagnostics;
@@ -19,7 +19,7 @@ namespace TrClient.Settings
     using System.Xml;
     using System.Xml.Linq;
     using System.Xml.Serialization;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     /// <summary>
     /// Class to hold the user's settings, including credentials.

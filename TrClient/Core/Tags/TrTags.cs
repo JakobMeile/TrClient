@@ -4,14 +4,14 @@
 
 // #define DEBUG
 
-namespace TrClient.Core.Tags
+namespace TranskribusClient.Core.Tags
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     public class TrTags : IEnumerable
     {

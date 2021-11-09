@@ -2,14 +2,14 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Net.Http;
     using System.Windows;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     /// <summary>
     /// Interaction logic for MoveRegions.xaml.

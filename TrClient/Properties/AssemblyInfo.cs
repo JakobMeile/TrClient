@@ -9,11 +9,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TrClient")]
+[assembly: AssemblyTitle("TranskribusClient")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Kyrillos")]
-[assembly: AssemblyProduct("TrClient")]
+[assembly: AssemblyProduct("TranskribusClient")]
 [assembly: AssemblyCopyright("Copyright (c) Jakob K. Meile 2021.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

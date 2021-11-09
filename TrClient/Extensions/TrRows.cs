@@ -2,11 +2,11 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Extensions
+namespace TranskribusClient.Extensions
 {
     using System.Collections;
     using System.Collections.Generic;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     public class TrRows : IEnumerable
     {

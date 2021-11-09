@@ -2,10 +2,10 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Settings
+namespace TranskribusClient.Settings
 {
     using System.ComponentModel;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     public class TrCurrent : INotifyPropertyChanged
     {

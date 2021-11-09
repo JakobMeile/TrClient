@@ -2,10 +2,10 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Extensions
+namespace TranskribusClient.Extensions
 {
     using System.Text.RegularExpressions;
-    using TrClient.Libraries;
+    using TranskribusClient.Libraries;
 
     public class TrRecord
     {

@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Helpers
+namespace TranskribusClient.Helpers
 {
     using System;
     using System.Collections.Generic;

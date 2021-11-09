@@ -2,13 +2,13 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System.Diagnostics;
     using System.Net.Http;
     using System.Windows;
-    using TrClient.Core;
-    using TrClient.Libraries;
+    using TranskribusClient.Core;
+    using TranskribusClient.Libraries;
 
     /// <summary>
     /// Interaction logic for FilterLinesByRegex.xaml.

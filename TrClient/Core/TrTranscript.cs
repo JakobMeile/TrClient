@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System;
     using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TrClient.Core
     using System.Threading.Tasks;
     using System.Windows.Media;
     using System.Xml.Linq;
-    using TrClient.Core.Tags;
-    using TrClient.Libraries;
+    using TranskribusClient.Core.Tags;
+    using TranskribusClient.Libraries;
     using System.Resources;
 
     public class TrTranscript : IComparable, INotifyPropertyChanged

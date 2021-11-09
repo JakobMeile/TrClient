@@ -2,10 +2,10 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System.Windows;
-    using TrClient.Extensions;
+    using TranskribusClient.Extensions;
 
     /// <summary>
     /// Interaction logic for EditLemma.xaml.

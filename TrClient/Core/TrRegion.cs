@@ -2,17 +2,17 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Windows.Media;
     using System.Xml.Linq;
-    using TrClient.Core.Tags;
-    using TrClient.Extensions;
-    using TrClient.Helpers;
-    using TrClient.Libraries;
+    using TranskribusClient.Core.Tags;
+    using TranskribusClient.Extensions;
+    using TranskribusClient.Helpers;
+    using TranskribusClient.Libraries;
 
     public abstract class TrRegion : IComparable, INotifyPropertyChanged
     {

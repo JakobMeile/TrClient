@@ -6,7 +6,7 @@
 /// Contains common static functions for project TrClient.
 /// </summary>
 
-namespace TrClient2.Core
+namespace TranskribusClient2.Core
 {
     using System;
     using System.Collections.Generic;

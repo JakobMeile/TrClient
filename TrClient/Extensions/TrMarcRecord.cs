@@ -2,9 +2,9 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Extensions
+namespace TranskribusClient.Extensions
 {
-    using TrClient.Libraries;
+    using TranskribusClient.Libraries;
 
     public class TrMarcRecord
     {

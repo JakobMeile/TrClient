@@ -6,7 +6,7 @@
 /// Contains public class TrTranscript.
 /// </summary>
 
-namespace TrClient2.Core
+namespace TranskribusClient2.Core
 {
     using System;
     using System.Collections.Generic;

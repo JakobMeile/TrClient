@@ -6,7 +6,7 @@
 /// Contains public abstract class TrRegion.
 /// </summary>
 
-namespace TrClient2.Core
+namespace TranskribusClient2.Core
 {
     using System;
     using System.Collections.Generic;

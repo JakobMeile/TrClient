@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,8 @@ namespace TrClient.Views
     using System.Linq;
     using System.Net.Http;
     using System.Windows;
-    using TrClient.Core;
-    using TrClient.Helpers;
+    using TranskribusClient.Core;
+    using TranskribusClient.Helpers;
 
     /// <summary>
     /// Interaction logic for EditBaseLines.xaml.

@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System;
     using System.Collections.Generic;
@@ -17,9 +17,9 @@ namespace TrClient.Core
     using System.Xml;
     using System.Xml.Linq;
     using DanishNLP;
-    using TrClient.Extensions;
-    using TrClient.Helpers;
-    using TrClient.Libraries;
+    using TranskribusClient.Extensions;
+    using TranskribusClient.Helpers;
+    using TranskribusClient.Libraries;
 
     public class TrDocument : IComparable, INotifyPropertyChanged
     {

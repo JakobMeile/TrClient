@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TrClient.Properties {
+namespace TranskribusClient.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TrClient.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TrClient.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TranskribusClient.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace TrClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TrClient.
+        ///   Looks up a localized string similar to TranskribusClient.
         /// </summary>
         internal static string ApplicationName {
             get {
@@ -129,7 +129,7 @@ namespace TrClient.Properties {
         /// </summary>
         internal static System.Drawing.Icon TrClient {
             get {
-                object obj = ResourceManager.GetObject("TrClient", resourceCulture);
+                object obj = ResourceManager.GetObject("TranskribusClient", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

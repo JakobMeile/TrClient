@@ -2,7 +2,7 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Views
+namespace TranskribusClient.Views
 {
     using System;
     using System.IO;
@@ -10,7 +10,7 @@ namespace TrClient.Views
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     /// <summary>
     /// Interaction logic for ShowAndExportPages.xaml.

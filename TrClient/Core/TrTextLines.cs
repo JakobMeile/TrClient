@@ -2,14 +2,14 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using TrClient.Extensions;
-    using TrClient.Helpers;
+    using TranskribusClient.Extensions;
+    using TranskribusClient.Helpers;
 
     public class TrTextLines : IEnumerable
     {

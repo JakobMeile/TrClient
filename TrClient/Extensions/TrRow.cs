@@ -2,12 +2,12 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Extensions
+namespace TranskribusClient.Extensions
 {
     using System;
     using System.ComponentModel;
     using System.Text;
-    using TrClient.Core;
+    using TranskribusClient.Core;
 
     public class TrRow : IComparable, INotifyPropertyChanged
     {

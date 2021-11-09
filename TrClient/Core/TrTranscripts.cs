@@ -2,13 +2,13 @@
 // Copyright (c) Jakob K. Meile 2021.
 // </copyright>
 
-namespace TrClient.Core
+namespace TranskribusClient.Core
 {
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Diagnostics;
-    using TrClient.Libraries;
+    using TranskribusClient.Libraries;
 
     public class TrTranscripts : IEnumerable
     {
