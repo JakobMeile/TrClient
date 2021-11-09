@@ -6,7 +6,7 @@ Client App for Transkribus HTR Platform
 This is a supplementary app that makes life a bit easier when working with the Transkribus HTR Platform (https://readcoop.eu/).
 The main focuses have been to automate tedious tasks and to make some batch processing of all pages in a document.
 
-TrClient communicates directly with the Transkribus servers: All changes can be uploaded and viewed at once in other client apps.
+TranskribusClient communicates directly with the Transkribus servers: All changes can be uploaded and viewed at once in other client apps.
 
 NB: To use this app, you need to have an account at Transkribus - and of course some documents uploaded at their server.
 
