@@ -1,0 +1,44 @@
+﻿<Window x:Class="TrClient.Views.EditLemma"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrClient.Views"
+        mc:Ignorable="d"
+        Title="Edit Lemma" 
+        Height="600" 
+        Width="1000"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+
+            <StackPanel Orientation="Horizontal"  Margin="100,20,0,0">
+                <Label Content="Count:" Height="25" Width="100" />
+                <Label x:Name="lblCount" Content="{Binding OccurrenceCount}" Height="25" Width="50" />
+                <Label Content="ErrorIndex:" Height="25" Width="100" />
+                <Label x:Name="lblErrorIndex" Content="{Binding ErrorIndex}" Height="25" Width="50" />
+            </StackPanel >
+
+
+            <StackPanel Orientation="Horizontal" Margin="0,20,0,10">
+                <Label Content="Text (raw):" Height="25" Width="100" />
+                <TextBox x:Name="txtRawText" Text="{Binding Content}" FontFamily="Georgia" FontSize="14" Height="25" Width="870"  />
+            </StackPanel >
+            
+            <!--<StackPanel Orientation="Horizontal" >
+                <Label Content="Expanded:" Height="25" Width="100" />
+                <Label x:Name="lblExpandedText" Height="25" Width="870" FontFamily="Georgia" FontSize="14" />
+            </StackPanel >-->
+
+            <StackPanel Orientation="Horizontal" Margin="0,20,0,10">
+                <!--<Button x:Name="btnSplit" Content="Split" Width="100" Margin="100,0,0,0" />-->
+                <Button x:Name="btnSave" Content="Save" Width="100" Margin="100,0,0,0" IsDefault="True" Click="BtnSave_Click" />
+                <Button x:Name="btnCancel" Content="Cancel" Width="100" Margin="15,0,0,0" IsCancel="true" Click="BtnCancel_Click" />
+
+            </StackPanel>
+
+        </StackPanel>
+        
+    </Grid>
+</Window>
