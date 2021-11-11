@@ -34,16 +34,22 @@
             <GroupBox x:Name="grpPages" Header="Pages" Width="230" HorizontalAlignment="Left" Height="Auto" VerticalAlignment="Top" Margin="0, 12, 0, 0" Padding="5">
                 <StackPanel Orientation="Vertical" >
                     <StackPanel Orientation="Horizontal" Height="25" Margin="5,0,0,0" >
-                        <CheckBox x:Name="chkPages" IsChecked="{Binding Path=FilterByPageNumber, Mode=TwoWay}" Content="Filter by pages" Width="140" VerticalAlignment="Center" Unchecked="ChkPages_Unchecked" Checked="ChkPages_Checked" Margin="0,4,0,5.8" />
+                        <CheckBox x:Name="chkPages" IsChecked="{Binding Path=FilterByPageNumber, Mode=TwoWay}" Content="Filter by page range" Width="140" VerticalAlignment="Center" Unchecked="ChkPages_Unchecked" Checked="ChkPages_Checked" Margin="0,4,0,5.8" />
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Height="25" Margin="0,5,0,0" >
+                    <!--<StackPanel Orientation="Horizontal" Height="25" Margin="0,5,0,0" >
                         <Label x:Name="lblFrom" Content="From:" Width="40" Margin="0,0,0,0" />
                         <ComboBox x:Name="cmbPagesFrom" Height="25" Width="50" SelectionChanged="CmbPagesFrom_SelectionChanged"  />
                         <Label x:Name="lblTo" Content="To:" Width="40" Margin="15,0,0,0" />
                         <ComboBox x:Name="cmbPagesTo" Height="25" Width="50" SelectionChanged="CmbPagesTo_SelectionChanged"  />
+                    </StackPanel>-->
+                    <StackPanel Orientation="Horizontal" Height="25" Margin="0,5,0,0">
+                        <Label x:Name="lblPageRange" Content="Range:" Height="30" Width="60" Margin="0,0,0,0" />
+                        <TextBox x:Name="txtPageRangeFrom" Height="25" Width="60" TextWrapping="NoWrap" Text=""/>
+                        <Label Content="-" Height="30" Margin="0,0,0,0" />
+                        <TextBox x:Name="txtPageRangeTo" Height="25" Width="60" TextWrapping="NoWrap" Text=""/>
                     </StackPanel>
-
+                    
                 </StackPanel>
             </GroupBox>
 

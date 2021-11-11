@@ -130,8 +130,11 @@
   <data name="PAGESchemaLocation" xml:space="preserve">
     <value>http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd</value>
   </data>
+  <data name="Test" xml:space="preserve">
+    <value>ingenting</value>
+  </data>
   <data name="TrClient" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\TranskribusClient.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Resources\TrClient.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="TrpServerBaseAddress" xml:space="preserve">
     <value>https://transkribus.eu/TrpServer/rest/</value>

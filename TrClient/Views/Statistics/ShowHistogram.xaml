@@ -19,10 +19,10 @@
 
         <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,10,0,0" HorizontalAlignment="Left" >
             <Label x:Name="lblHistogramType" Content="Show histogram for:" Height="25" />
-            <ComboBox x:Name="cmbHistogramType" Height="25" Width="130" />
+            <ComboBox x:Name="cmbHistogramType" Height="25" Width="130" SelectionChanged="cmbHistogramType_SelectionChanged" />
             <Label x:Name="lblBucketSize" Content="Bucketsize:" Height="25" Margin="0,10,0,0"/>
-            <ComboBox x:Name="cmbBucketSize" Height="25" Width="130"/>
-            <Button x:Name="btnDrawHistogram" Content="Draw histogram" Height="25" Margin="0,30,0,0" Click="BtnDrawHistogram_Click" />
+            <ComboBox x:Name="cmbBucketSize" Height="25" Width="130" SelectionChanged="cmbBucketSize_SelectionChanged" />
+            <!--<Button x:Name="btnDrawHistogram" Content="Draw histogram" Height="25" Margin="0,30,0,0" Click="BtnDrawHistogram_Click" />-->
             <Button x:Name="btnClose" Content="Close" Height="25" Margin="0,100,0,0" IsCancel="true" Click="BtnClose_Click"/>
         </StackPanel>
 

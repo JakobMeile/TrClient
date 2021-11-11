@@ -46,7 +46,6 @@ namespace TrClient.Libraries
 
         //public static string ExportFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Export\";
         //public static string LogFolder = @"C:\Users\jakob\Dropbox\KB\Transkribus\TrClientGUI_Log\";
-        
         public static XNamespace Xmlns = Properties.Resources.PAGENameSpace;
         // "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15";
   

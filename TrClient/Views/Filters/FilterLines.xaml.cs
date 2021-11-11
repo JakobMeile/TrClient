@@ -26,6 +26,8 @@ namespace TrClient.Views
         private List<string> listOfPages;
         private List<string> listOfTags;
 
+        private int maxPageNumber;
+
         private TrTextLines lines = new TrTextLines();
 
         public TrLineFilterSettings FilterSettings = new TrLineFilterSettings();
@@ -43,31 +45,41 @@ namespace TrClient.Views
 
             DataContext = FilterSettings;
 
-            listOfPages = currentDocument.GetListOfPages();
-            cmbPagesFrom.ItemsSource = listOfPages;
-            cmbPagesTo.ItemsSource = listOfPages;
+            //listOfPages = currentDocument.GetListOfPages();
+            //cmbPagesFrom.ItemsSource = listOfPages;
+            //cmbPagesTo.ItemsSource = listOfPages;
+
+            maxPageNumber = currentDocument.NrOfPages;
 
             txtLinesTotal.Text = currentDocument.NumberOfLines.ToString("#,##0");
 
             Reset();
 
-            Debug.Print($"First page: {listOfPages.First()} - Last page: {listOfPages.Last()}");
+            //Debug.Print($"First page: {listOfPages.First()} - Last page: {listOfPages.Last()}");
         }
 
         private void ChkPages_Checked(object sender, RoutedEventArgs e)
         {
-            lblFrom.IsEnabled = true;
-            cmbPagesFrom.IsEnabled = true;
-            lblTo.IsEnabled = true;
-            cmbPagesTo.IsEnabled = true;
+            //lblFrom.IsEnabled = true;
+            //cmbPagesFrom.IsEnabled = true;
+            //lblTo.IsEnabled = true;
+            //cmbPagesTo.IsEnabled = true;
+
+            lblPageRange.IsEnabled = true;
+            txtPageRangeFrom.IsEnabled = true;
+            txtPageRangeTo.IsEnabled = true;
         }
 
         private void ChkPages_Unchecked(object sender, RoutedEventArgs e)
         {
-            lblFrom.IsEnabled = false;
-            cmbPagesFrom.IsEnabled = false;
-            lblTo.IsEnabled = false;
-            cmbPagesTo.IsEnabled = false;
+            //lblFrom.IsEnabled = false;
+            //cmbPagesFrom.IsEnabled = false;
+            //lblTo.IsEnabled = false;
+            //cmbPagesTo.IsEnabled = false;
+
+            lblPageRange.IsEnabled = false;
+            txtPageRangeFrom.IsEnabled = false;
+            txtPageRangeTo.IsEnabled = false;
         }
 
         private void CmbTagName_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -75,37 +87,37 @@ namespace TrClient.Views
             FilterSettings.StructuralTag = cmbTagName.SelectedItem.ToString().Trim();
         }
 
-        private void CmbPagesFrom_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            FilterSettings.StartPage = GetNumber(cmbPagesFrom.SelectedItem.ToString());
+        //private void CmbPagesFrom_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    FilterSettings.StartPage = GetNumber(cmbPagesFrom.SelectedItem.ToString());
 
-            if (cmbPagesTo.SelectedItem != null)
-            {
-                FilterSettings.EndPage = GetNumber(cmbPagesTo.SelectedItem.ToString());
+        //    if (cmbPagesTo.SelectedItem != null)
+        //    {
+        //        FilterSettings.EndPage = GetNumber(cmbPagesTo.SelectedItem.ToString());
 
-                if (FilterSettings.EndPage < FilterSettings.StartPage)
-                {
-                    FilterSettings.EndPage = FilterSettings.StartPage;
-                    cmbPagesTo.SelectedItem = FilterSettings.EndPage.ToString();
-                }
-            }
-        }
+        //        if (FilterSettings.EndPage < FilterSettings.StartPage)
+        //        {
+        //            FilterSettings.EndPage = FilterSettings.StartPage;
+        //            cmbPagesTo.SelectedItem = FilterSettings.EndPage.ToString();
+        //        }
+        //    }
+        //}
 
-        private void CmbPagesTo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            FilterSettings.EndPage = GetNumber(cmbPagesTo.SelectedItem.ToString());
+        //private void CmbPagesTo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    FilterSettings.EndPage = GetNumber(cmbPagesTo.SelectedItem.ToString());
 
-            if (cmbPagesFrom.SelectedItem != null)
-            {
-                FilterSettings.StartPage = GetNumber(cmbPagesFrom.SelectedItem.ToString());
+        //    if (cmbPagesFrom.SelectedItem != null)
+        //    {
+        //        FilterSettings.StartPage = GetNumber(cmbPagesFrom.SelectedItem.ToString());
 
-                if (FilterSettings.EndPage < FilterSettings.StartPage)
-                {
-                    FilterSettings.StartPage = FilterSettings.EndPage;
-                    cmbPagesFrom.SelectedItem = FilterSettings.StartPage.ToString();
-                }
-            }
-        }
+        //        if (FilterSettings.EndPage < FilterSettings.StartPage)
+        //        {
+        //            FilterSettings.StartPage = FilterSettings.EndPage;
+        //            cmbPagesFrom.SelectedItem = FilterSettings.StartPage.ToString();
+        //        }
+        //    }
+        //}
 
         private int GetNumber(string selected)
         {
@@ -435,6 +447,7 @@ namespace TrClient.Views
             //    $"Top: {FilterWindow.TopBorder}, Bottom: {FilterWindow.BottomBorder}, Inside: {FilterWindow.Inside}");
             bool doRunFilter = true;
 
+            // validate regex
             if (FilterSettings.FilterByRegEx)
             {
                 if (txtPattern.Text != string.Empty)
@@ -454,15 +467,40 @@ namespace TrClient.Views
                 }
             }
 
+            // validate page range
+            if (FilterSettings.FilterByPageNumber)
+            {
+                if (txtPageRangeFrom.Text != string.Empty && txtPageRangeTo.Text != string.Empty)
+                {
+
+                    bool fromOK = Int32.TryParse(txtPageRangeFrom.Text, out int fromPage);
+                    bool toOK = Int32.TryParse(txtPageRangeTo.Text, out int toPage);
+
+                    if (fromOK && toOK)
+                    {
+                        if (fromPage >= 1 && toPage <= maxPageNumber && fromPage <= toPage)
+                        {
+                            // alt ok
+                            FilterSettings.StartPage = fromPage;
+                            FilterSettings.EndPage = toPage;
+                            Debug.Print($"Filter by pagenumber: pages = {FilterSettings.StartPage}-{FilterSettings.EndPage}");
+                        }
+                        else
+                        {
+                            doRunFilter = false;
+                            MessageBox.Show($"Illegal page range: {fromPage}-{toPage}!", TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        }
+                    }
+                    else
+                    {
+                        doRunFilter = false;
+                        MessageBox.Show($"Invalid page range input!", TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    }
+                }
+            }
+
             if (doRunFilter)
             {
-                if (FilterSettings.FilterByPageNumber)
-                {
-                    FilterSettings.StartPage = GetNumber(cmbPagesFrom.SelectedItem.ToString());
-                    FilterSettings.EndPage = GetNumber(cmbPagesTo.SelectedItem.ToString());
-                    Debug.Print($"Filter by pagenumber: pages = {FilterSettings.StartPage}-{FilterSettings.EndPage}");
-                }
-
                 if (FilterSettings.FilterByStructuralTag)
                 {
                     if (cmbTagName.SelectedItem != null)
@@ -568,13 +606,17 @@ namespace TrClient.Views
 
             chkPages.IsChecked = false;
 
-            lblFrom.IsEnabled = false;
-            cmbPagesFrom.IsEnabled = false;
-            cmbPagesFrom.SelectedItem = listOfPages.First();
+            lblPageRange.IsEnabled = false;
+            txtPageRangeFrom.IsEnabled = false;
+            txtPageRangeTo.IsEnabled = false;
 
-            lblTo.IsEnabled = false;
-            cmbPagesTo.IsEnabled = false;
-            cmbPagesTo.SelectedItem = listOfPages.Last();
+            //lblFrom.IsEnabled = false;
+            //cmbPagesFrom.IsEnabled = false;
+            //cmbPagesFrom.SelectedItem = listOfPages.First();
+
+            //lblTo.IsEnabled = false;
+            //cmbPagesTo.IsEnabled = false;
+            //cmbPagesTo.SelectedItem = listOfPages.Last();
 
             chkRegEx.IsChecked = false;
 

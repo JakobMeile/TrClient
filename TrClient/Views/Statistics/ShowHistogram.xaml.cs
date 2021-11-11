@@ -7,7 +7,9 @@ namespace TrClient.Views
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Windows;
+    using System.Windows.Controls;
     using TrClient.Core;
     using TrClient.Helpers;
     using TrClient.Libraries;
@@ -26,18 +28,34 @@ namespace TrClient.Views
         {
             InitializeComponent();
             currentDocument = document;
-            cmbHistogramType.ItemsSource = Enum.GetValues(typeof(HistogramType));
 
+            // fills up cmbHistogramType and sets initial type
+            cmbHistogramType.ItemsSource = Enum.GetValues(typeof(HistogramType));
+            cmbHistogramType.SelectedItem = cmbHistogramType.Items[0];
+
+            // makes a list of bucket sizes
             for (int i = 1; i <= 10; i++)
             {
                 int p = i * 10;
                 listOfBucketSizes.Add(p.ToString());
             }
 
+            // and fills this in cmbBucketSize; sets initial size
             cmbBucketSize.ItemsSource = listOfBucketSizes;
+            cmbBucketSize.SelectedItem = listOfBucketSizes.First();
         }
 
-        private void BtnDrawHistogram_Click(object sender, RoutedEventArgs e)
+        private void cmbHistogramType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DrawHistogram();
+        }
+
+        private void cmbBucketSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            DrawHistogram();
+        }
+
+        private void DrawHistogram()
         {
             if ((cmbHistogramType.SelectedItem != null) && (cmbBucketSize.SelectedItem != null))
             {
@@ -60,9 +78,14 @@ namespace TrClient.Views
             }
         }
 
+        //private void BtnDrawHistogram_Click(object sender, RoutedEventArgs e)
+        //{
+        //}
+
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
+
     }
 }

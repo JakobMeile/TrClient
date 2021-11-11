@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F0C0954C-7A6D-4B0A-B159-0399B83A789F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TranskribusClient</RootNamespace>
-    <AssemblyName>TranskribusClient</AssemblyName>
+    <RootNamespace>TrClient</RootNamespace>
+    <AssemblyName>TrClient</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -17,7 +17,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <PublishUrl>C:\Users\jakob\Dropbox\Code\Deploy\TranskribusClient-x.x.x-install\</PublishUrl>
+    <PublishUrl>C:\Users\jakob\Dropbox\Code\Deploy\TrClient-x.x.x-install\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -47,7 +47,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>Documents\TranskribusClient.xml</DocumentationFile>
+    <DocumentationFile>Documents\TrClient.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,7 +59,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>TranskribusClient.App</StartupObject>
+    <StartupObject>TrClient.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\TrClient.ico</ApplicationIcon>
@@ -106,6 +106,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helpers\RangeCountPair.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Settings\TrSession.cs" />
     <Compile Include="Settings\TrUser.cs" />
     <Compile Include="Settings\TrUserSettings.cs" />
@@ -395,6 +400,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
@@ -402,7 +408,6 @@
     <None Include="api\index.md" />
     <None Include="articles\intro.md" />
     <None Include="articles\toc.md" />
-    <None Include="docfx.json" />
     <None Include="index.md" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -4,6 +4,120 @@
         <name>TrClient</name>
     </assembly>
     <members>
+        <member name="T:TrClient.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.ApplicationName">
+            <summary>
+              Looks up a localized string similar to TrClient.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.MonthNames">
+             <summary>
+               Looks up a localized string similar to januar
+            februar
+            marts
+            april
+            maj
+            juni
+            juli
+            august
+            september
+            oktober
+            november
+            december
+            jan
+            feb
+            febr
+            mar
+            apr
+            jun
+            jul
+            aug
+            sep
+            sept
+            okt
+            oktbr
+            nov
+            novbr
+            dec
+            decbr
+            .
+             </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.PAGENameSpace">
+            <summary>
+              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.PAGESchemaLocation">
+            <summary>
+              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.Test">
+            <summary>
+              Looks up a localized string similar to ingenting.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrClient">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerBaseAddress">
+            <summary>
+              Looks up a localized string similar to https://transkribus.eu/TrpServer/rest/.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathCollectionsList">
+            <summary>
+              Looks up a localized string similar to collections/list.xml.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathDocumentsList">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/list.xml.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathLogin">
+            <summary>
+              Looks up a localized string similar to auth/login.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathPagesList">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/_DocID_/fulldoc.xml.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerPathUpload">
+            <summary>
+              Looks up a localized string similar to collections/_ColID_/_DocID_/_PageNr_/text?overwrite=true.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.TrpServerTranscriptURL">
+            <summary>
+              Looks up a localized string similar to https://files.transkribus.eu/Get?id=.
+            </summary>
+        </member>
+        <member name="P:TrClient.Properties.Resources.XMLSchemaInstance">
+            <summary>
+              Looks up a localized string similar to http://www.w3.org/2001/XMLSchema-instance.
+            </summary>
+        </member>
         <member name="T:TrClient.Settings.TrSession">
             <summary>
             Class to keep the current session, combining the user, the HttpClient and the user's collections.
@@ -500,115 +614,6 @@
         <member name="M:TrClient.MainWindow.InitializeComponent">
             <summary>
             InitializeComponent
-            </summary>
-        </member>
-        <member name="T:TrClient.Properties.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.ApplicationName">
-            <summary>
-              Looks up a localized string similar to TrClient.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.MonthNames">
-             <summary>
-               Looks up a localized string similar to januar
-            februar
-            marts
-            april
-            maj
-            juni
-            juli
-            august
-            september
-            oktober
-            november
-            december
-            jan
-            feb
-            febr
-            mar
-            apr
-            jun
-            jul
-            aug
-            sep
-            sept
-            okt
-            oktbr
-            nov
-            novbr
-            dec
-            decbr
-            .
-             </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.PAGENameSpace">
-            <summary>
-              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.PAGESchemaLocation">
-            <summary>
-              Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrClient">
-            <summary>
-              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrpServerBaseAddress">
-            <summary>
-              Looks up a localized string similar to https://transkribus.eu/TrpServer/rest/.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrpServerPathCollectionsList">
-            <summary>
-              Looks up a localized string similar to collections/list.xml.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrpServerPathDocumentsList">
-            <summary>
-              Looks up a localized string similar to collections/_ColID_/list.xml.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrpServerPathLogin">
-            <summary>
-              Looks up a localized string similar to auth/login.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrpServerPathPagesList">
-            <summary>
-              Looks up a localized string similar to collections/_ColID_/_DocID_/fulldoc.xml.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrpServerPathUpload">
-            <summary>
-              Looks up a localized string similar to collections/_ColID_/_DocID_/_PageNr_/text?overwrite=true.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.TrpServerTranscriptURL">
-            <summary>
-              Looks up a localized string similar to https://files.transkribus.eu/Get?id=.
-            </summary>
-        </member>
-        <member name="P:TrClient.Properties.Resources.XMLSchemaInstance">
-            <summary>
-              Looks up a localized string similar to http://www.w3.org/2001/XMLSchema-instance.
             </summary>
         </member>
     </members>
