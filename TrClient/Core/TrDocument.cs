@@ -150,7 +150,7 @@ namespace TrClient.Core
                 }
 
                 numberOfLines = temp;
-                Debug.Print($"Document {Title}: Number of lines = {numberOfLines}");
+                // Debug.Print($"Document {Title}: Number of lines = {numberOfLines}");
                 return numberOfLines;
             }
         }

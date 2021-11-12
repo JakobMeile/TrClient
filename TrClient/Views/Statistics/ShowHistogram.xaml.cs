@@ -20,55 +20,75 @@ namespace TrClient.Views
     public partial class ShowHistogram : Window
     {
         private TrDocument currentDocument;
+        
         private int bucketSize;
+
         private HistogramType type;
         private List<string> listOfBucketSizes = new List<string>();
+
+        public Histogram CurrentHistogram;
 
         public ShowHistogram(TrDocument document)
         {
             InitializeComponent();
             currentDocument = document;
 
-            // fills up cmbHistogramType and sets initial type
+            // fills up cmbHistogramType 
             cmbHistogramType.ItemsSource = Enum.GetValues(typeof(HistogramType));
+
+            // sets initial value for cmbHistogramType - which in turn calls this' selectionChanged - which calls sldBucketSize Changed - and hence the histogram is shown
             cmbHistogramType.SelectedItem = cmbHistogramType.Items[0];
-
-            // makes a list of bucket sizes
-            for (int i = 1; i <= 10; i++)
-            {
-                int p = i * 10;
-                listOfBucketSizes.Add(p.ToString());
-            }
-
-            // and fills this in cmbBucketSize; sets initial size
-            cmbBucketSize.ItemsSource = listOfBucketSizes;
-            cmbBucketSize.SelectedItem = listOfBucketSizes.First();
-        }
-
-        private void cmbHistogramType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
             DrawHistogram();
         }
 
-        private void cmbBucketSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CmbHistogramType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            type = (HistogramType)cmbHistogramType.SelectedItem;
+            switch (type)
+            {
+                case HistogramType.LineLength:
+                    sldBucketSize.Value = 10;
+                    break;
+
+                case HistogramType.LineWidth:
+                    sldBucketSize.Value = 100;
+                    break;
+
+                case HistogramType.LineHpos:
+                    sldBucketSize.Value = 200;
+                    break;
+
+                case HistogramType.LineVpos:
+                    sldBucketSize.Value = 300;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void SldBucketSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             DrawHistogram();
         }
 
         private void DrawHistogram()
         {
-            if ((cmbHistogramType.SelectedItem != null) && (cmbBucketSize.SelectedItem != null))
+            if (cmbHistogramType.SelectedItem != null) 
             {
                 if (currentDocument.HasLines)
                 {
                     type = (HistogramType)cmbHistogramType.SelectedItem;
-                    bucketSize = Convert.ToInt32(cmbBucketSize.SelectedItem);
+                    bucketSize = Convert.ToInt32(sldBucketSize.Value);
+#if DEBUG
                     Debug.Print($"ShowHistogram: type = {type.ToString()}, bucketSize = {bucketSize}");
-
+#endif
                     if (bucketSize != 0)
                     {
-                        Histogram histogram = new Histogram(currentDocument, type, bucketSize);
-                        lstRanges.ItemsSource = histogram.Result;
+                        CurrentHistogram = new Histogram(currentDocument, type, bucketSize);
+                        lstRanges.ItemsSource = CurrentHistogram.Result;
+
+                        this.DataContext = CurrentHistogram;
                     }
                 }
                 else
@@ -77,11 +97,7 @@ namespace TrClient.Views
                 }
             }
         }
-
-        //private void BtnDrawHistogram_Click(object sender, RoutedEventArgs e)
-        //{
-        //}
-
+                
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;

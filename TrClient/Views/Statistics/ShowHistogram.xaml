@@ -19,11 +19,41 @@
 
         <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,10,0,0" HorizontalAlignment="Left" >
             <Label x:Name="lblHistogramType" Content="Show histogram for:" Height="25" />
-            <ComboBox x:Name="cmbHistogramType" Height="25" Width="130" SelectionChanged="cmbHistogramType_SelectionChanged" />
-            <Label x:Name="lblBucketSize" Content="Bucketsize:" Height="25" Margin="0,10,0,0"/>
-            <ComboBox x:Name="cmbBucketSize" Height="25" Width="130" SelectionChanged="cmbBucketSize_SelectionChanged" />
-            <!--<Button x:Name="btnDrawHistogram" Content="Draw histogram" Height="25" Margin="0,30,0,0" Click="BtnDrawHistogram_Click" />-->
-            <Button x:Name="btnClose" Content="Close" Height="25" Margin="0,100,0,0" IsCancel="true" Click="BtnClose_Click"/>
+            <ComboBox x:Name="cmbHistogramType" Height="25" Width="130" SelectionChanged="CmbHistogramType_SelectionChanged" />
+
+            <StackPanel Orientation="Horizontal" Height="25" Margin="0,0,0,0" >
+                <Label x:Name="lblNumberOfN" Content="N =" Width="80"/>
+                <Label x:Name="lblNumberOfNValue" Width="50" Content="{Binding NumberOfN}"  HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+            </StackPanel>
+
+            <Separator/>
+            <StackPanel Orientation="Horizontal" Height="25" Margin="0,0,0,0" >
+                <Label x:Name="lblMinimum" Content="Minimum:" Width="80" />
+                <Label x:Name="lblMinimumValue" Width="50" Content="{Binding MinValue}" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="25" Margin="0,0,0,0" >
+                <Label x:Name="lblMaximum" Content="Maximum:" Width="80" />
+                <Label x:Name="lblMaximumValue" Width="50" Content="{Binding MaxValue}" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+            </StackPanel>
+
+            <Separator/>
+
+            <StackPanel Orientation="Horizontal" Height="25" Margin="0,0,0,0" >
+                <Label x:Name="lblBucketSize" Content="Bucketsize:" Width="80"/>
+                <Label x:Name="lblBucketSizeValue" Width="50" Content="{Binding ElementName=sldBucketSize, Path=Value, UpdateSourceTrigger=PropertyChanged}"  
+                       HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <Slider x:Name="sldBucketSize" Minimum="10" Maximum="1000" TickFrequency="10" 
+                    IsSnapToTickEnabled="True" Width="120" VerticalAlignment="Center" ValueChanged="SldBucketSize_ValueChanged"/>
+
+
+            <StackPanel Orientation="Horizontal" Height="25" Margin="0,10,0,0" >
+                <Label x:Name="lblBucketCount" Content="Bucket count:" Width="80" />
+                <Label x:Name="lblBucketCountValue" Width="50" Content="{Binding BucketCount}" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+            </StackPanel>
+
+            <Separator/>
+            <Button x:Name="btnClose" Content="Close" Height="25" Margin="0,50,0,0" IsCancel="true" Click="BtnClose_Click"/>
         </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="10,10,0,0" HorizontalAlignment="Left" >
