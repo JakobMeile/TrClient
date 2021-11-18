@@ -114,6 +114,12 @@
     <Compile Include="Settings\TrSession.cs" />
     <Compile Include="Settings\TrUser.cs" />
     <Compile Include="Settings\TrUserSettings.cs" />
+    <Compile Include="Views\ProgressBars\ProgressLoadImages.xaml.cs">
+      <DependentUpon>ProgressLoadImages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressBars\ProgressUploadPages.xaml.cs">
+      <DependentUpon>ProgressUploadPages.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Statistics\ShowHistogram.xaml.cs">
       <DependentUpon>ShowHistogram.xaml</DependentUpon>
     </Compile>
@@ -208,6 +214,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ProgressBars\ProgressLoadImages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ProgressBars\ProgressCopy.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -219,6 +229,10 @@
     <Page Include="Views\ProgressBars\ProgressLoadPages.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ProgressBars\ProgressUploadPages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Regions\DeleteRegions.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -398,7 +412,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>

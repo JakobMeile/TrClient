@@ -1,0 +1,408 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F0C0954C-7A6D-4B0A-B159-0399B83A789F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TrClient</RootNamespace>
+    <AssemblyName>TrClient</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>C:\Users\jakob\Dropbox\Code\Deploy\TrClient-x.x.x-install\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <WebPage>publish.htm</WebPage>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.5.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <DocumentationFile>Documents\TrClient.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TrClient.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\TrClient.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>6381110C5D1BC4E923DD8490958574ABA3953025</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>TrClient_1_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>TrClient_1_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Helpers\RangeCountPair.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\TrSession.cs" />
+    <Compile Include="Settings\TrUser.cs" />
+    <Compile Include="Settings\TrUserSettings.cs" />
+    <Compile Include="Views\ProgressBars\ProgressLoadImages.xaml.cs">
+      <DependentUpon>ProgressLoadImages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Statistics\ShowHistogram.xaml.cs">
+      <DependentUpon>ShowHistogram.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\Histogram.cs" />
+    <Compile Include="Core\Tags\TrTagTextualAbbrev.cs" />
+    <Compile Include="Core\Tags\TrTagTextualComment.cs" />
+    <Compile Include="Core\Tags\TrTagTextualDate.cs" />
+    <Compile Include="Core\Tags\TrTagReadingOrder.cs" />
+    <Compile Include="Core\Tags\TrTagTextualRomanNumeral.cs" />
+    <Compile Include="Core\Tags\TrTagTextualSic.cs" />
+    <Compile Include="Core\Tags\TrTagStructural.cs" />
+    <Compile Include="Core\Tags\TrTagTextualStyle.cs" />
+    <Compile Include="Core\Tags\TrTag.cs" />
+    <Compile Include="Core\Tags\TrTagProperty.cs" />
+    <Compile Include="Core\Tags\TrTagTextual.cs" />
+    <Compile Include="Core\Tags\TrTagTextualUnclear.cs" />
+    <Compile Include="Core\Tags\TrTagProperties.cs" />
+    <Compile Include="Core\Tags\TrTags.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\TrCell.cs" />
+    <Compile Include="Core\TrCollection.cs" />
+    <Compile Include="Core\TrCoord.cs" />
+    <Compile Include="Core\TrDocument.cs" />
+    <Compile Include="Core\TrPage.cs" />
+    <Compile Include="Core\TrRegion.cs" />
+    <Compile Include="Core\TrTableRegion.cs" />
+    <Compile Include="Core\TrTextLine.cs" />
+    <Compile Include="Core\TrTextRegion.cs" />
+    <Compile Include="Core\TrTranscript.cs" />
+    <Compile Include="Views\Collections\CopyFromCollection.xaml.cs">
+      <DependentUpon>CopyFromCollection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\EditLemma.xaml.cs">
+      <DependentUpon>EditLemma.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\FindReplace.xaml.cs">
+      <DependentUpon>FindReplace.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\ShowLemmas.xaml.cs">
+      <DependentUpon>ShowLemmas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Content\ShowParagraphs.xaml.cs">
+      <DependentUpon>ShowParagraphs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Export\ShowAndExportPages.xaml.cs">
+      <DependentUpon>ShowAndExportPages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Filters\FilterLines.xaml.cs">
+      <DependentUpon>FilterLines.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Filters\FilterLinesByLocation.xaml.cs">
+      <DependentUpon>FilterLinesByLocation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Filters\FilterLinesByRegex.xaml.cs">
+      <DependentUpon>FilterLinesByRegex.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\ChooseMinMaxNumbers.xaml.cs">
+      <DependentUpon>ChooseMinMaxNumbers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\General\ChoosePageRange.xaml.cs">
+      <DependentUpon>ChoosePageRange.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Lines\DeleteLines.xaml.cs">
+      <DependentUpon>DeleteLines.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Lines\EditBaseLines.xaml.cs">
+      <DependentUpon>EditBaseLines.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Lines\EditTextLine.xaml.cs">
+      <DependentUpon>EditTextLine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Lines\RepairBaseLines.xaml.cs">
+      <DependentUpon>RepairBaseLines.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Lines\ShowTextLine.xaml.cs">
+      <DependentUpon>ShowTextLine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Lines\SimplifyBoundingBoxes.xaml.cs">
+      <DependentUpon>SimplifyBoundingBoxes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Log\ShowLog.xaml.cs">
+      <DependentUpon>ShowLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\ShowPage.xaml.cs">
+      <DependentUpon>ShowPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressBars\ProgressCopy.xaml.cs">
+      <DependentUpon>ProgressCopy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressBars\ProgressLoadDocs.xaml.cs">
+      <DependentUpon>ProgressLoadDocs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProgressBars\ProgressLoadPages.xaml.cs">
+      <DependentUpon>ProgressLoadPages.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Regions\DeleteRegions.xaml.cs">
+      <DependentUpon>DeleteRegions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Regions\MoveRegions.xaml.cs">
+      <DependentUpon>MoveRegions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tags\EditStructuralTags.xaml.cs">
+      <DependentUpon>EditStructuralTags.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tags\RenameTags.xaml.cs">
+      <DependentUpon>RenameTags.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tags\ShowTags.xaml.cs">
+      <DependentUpon>ShowTags.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\TrLemma.cs" />
+    <Compile Include="Extensions\TrMarcField.cs" />
+    <Compile Include="Extensions\TrMarcRecord.cs" />
+    <Compile Include="Extensions\TrParagraph.cs" />
+    <Compile Include="Extensions\TrRecord.cs" />
+    <Compile Include="Extensions\TrRow.cs" />
+    <Compile Include="Extensions\TrWord.cs" />
+    <Compile Include="Extensions\TrLemmas.cs" />
+    <Compile Include="Extensions\TrMarcFields.cs" />
+    <Compile Include="Extensions\TrParagraphs.cs" />
+    <Compile Include="Extensions\TrRows.cs" />
+    <Compile Include="Extensions\TrWords.cs" />
+    <Compile Include="Helpers\SortAdorner.cs" />
+    <Compile Include="Helpers\TrBaseLineFilter.cs" />
+    <Compile Include="Helpers\TrDialogTransferSettings.cs" />
+    <Compile Include="Helpers\TrLineFilterSettings.cs" />
+    <Compile Include="Helpers\TrLog.cs" />
+    <Compile Include="Helpers\TrLogEvent.cs" />
+    <Compile Include="Helpers\TrObservableCollection.cs" />
+    <Compile Include="Helpers\TrPairOrderID.cs" />
+    <Compile Include="Helpers\TrLogEvents.cs" />
+    <Compile Include="Helpers\TrPairOrderIDs.cs" />
+    <Compile Include="Libraries\TrLibrary.cs" />
+    <Compile Include="Settings\TrCurrent.cs" />
+    <Compile Include="Settings\TrCredentials.cs" />
+    <Compile Include="Core\TrCells.cs" />
+    <Compile Include="Core\TrCollections.cs" />
+    <Compile Include="Core\TrCoords.cs" />
+    <Compile Include="Core\TrDocuments.cs" />
+    <Compile Include="Core\TrPages.cs" />
+    <Compile Include="Core\TrRegions.cs" />
+    <Compile Include="Core\TrTextLines.cs" />
+    <Compile Include="Core\TrTranscripts.cs" />
+    <Compile Include="Libraries\clsLanguageLibrary.cs" />
+    <Compile Include="Libraries\clsMonthNames.cs" />
+    <Compile Include="Libraries\clsRomanNumerals.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+    <None Include="api\index.md" />
+    <None Include="articles\intro.md" />
+    <None Include="articles\toc.md" />
+    <None Include="index.md" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="stylecop.json" />
+    <None Include="toc.yml" />
+    <None Include="TrClient_1_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MonthNames.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TrClient.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Documents\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\docfx.console.2.58.9\build\docfx.console.targets" Condition="Exists('..\packages\docfx.console.2.58.9\build\docfx.console.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\docfx.console.2.58.9\build\docfx.console.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\docfx.console.2.58.9\build\docfx.console.targets'))" />
+  </Target>
+  <ItemGroup>
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\mscorlib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Net.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7\WindowsBase.dll" />
+    <ReferencePath Include="C:\WINDOWS\assembly\GAC_MSIL\Office\15.0.0.0__71e9bce111e9429c\Office.dll">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </ReferencePath>
+    <ReferencePath Include="C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </ReferencePath>
+    <ReferencePath Include="C:\WINDOWS\assembly\GAC_MSIL\Microsoft.Vbe.Interop\15.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </ReferencePath>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Collections\CopyFromCollection.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Content\EditLemma.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Content\FindReplace.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Content\ShowLemmas.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Content\ShowParagraphs.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Export\ShowAndExportPages.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Filters\FilterLines.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Filters\FilterLinesByLocation.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Filters\FilterLinesByRegex.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\General\ChooseMinMaxNumbers.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\General\ChoosePageRange.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Lines\DeleteLines.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Lines\EditBaseLines.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Lines\EditTextLine.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Lines\RepairBaseLines.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Lines\ShowTextLine.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Lines\SimplifyBoundingBoxes.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Log\ShowLog.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Pages\ShowPage.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\ProgressBars\ProgressLoadImages.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\ProgressBars\ProgressCopy.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\ProgressBars\ProgressLoadDocs.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\ProgressBars\ProgressLoadPages.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Regions\DeleteRegions.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Regions\MoveRegions.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Statistics\ShowHistogram.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Tags\EditStructuralTags.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Tags\RenameTags.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\Views\Tags\ShowTags.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\MainWindow.g.cs" />
+    <Compile Include="C:\Users\jakob\Dropbox\Code\TrClient\TrClient\obj\Debug\App.g.cs" />
+  </ItemGroup>
+</Project>

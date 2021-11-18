@@ -21,5 +21,7 @@
                 Data            = "M 5,5 L 10,10 L 15,5 L 5,5"/>
         </DockPanel>
     </DataTemplate>
-    
+
+    <BitmapImage x:Key="TrClientIcon" UriSource="../Resources/TrClient.ico" />
+
 </ResourceDictionary>

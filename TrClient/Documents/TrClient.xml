@@ -146,6 +146,32 @@
             Default constructor.
             </summary>
         </member>
+        <member name="T:TrClient.Views.ProgressLoadImages">
+            <summary>
+            Interaction logic for ProgressLoadImages.xaml
+            </summary>
+            <summary>
+            ProgressLoadImages
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ProgressLoadImages.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:TrClient.Views.ProgressUploadPages">
+            <summary>
+            Interaction logic for ProgressUploadPages.xaml
+            </summary>
+            <summary>
+            ProgressUploadPages
+            </summary>
+        </member>
+        <member name="M:TrClient.Views.ProgressUploadPages.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:TrClient.Views.ShowHistogram">
             <summary>
             Interaction logic for ShowHistogram.xaml.

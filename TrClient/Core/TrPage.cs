@@ -9,10 +9,16 @@ namespace TrClient.Core
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Net.Http;
+    using System.IO;
+    using System.Windows;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using System.Windows.Controls;
+    using System.Windows.Input;
     using DanishNLP;
     using TrClient.Extensions;
     using TrClient.Helpers;
@@ -325,23 +331,60 @@ namespace TrClient.Core
             return temp;
         }
 
-        public void LoadImage()
+        public void LoadImage(HttpClient currentClient) // async Task<bool> 
         {
+            string error = String.Empty;
+
             if (!IsPageImageLoaded)
             {
+                // Debug.WriteLine($"TrPage: Loading image: page {PageNr}... Trying...");
+               
                 PageImage = new BitmapImage();
+
+                // gammel løsning; smadrer hukommelsen
                 PageImage.BeginInit();
-                PageImage.CacheOption = BitmapCacheOption.OnLoad;
+                PageImage.CacheOption = BitmapCacheOption.None;
                 PageImage.UriSource = new Uri(ImageURL);
                 PageImage.EndInit();
 
-                PageImage.DownloadCompleted += new EventHandler(
-                    (object xsender, EventArgs xe) =>
-                    {
-                        BitmapImage readySrc = (BitmapImage)xsender;
-                        PageImage = readySrc;
-                        IsPageImageLoaded = true;
-                    });
+                // ny løsning - med stream
+                //using (Stream imageStream = await currentClient.GetStreamAsync(ImageURL))
+                //{
+                //    PageImage.BeginInit();
+                //    PageImage.StreamSource = imageStream;
+                //    PageImage.CacheOption = BitmapCacheOption.OnLoad;
+                //    PageImage.EndInit();
+                //}
+
+                try
+                {
+                    PageImage.DownloadCompleted += new EventHandler(
+                        (object xsender, EventArgs xe) =>
+                        {
+                            BitmapImage readySrc = (BitmapImage)xsender;
+                            
+                            PageImage = readySrc;
+                            IsPageImageLoaded = true;
+                            ParentDocument.NrOfImagesLoaded += 1;
+
+                            // StatusColor = Brushes.Cyan;
+                            Debug.WriteLine($"TrPage: Image on page {PageNr} should be loaded: ParentDocument.NrOfImagesLoaded = {ParentDocument.NrOfImagesLoaded}");
+
+                        });
+                    // return true;
+                }
+                catch (Exception e)
+                {
+                    
+                    error = $"TrPage: Error loading image on page {PageNr}; message: {e.Message}";
+                    Debug.WriteLine(error);
+                    MessageBox.Show(error, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    // return false;
+                }
+            }
+            else
+            {
+                // return true;
             }
         }
 
@@ -374,6 +417,17 @@ namespace TrClient.Core
             Transcripts.ParentPage = this;
             IsLoaded = false;
             //Transcripts[0].TestEventHandler += TrPage_TestEventHandler;
+        }
+
+        // finalizer
+
+        ~TrPage()
+        {
+            if (IsPageImageLoaded)
+            {
+                Debug.Print($"TrPage: Finalizer called: setting PageImage = null.");
+                PageImage = null;
+            }
         }
 
         //private void TrPage_TestEventHandler(object sender, EventArgs e)

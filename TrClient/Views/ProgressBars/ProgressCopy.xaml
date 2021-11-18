@@ -6,15 +6,16 @@
         xmlns:local="clr-namespace:TrClient.Views"
         mc:Ignorable="d"
         Title="Copying" 
-        Height="150" 
+        Height="180" 
         Width="400"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
 
     <Grid>
-        <Grid Margin="10,10,10,0">
+        <Grid Margin="10">
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="Copying from" FontWeight="Bold" Margin="5"/>
+                <TextBlock Text="{Binding Name}" Margin="5"/>
                 <Grid x:Name="txtLoadedDocuments" Margin="5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -22,14 +23,12 @@
                         <ColumnDefinition Width="20" />
                         <ColumnDefinition Width="20" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Name}" Grid.Column="0"/>
                     <TextBlock Text="{Binding NrOfDocsLoaded}" Grid.Column="1" HorizontalAlignment="Right"/>
                     <TextBlock Text="/" Grid.Column="2" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding NrOfDocs}" Grid.Column="3" HorizontalAlignment="Right"/>
                 </Grid>
-                <ProgressBar x:Name="barLoadedDocuments" Value="{Binding NrOfDocsLoaded}" Height="25" Margin="5"/>
+                <ProgressBar x:Name="barLoadedDocuments" Value="{Binding NrOfDocsLoaded}" Height="25" Margin="5,15"/>
             </StackPanel>
-
         </Grid>
     </Grid>
 </Window>

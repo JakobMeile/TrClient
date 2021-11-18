@@ -111,18 +111,19 @@ namespace TrClient.Core
                     StatusColor = Brushes.Orange;
                 }
 
-                //TestEventHandler?.Invoke(this, EventArgs.Empty);
-
                 NotifyPropertyChanged("HasChanged");
                 ParentPage.HasChanged = value;
-                if (hasChanged)
-                {
-                    ParentPage.ParentDocument.NrOfTranscriptsChanged++;
-                }
-                else
-                {
-                    ParentPage.ParentDocument.NrOfTranscriptsChanged--;
-                }
+
+                //if (hasChanged)
+                //{
+                //    ParentPage.ParentDocument.NrOfTranscriptsChanged++;
+                //    Debug.Print($"TrTranscript: ParentPage = {ParentPage.PageNr}: adding 1 to NrOfTranscriptsChanged; new value = {ParentPage.ParentDocument.NrOfTranscriptsChanged}");
+                //}
+                //else
+                //{
+                //    ParentPage.ParentDocument.NrOfTranscriptsChanged--;
+                //    Debug.Print($"TrTranscript: ParentPage = {ParentPage.PageNr}: subtracting 1 from NrOfTranscriptsChanged; new value = {ParentPage.ParentDocument.NrOfTranscriptsChanged}");
+                //}
             }
         }
 
@@ -853,7 +854,7 @@ namespace TrClient.Core
             return xTranscript;
         }
 
-        public async void Upload(HttpClient currentClient)
+        public async Task<bool> Upload(HttpClient currentClient)
         {
             // POSTing
             UploadURL = UploadURL.Replace("_ColID_", ParentPage.ParentDocument.ParentCollection.ID);
@@ -896,6 +897,8 @@ namespace TrClient.Core
             {
                 Debug.WriteLine($"General error! Exception message when uploading page nr {PageNr.ToString()}: {e.Message}");
             }
+
+            return true;
         }
     }
 }

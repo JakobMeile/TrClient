@@ -22,7 +22,7 @@ namespace TrClient.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TrClient.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TrClient.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace TrClient.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to TrClient.
         /// </summary>
-        internal static string ApplicationName {
+        public static string ApplicationName {
             get {
                 return ResourceManager.GetString("ApplicationName", resourceCulture);
             }
@@ -100,7 +100,7 @@ namespace TrClient.Properties {
         ///decbr
         ///.
         /// </summary>
-        internal static string MonthNames {
+        public static string MonthNames {
             get {
                 return ResourceManager.GetString("MonthNames", resourceCulture);
             }
@@ -109,7 +109,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15.
         /// </summary>
-        internal static string PAGENameSpace {
+        public static string PAGENameSpace {
             get {
                 return ResourceManager.GetString("PAGENameSpace", resourceCulture);
             }
@@ -118,7 +118,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd.
         /// </summary>
-        internal static string PAGESchemaLocation {
+        public static string PAGESchemaLocation {
             get {
                 return ResourceManager.GetString("PAGESchemaLocation", resourceCulture);
             }
@@ -127,7 +127,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ingenting.
         /// </summary>
-        internal static string Test {
+        public static string Test {
             get {
                 return ResourceManager.GetString("Test", resourceCulture);
             }
@@ -136,7 +136,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon TrClient {
+        public static System.Drawing.Icon TrClient {
             get {
                 object obj = ResourceManager.GetObject("TrClient", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -146,7 +146,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to https://transkribus.eu/TrpServer/rest/.
         /// </summary>
-        internal static string TrpServerBaseAddress {
+        public static string TrpServerBaseAddress {
             get {
                 return ResourceManager.GetString("TrpServerBaseAddress", resourceCulture);
             }
@@ -155,7 +155,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to collections/list.xml.
         /// </summary>
-        internal static string TrpServerPathCollectionsList {
+        public static string TrpServerPathCollectionsList {
             get {
                 return ResourceManager.GetString("TrpServerPathCollectionsList", resourceCulture);
             }
@@ -164,7 +164,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to collections/_ColID_/list.xml.
         /// </summary>
-        internal static string TrpServerPathDocumentsList {
+        public static string TrpServerPathDocumentsList {
             get {
                 return ResourceManager.GetString("TrpServerPathDocumentsList", resourceCulture);
             }
@@ -173,7 +173,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to auth/login.
         /// </summary>
-        internal static string TrpServerPathLogin {
+        public static string TrpServerPathLogin {
             get {
                 return ResourceManager.GetString("TrpServerPathLogin", resourceCulture);
             }
@@ -182,7 +182,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to collections/_ColID_/_DocID_/fulldoc.xml.
         /// </summary>
-        internal static string TrpServerPathPagesList {
+        public static string TrpServerPathPagesList {
             get {
                 return ResourceManager.GetString("TrpServerPathPagesList", resourceCulture);
             }
@@ -191,7 +191,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to collections/_ColID_/_DocID_/_PageNr_/text?overwrite=true.
         /// </summary>
-        internal static string TrpServerPathUpload {
+        public static string TrpServerPathUpload {
             get {
                 return ResourceManager.GetString("TrpServerPathUpload", resourceCulture);
             }
@@ -200,7 +200,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to https://files.transkribus.eu/Get?id=.
         /// </summary>
-        internal static string TrpServerTranscriptURL {
+        public static string TrpServerTranscriptURL {
             get {
                 return ResourceManager.GetString("TrpServerTranscriptURL", resourceCulture);
             }
@@ -209,7 +209,7 @@ namespace TrClient.Properties {
         /// <summary>
         ///   Looks up a localized string similar to http://www.w3.org/2001/XMLSchema-instance.
         /// </summary>
-        internal static string XMLSchemaInstance {
+        public static string XMLSchemaInstance {
             get {
                 return ResourceManager.GetString("XMLSchemaInstance", resourceCulture);
             }

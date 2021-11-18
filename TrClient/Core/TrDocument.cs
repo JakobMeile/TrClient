@@ -76,23 +76,56 @@ namespace TrClient.Core
             }
         }
 
+        private int nrOfImagesLoaded = 0;
+
+        public int NrOfImagesLoaded
+        {
+            get
+            {
+                return nrOfImagesLoaded;
+            }
+
+            set
+            {
+                if (nrOfImagesLoaded != value)
+                {
+                    nrOfImagesLoaded = value;
+                    NotifyPropertyChanged("NrOfImagesLoaded");
+                }
+            }
+        }
+
         private int nrOfTranscriptsChanged = 0;
 
         public int NrOfTranscriptsChanged
         {
             get
             {
+                if (nrOfTranscriptsChanged == 0)
+                {
+                    int count = 0;
+
+                    foreach (TrPage page in Pages)
+                    {
+                        if (page.Transcripts[0].HasChanged)
+                        {
+                            count++;
+                        }
+                    }
+                    nrOfTranscriptsChanged = count;
+                }
+
                 return nrOfTranscriptsChanged;
             }
 
-            set
-            {
-                if (nrOfTranscriptsChanged != value)
-                {
-                    nrOfTranscriptsChanged = value;
-                    NotifyPropertyChanged("NrOfTranscriptsChanged");
-                }
-            }
+            //set
+            //{
+            //    if (nrOfTranscriptsChanged != value)
+            //    {
+            //        nrOfTranscriptsChanged = value;
+            //        NotifyPropertyChanged("NrOfTranscriptsChanged");
+            //    }
+            //}
         }
 
         private int nrOfTranscriptsUploaded = 0;
@@ -2026,6 +2059,19 @@ namespace TrClient.Core
         //    }
         //}
 
+        public void LoadImages(HttpClient currentClient)  // async Task<bool> 
+        {
+            foreach (TrPage page in Pages)
+            {
+                //Task<bool> loaded = page.LoadImage(currentClient);
+                //bool oK = await loaded;
+                // await loaded;
+                page.LoadImage(currentClient);
+            }
+
+            // return true;
+        }
+
         public async Task<bool> CheckNewTranscripts(HttpClient currentClient)
         {
 
@@ -2141,7 +2187,8 @@ namespace TrClient.Core
                     Debug.Print($"Latest: {latestTranscriptDateTime}    Newest on server: {newTranscriptDateTime}");
 
                     newTranscript.ParentPage = Pages.GetPageFromPageNr(currentPage);
-                    newTranscript.LoadTranscript(currentClient);
+                    await newTranscript.LoadTranscript(currentClient);
+
                     Pages.GetPageFromPageNr(currentPage).Transcripts.Insert(newTranscript);
                     // Pages[pageIndex].Transcripts.Insert(newTranscript);
                     // Pages.GetPageFromPageNr(currentPage).HasChanged = true;
@@ -2340,17 +2387,18 @@ namespace TrClient.Core
             return true;
         }
 
-        public void Upload(HttpClient currentClient)
+        public async Task<bool> Upload(HttpClient currentClient)
         {
             foreach (TrPage page in Pages)
             {
                 if (page.HasChanged)
                 {
-                    page.Transcripts[0].Upload(currentClient);
+                    await page.Transcripts[0].Upload(currentClient);
                 }
             }
 
             Debug.Print($"***** RESULT: Transcripts changed: {NrOfTranscriptsChanged} - Transcripts uploaded: {NrOfTranscriptsUploaded}");
+            return true;
         }
 
         public void Save()

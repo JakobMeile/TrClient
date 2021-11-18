@@ -406,10 +406,10 @@ namespace TrClient
         //            txtSecondaryCollection.DataContext = Secondary.Collection;
         //            txtSecondaryDocument.DataContext = Secondary.Document;
 
-        //            ProgressLoadDocs progress = new ProgressLoadDocs(Secondary.Collection.NrOfDocs);
-        //            progress.Owner = this;
-        //            progress.DataContext = Secondary.Collection;
-        //            progress.Show();
+        //            ProgressLoadDocs progressLoadPages = new ProgressLoadDocs(Secondary.Collection.NrOfDocs);
+        //            progressLoadPages.Owner = this;
+        //            progressLoadPages.DataContext = Secondary.Collection;
+        //            progressLoadPages.Show();
 
         //            if (TrLibrary.OfflineMode)
         //            {
@@ -441,7 +441,7 @@ namespace TrClient
         //                }
         //            }
 
-        //            progress.Hide();
+        //            progressLoadPages.Hide();
 
         //            Mouse.OverrideCursor = null;
         //        }
@@ -467,7 +467,8 @@ namespace TrClient
                         }
                         else
                         {
-                            Current.Document.Upload(httpClient);
+                            UploadCurrentDocument();
+                            // Current.Document.Upload(httpClient);
                         }
                     }
                 }
@@ -482,10 +483,10 @@ namespace TrClient
 
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-                ProgressLoadPages progress = new ProgressLoadPages(Current.Document.NrOfPages);
-                progress.Owner = this;
-                progress.DataContext = Current.Document;
-                progress.Show();
+                ProgressLoadPages progressLoadPages = new ProgressLoadPages(Current.Document.NrOfPages);
+                progressLoadPages.Owner = this;
+                progressLoadPages.DataContext = Current.Document;
+                progressLoadPages.Show();
 
                 if (TrLibrary.OfflineMode)
                 {
@@ -524,7 +525,7 @@ namespace TrClient
                     }
                 }
 
-                progress.Hide();
+                progressLoadPages.Hide();
                 Mouse.OverrideCursor = null;
 
                 if (Current.Document.HasFormerTables)
@@ -542,6 +543,29 @@ namespace TrClient
                         Current.Document.PostLoadFix();
                     }
                 }
+
+                // skal alle billederne loades?
+                //string loadImages = $"Load all images in {Current.Document.Title}?";
+                //MessageBoxResult loadImagesResult = AskUser(loadImages);
+                //if (loadImagesResult == MessageBoxResult.Yes)
+                //{
+                //    Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+                //    ProgressLoadImages progressLoadImages = new ProgressLoadImages(Current.Document.NrOfPages);
+                //    progressLoadImages.Owner = this;
+                //    progressLoadImages.DataContext = Current.Document;
+                //    progressLoadImages.Show();
+
+                //    // Task<bool> loaded = Current.Document.LoadImages();
+                //    // bool oK = await loaded;
+                //    // await loaded;
+
+                //    Current.Document.LoadImages();
+
+                //    progressLoadImages.Hide();
+                //    Mouse.OverrideCursor = null;
+                //}
+
             }
         }
 
@@ -577,10 +601,10 @@ namespace TrClient
 
         //        Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
 
-        //        ProgressLoadPages progress = new ProgressLoadPages(Secondary.Document.NrOfPages);
-        //        progress.Owner = this;
-        //        progress.DataContext = Secondary.Document;
-        //        progress.Show();
+        //        ProgressLoadPages progressLoadPages = new ProgressLoadPages(Secondary.Document.NrOfPages);
+        //        progressLoadPages.Owner = this;
+        //        progressLoadPages.DataContext = Secondary.Document;
+        //        progressLoadPages.Show();
 
         //        if (TrLibrary.OfflineMode)
         //        {
@@ -604,7 +628,7 @@ namespace TrClient
         //            }
         //        }
 
-        //        progress.Hide();
+        //        progressLoadPages.Hide();
         //        Mouse.OverrideCursor = null;
         //    }
         //}
@@ -623,10 +647,24 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
-                Current.Document.Upload(httpClient);
-                Mouse.OverrideCursor = null;
+                UploadCurrentDocument();
             }
+        }
+
+        private async void UploadCurrentDocument()
+        {
+            Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+
+            ProgressUploadPages progressUploadPages = new ProgressUploadPages(Current.Document.NrOfTranscriptsChanged);
+            progressUploadPages.Owner = this;
+            progressUploadPages.DataContext = Current.Document;
+            progressUploadPages.Show();
+
+            Task<bool> uploaded = Current.Document.Upload(httpClient);
+            bool oK = await uploaded;
+
+            progressUploadPages.Hide();
+            Mouse.OverrideCursor = null;
         }
 
         private void MenuItem_Exit_Click(object sender, RoutedEventArgs e)
@@ -2033,7 +2071,7 @@ namespace TrClient
         {
             if (Current.Collection != null && Current.Document != null)
             {
-                FilterLines filterLines = new FilterLines(Current.Document);
+                FilterLines filterLines = new FilterLines(Current.Document, httpClient);
                 filterLines.Owner = this;
                 filterLines.ShowDialog();
             }

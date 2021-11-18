@@ -11,6 +11,7 @@ namespace TrClient.Views
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using System.Net.Http;
     using TrClient.Core;
     using TrClient.Helpers;
     using TrClient.Libraries;
@@ -23,6 +24,7 @@ namespace TrClient.Views
         //GridViewColumnHeader _lastHeaderClicked = null;
         //ListSortDirection _lastDirection = ListSortDirection.Ascending;
         private TrDocument currentDocument;
+        private HttpClient currentClient;
         private List<string> listOfPages;
         private List<string> listOfTags;
 
@@ -38,19 +40,16 @@ namespace TrClient.Views
         private bool useNewTag = false;
 
         // ------------------------------------------------------------------------------------------------
-        public FilterLines(TrDocument document)
+        public FilterLines(TrDocument document, HttpClient client)
         {
             InitializeComponent();
             currentDocument = document;
+            currentClient = client;
 
             DataContext = FilterSettings;
 
-            //listOfPages = currentDocument.GetListOfPages();
-            //cmbPagesFrom.ItemsSource = listOfPages;
-            //cmbPagesTo.ItemsSource = listOfPages;
-
+            listOfPages = currentDocument.GetListOfPages();
             maxPageNumber = currentDocument.NrOfPages;
-
             txtLinesTotal.Text = currentDocument.NumberOfLines.ToString("#,##0");
 
             Reset();
@@ -60,11 +59,6 @@ namespace TrClient.Views
 
         private void ChkPages_Checked(object sender, RoutedEventArgs e)
         {
-            //lblFrom.IsEnabled = true;
-            //cmbPagesFrom.IsEnabled = true;
-            //lblTo.IsEnabled = true;
-            //cmbPagesTo.IsEnabled = true;
-
             lblPageRange.IsEnabled = true;
             txtPageRangeFrom.IsEnabled = true;
             txtPageRangeTo.IsEnabled = true;
@@ -72,11 +66,6 @@ namespace TrClient.Views
 
         private void ChkPages_Unchecked(object sender, RoutedEventArgs e)
         {
-            //lblFrom.IsEnabled = false;
-            //cmbPagesFrom.IsEnabled = false;
-            //lblTo.IsEnabled = false;
-            //cmbPagesTo.IsEnabled = false;
-
             lblPageRange.IsEnabled = false;
             txtPageRangeFrom.IsEnabled = false;
             txtPageRangeTo.IsEnabled = false;
@@ -87,37 +76,6 @@ namespace TrClient.Views
             FilterSettings.StructuralTag = cmbTagName.SelectedItem.ToString().Trim();
         }
 
-        //private void CmbPagesFrom_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    FilterSettings.StartPage = GetNumber(cmbPagesFrom.SelectedItem.ToString());
-
-        //    if (cmbPagesTo.SelectedItem != null)
-        //    {
-        //        FilterSettings.EndPage = GetNumber(cmbPagesTo.SelectedItem.ToString());
-
-        //        if (FilterSettings.EndPage < FilterSettings.StartPage)
-        //        {
-        //            FilterSettings.EndPage = FilterSettings.StartPage;
-        //            cmbPagesTo.SelectedItem = FilterSettings.EndPage.ToString();
-        //        }
-        //    }
-        //}
-
-        //private void CmbPagesTo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    FilterSettings.EndPage = GetNumber(cmbPagesTo.SelectedItem.ToString());
-
-        //    if (cmbPagesFrom.SelectedItem != null)
-        //    {
-        //        FilterSettings.StartPage = GetNumber(cmbPagesFrom.SelectedItem.ToString());
-
-        //        if (FilterSettings.EndPage < FilterSettings.StartPage)
-        //        {
-        //            FilterSettings.StartPage = FilterSettings.EndPage;
-        //            cmbPagesFrom.SelectedItem = FilterSettings.StartPage.ToString();
-        //        }
-        //    }
-        //}
 
         private int GetNumber(string selected)
         {
@@ -239,13 +197,6 @@ namespace TrClient.Views
             lblRightPercent.IsEnabled = true;
             sldRight.IsEnabled = true;
 
-            //lblWidth.IsEnabled = true;
-            //txtWidth.IsEnabled = true;
-            //lblWidthPercent.IsEnabled = true;
-
-            //lblHeigth.IsEnabled = true;
-            //txtHeigth.IsEnabled = true;
-            //lblHeigthPercent.IsEnabled = true;
             rectBack.IsEnabled = true;
             rectFront.IsEnabled = true;
 
@@ -281,13 +232,6 @@ namespace TrClient.Views
             lblRightPercent.IsEnabled = false;
             sldRight.IsEnabled = false;
 
-            //lblWidth.IsEnabled = false;
-            //txtWidth.IsEnabled = false;
-            //lblWidthPercent.IsEnabled = false;
-
-            //lblHeigth.IsEnabled = false;
-            //txtHeigth.IsEnabled = false;
-            //lblHeigthPercent.IsEnabled = false;
             rectBack.IsEnabled = false;
             rectFront.IsEnabled = false;
 
@@ -412,7 +356,7 @@ namespace TrClient.Views
                 TrTextLine textLine = ((ListViewItem)sender).Content as TrTextLine;
                 if (textLine != null)
                 {
-                    EditTextLine DlgEdit = new EditTextLine(textLine);
+                    EditTextLine DlgEdit = new EditTextLine(textLine, currentClient);
                     DlgEdit.Owner = this;
                     DlgEdit.ShowDialog();
                     if (DlgEdit.DialogResult == true)
@@ -430,7 +374,7 @@ namespace TrClient.Views
                 TrTextLine textLine = ((ListBoxItem)sender).Content as TrTextLine;
                 if (textLine != null)
                 {
-                    EditTextLine DlgEdit = new EditTextLine(textLine);
+                    EditTextLine DlgEdit = new EditTextLine(textLine, currentClient);
                     DlgEdit.Owner = this;
                     DlgEdit.ShowDialog();
                     if (DlgEdit.DialogResult == true)
@@ -610,13 +554,8 @@ namespace TrClient.Views
             txtPageRangeFrom.IsEnabled = false;
             txtPageRangeTo.IsEnabled = false;
 
-            //lblFrom.IsEnabled = false;
-            //cmbPagesFrom.IsEnabled = false;
-            //cmbPagesFrom.SelectedItem = listOfPages.First();
-
-            //lblTo.IsEnabled = false;
-            //cmbPagesTo.IsEnabled = false;
-            //cmbPagesTo.SelectedItem = listOfPages.Last();
+            txtPageRangeFrom.Text = "1";
+            txtPageRangeTo.Text = maxPageNumber.ToString();
 
             chkRegEx.IsChecked = false;
 
@@ -675,13 +614,6 @@ namespace TrClient.Views
             lblRightPercent.IsEnabled = false;
             sldRight.IsEnabled = false;
 
-            //lblWidth.IsEnabled = false;
-            //txtWidth.IsEnabled = false;
-            //lblWidthPercent.IsEnabled = false;
-
-            //lblHeigth.IsEnabled = false;
-            //txtHeigth.IsEnabled = false;
-            //lblHeigthPercent.IsEnabled = false;
             rectBack.IsEnabled = false;
             rectFront.IsEnabled = false;
 
@@ -755,9 +687,6 @@ namespace TrClient.Views
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            //Region = GetNumber(cmbRegion.Text);
-            //Line = GetNumber(cmbLine.Text);
-
             if (useExistingTag)
             {
                 if (cmbNewTag.SelectedItem != null)
@@ -788,12 +717,7 @@ namespace TrClient.Views
                     cmbTagName.ItemsSource = listOfTags;
                     cmbNewTag.ItemsSource = listOfTags;
                 }
-
             }
-
-
-            //cmbNewTag.SelectedItem = null;
-            //txtTag.Text = string.Empty;
         }
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)

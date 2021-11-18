@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         WindowState="Maximized"
         WindowStyle="SingleBorderWindow"
+        
         Title="TrClient" >
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
@@ -292,7 +293,7 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="*" MaxWidth="260"/>
+                            <ColumnDefinition Width="*" MaxWidth="200"/>
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="20" />
                         </Grid.ColumnDefinitions>

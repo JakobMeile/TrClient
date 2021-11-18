@@ -5,13 +5,22 @@
 namespace TrClient.Views
 {
     using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
+    using System.Windows.Media;
+    using System.Xml;
+    using System.Net.Http;
     using TrClient.Core;
+    using TrClient.Libraries;
 
     /// <summary>
     /// Interaction logic for EditTextLine.xaml.
@@ -19,6 +28,9 @@ namespace TrClient.Views
     public partial class EditTextLine : Window
     {
         public TrTextLine CurrentLine;
+
+        private HttpClient currentClient;
+
         private string oldText;
         private string oldCoordsString;
 
@@ -30,10 +42,11 @@ namespace TrClient.Views
         private int newHeight = 200;
         private double scaleFactor;
 
-        public EditTextLine(TrTextLine textLine)
+        public EditTextLine(TrTextLine textLine, HttpClient client)
         {
             InitializeComponent();
             CurrentLine = textLine;
+            currentClient = client;
             oldText = CurrentLine.TextEquiv;
             oldCoordsString = CurrentLine.BaseLineCoordsString;
 
@@ -48,36 +61,95 @@ namespace TrClient.Views
                 btnMarkCritical.Content = "UN-Mark as Critical";
             }
 
-            Debug.Print($"New TextLine: ParentPage = {parentPage.PageNr}, LineNr = {textLine.Number}, TextEquiv = {textLine.TextEquiv}");
-            Debug.Print($"BaselineCoords: {textLine.BaseLineCoordsString}");
             Int32Rect testBB = textLine.BoundingBoxLarge;
+
+            Debug.Print($"    ");
+            Debug.Print($"EDIT TEXTLINE: ParentPage = {parentPage.PageNr}, LineNr = {textLine.Number}, TextEquiv = {textLine.TextEquiv}");
+            Debug.Print($"BaselineCoords: {textLine.BaseLineCoordsString}");
             Debug.Print($"Boundingbox: X: {testBB.X}, Y: {testBB.Y}, W: {testBB.Width}, H: {testBB.Height}");
+
+            string error = String.Empty;
 
             if (!parentPage.IsPageImageLoaded)
             {
-                parentPage.LoadImage();
-                parentPage.PageImage.DownloadCompleted += new EventHandler(
-                    (object xsender, EventArgs xe) =>
+                Debug.Print($"ParentPage: Image is NOT loaded.");
+
+                // await LoadImage();
+
+                // Task<bool> imageLoaded = parentPage.LoadImage(currentClient);
+                
+                //bool OK = await imageLoaded;
+
+                parentPage.LoadImage(currentClient);
+
+                try
+                {
+                    parentPage.PageImage.DownloadCompleted += new EventHandler(
+                        (object xsender, EventArgs xe) =>
+                        {
+                            BitmapImage readySrc = (BitmapImage)xsender;
+
+                            try
+                            {
+                                croppedImage = new CroppedBitmap(readySrc, textLine.BoundingBoxLarge);
+
+                                //ScaleFactor = NewHeight / CroppedImage.PixelHeight;
+                                //ScaledImage = new TransformedBitmap(CroppedImage, new ScaleTransform(ScaleFactor, ScaleFactor));
+                                imgTextLine.Source = croppedImage;
+
+                                //imgTextLine.Source = ScaledImage;
+                            }
+                            catch (Exception e)
+                            {
+                                error = $"EditTextLine: Error cropping un-loaded image on page {parentPage.PageNr}; message: {e.Message}";
+                                Debug.WriteLine(error);
+                                MessageBox.Show(error, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                //throw e;
+                            }
+                        });
+                }
+                catch (Exception e) 
+                {
+                    error = $"EditTextLine: Error loading AND cropping image on page {parentPage.PageNr}; message: {e.Message}";
+                    Debug.WriteLine(error);
+                    MessageBox.Show(error, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    //throw e;
+                }
+
+            }
+            else
+            {
+                Debug.Print($"ParentPage: Image IS loaded: URI = {parentPage.PageImage}");
+                
+                if (parentPage.PageImage != null)
+                {
+                    try
                     {
-                        BitmapImage readySrc = (BitmapImage)xsender;
-                        croppedImage = new CroppedBitmap(readySrc, textLine.BoundingBoxLarge);
+                        while (parentPage.PageImage.IsDownloading)
+                        {
+                            Debug.Print("But ... It is still downloading...");   
+                        }
+
+                        croppedImage = new CroppedBitmap(parentPage.PageImage, textLine.BoundingBoxLarge);
 
                         //ScaleFactor = NewHeight / CroppedImage.PixelHeight;
                         //ScaledImage = new TransformedBitmap(CroppedImage, new ScaleTransform(ScaleFactor, ScaleFactor));
                         imgTextLine.Source = croppedImage;
 
                         //imgTextLine.Source = ScaledImage;
-                    });
-            }
-            else
-            {
-                croppedImage = new CroppedBitmap(parentPage.PageImage, textLine.BoundingBoxLarge);
-
-                //ScaleFactor = NewHeight / CroppedImage.PixelHeight;
-                //ScaledImage = new TransformedBitmap(CroppedImage, new ScaleTransform(ScaleFactor, ScaleFactor));
-                imgTextLine.Source = croppedImage;
-
-                //imgTextLine.Source = ScaledImage;
+                    }
+                    catch (Exception e)
+                    {
+                        error = $"EditTextLine: Error cropping already loaded image on page {parentPage.PageNr}; message: {e.Message}";
+                        Debug.WriteLine(error);
+                        MessageBox.Show(error, TrLibrary.AppName, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        //throw e;
+                    }
+                }
+                else
+                {
+                    Debug.Print($"ParentPage: Image was NULL...");
+                }
             }
 
             // så tegner vi LineArea og Baseline
@@ -99,6 +171,7 @@ namespace TrClient.Views
             DrawingGroup imageGroup = new DrawingGroup();
             imageGroup.Children.Add(img);
         }
+
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {

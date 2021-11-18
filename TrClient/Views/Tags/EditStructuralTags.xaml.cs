@@ -252,7 +252,7 @@ namespace TrClient.Views
                 TrTextLine textLine = ((ListBoxItem)sender).Content as TrTextLine;
                 if (textLine != null)
                 {
-                    EditTextLine DlgEdit = new EditTextLine(textLine);
+                    EditTextLine DlgEdit = new EditTextLine(textLine, currentClient);
                     DlgEdit.Owner = this;
                     DlgEdit.ShowDialog();
                     if (DlgEdit.DialogResult == true)
